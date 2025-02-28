@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import CommunityView from '../views/CommunityView.vue'
+import PerformanceDetailView from '@/views/PerformanceDetailView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +27,12 @@ const router = createRouter({
       path: '/community',
       name: 'community',
       component: CommunityView,
+    },
+    //화면 보려고 급하게 만들었습니다.
+    {
+      path: '/performancedetail',
+      name: 'performancedetail',
+      component: PerformanceDetailView,
     },
   ],
 })
