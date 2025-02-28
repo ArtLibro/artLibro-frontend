@@ -71,7 +71,7 @@
 
 <script setup lang="ts">
 import { getBookList } from '@/apis/books';
-import { BOOK_BADGE_LIST } from '@/constans/book-badge';
+import { BOOK_BADGE_LIST } from '@/constants/book-badge';
 import type { BookItem } from '@/types/libraryType';
 import { onMounted, ref } from 'vue';
 
