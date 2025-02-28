@@ -22,7 +22,7 @@ const visible = ref<boolean>(true);
     </div>
 
     <div class="input-group">
-      <div style="margin-top: 65px;">
+      <div>
         <div>이메일 입력</div>
 
         <a-input-group compact>
@@ -33,11 +33,32 @@ const visible = ref<boolean>(true);
           </a-select>
         </a-input-group>
 
+        <div class="input-text">닉네임 입력</div>
+
+        <div class="components-input-demo-presuffix">
+          <a-input class="input-group1" v-model:value="userName" placeholder="닉네임을 입력해주세요">
+            <template #prefix>
+              <user-outlined />
+            </template>
+
+            <template #suffix>
+              <a-tooltip title="Extra information">
+                <info-circle-outlined style="color: rgba(0, 0, 0, 0.45)" />
+              </a-tooltip>
+            </template>
+          </a-input>
+        </div>
 
         <div class="input-text">비밀번호 입력</div>
         <a-input-password v-model:value="password1" placeholder="비밀번호를 입력해주세요" />
         <div class="small-text"> 영문 대·소문자/숫자.특수문자 중 2가지 이상 조합, 8~16글자 </div>
 
+        <div class="input-text">비밀번호 확인</div>
+        <a-input-password v-model:value="password2" placeholder="비밀번호를 입력해주세요" />
+
+        <div>
+          <a-button type="primary" class="button">회원가입</a-button>
+        </div>
       </div>
 
       <div style="margin-left: 91.19px; margin-top: 43px;">
@@ -45,9 +66,7 @@ const visible = ref<boolean>(true);
           <path d="M1.0957 0L1.0957 96" stroke="#595959" stroke-opacity="0.5" />
         </svg>
 
-        <div
-          style="color: rgba(25, 25, 25, 0.50); font-family: Pretendard; font-size: 14px; font-style: normal; margin-left: -10px;">
-          또는</div>
+        <div class="text">또는</div>
 
         <svg xmlns="http://www.w3.org/2000/svg" width="2" height="96" viewBox="0 0 2 96" fill="none">
           <path d="M1.0957 0L1.0957 96" stroke="#595959" stroke-opacity="0.5" />
@@ -97,6 +116,20 @@ const visible = ref<boolean>(true);
 .small-text {
   color: var(--gray-6, #bfbfbf);
   font-size: 10px
+}
+
+.button {
+  width: 100px;
+  margin-left: 220px;
+  margin-top: 20px;
+  background-color: #6472fc;
+}
+
+.text {
+  color: rgba(25, 25, 25, 0.50);
+  font-size: 14px;
+  font-style: normal;
+  margin-left: -10px;
 }
 
 .social-signup {
