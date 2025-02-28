@@ -7,6 +7,7 @@ import BookView from '@/views/BookView.vue'
 import LibraryView from '@/views/LibraryView.vue'
 import PerformanceView from '@/views/PerformanceView.vue'
 import ChallengeView from '@/views/ChallengeView.vue'
+import PerformanceSearchView from '@/views/PerformanceSearchView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -28,8 +29,8 @@ const router = createRouter({
     },
     {
       path: '/performance',
-      name: 'performance',
-      component: PerformanceView,
+      name: 'performancesearch',
+      component: PerformanceSearchView,
     },
     {
       path: '/challenge',
