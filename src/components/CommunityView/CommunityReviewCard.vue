@@ -9,6 +9,7 @@ defineProps<{
     comments: number
     image: string
     avatar: string
+    category: string
   }
 }>()
 </script>
@@ -38,8 +39,8 @@ defineProps<{
 .review-card {
   width: 1130px;
   height: 240px;
-  border-top: 1px solid #d9d9d9;
-  border-bottom: 1px solid #d9d9d9;
+
+  border-bottom: 1px solid $text-color-100;
   display: flex;
   align-items: center;
   padding: 20px;
@@ -71,27 +72,27 @@ defineProps<{
 }
 
 .user-name {
-  font-size: $text-size-400;
+  font-size: $text-size-300;
 }
 
 .time {
-  color: $text-color-300;
+  color: $text-color-200;
 }
 
 .review-title {
-  font-size: $text-size-500;
+  font-size: $text-size-400;
   margin: 0;
 }
 
 .review-text {
-  font-size: 20px;
+  font-size: $text-size-300;
   color: #666;
   line-height: 1.5;
   margin-top: 0;
 }
 
 .review-meta {
-  font-size: $text-size-300;
+  font-size: $text-size-200;
   color: #777;
   display: flex;
   gap: 15px;
@@ -101,5 +102,6 @@ defineProps<{
   width: 173px;
   height: 247px;
   object-fit: cover;
+  margin-left: 30px;
 }
 </style>
