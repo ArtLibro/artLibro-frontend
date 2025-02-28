@@ -51,6 +51,16 @@ const router = createRouter({
       name: 'register',
       component: RegisterView,
     },
+    {
+      path: '/community',
+      name: 'community',
+      component: CommunityView,
+    },
+    {
+      path: '/book',
+      name: 'book',
+      component: BookView,
+    },
   ],
 })
 
