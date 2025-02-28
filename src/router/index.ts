@@ -1,12 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
-import LoginView from '@/views/LoginView.vue'
-import RegisterView from '@/views/RegisterView.vue'
-import CommunityView from '@/views/CommunityView.vue'
-import BookView from '@/views/BookView.vue'
-import LibraryView from '@/views/LibraryView.vue'
-import PerformanceView from '@/views/PerformanceView.vue'
-import ChallengeView from '@/views/ChallengeView.vue'
+import HomeView from '../views/HomeView.vue'
+import LoginView from '../views/LoginView.vue'
+import RegisterView from '../views/RegisterView.vue'
+import CommunityView from '../views/CommunityView.vue'
+import PerformanceDetailView from '@/views/PerformanceDetailView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -50,6 +47,12 @@ const router = createRouter({
       path: '/register',
       name: 'register',
       component: RegisterView,
+    },
+    //화면 보려고 급하게 만들었습니다.
+    {
+      path: '/performancedetail',
+      name: 'performancedetail',
+      component: PerformanceDetailView,
     },
   ],
 })
