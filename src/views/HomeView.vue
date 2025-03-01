@@ -2,6 +2,11 @@
 import { onMounted } from 'vue'
 import { useLocationStore } from '@/stores/locationStore.ts'
 import { getAddressByLocation } from '@/apis/kakaoLocals.ts'
+import { getLibraryInfo, getLibraryPopularBooks } from '@/apis/books.ts'
+import LibraryInfo from '@/components/HomeView/LibraryInfo.vue'
+import LibraryPopularBooks from '@/components/HomeView/LibraryPopularBooks.vue'
+import PerformanceHero from '@/components/HomeView/PerformanceHero.vue'
+import LibraryChart from '@/components/HomeView/LibraryChart.vue'
 
 const locationStore = useLocationStore();
 onMounted(() => {
@@ -16,6 +21,8 @@ onMounted(() => {
     const getAddress = async () => {
       const data = await getAddressByLocation(locationStore.userLocation);
       console.log(data);
+      const library = await getLibraryInfo(data);
+      const libraryPopularBooks = await getLibraryPopularBooks('111526');
     }
 
     getAddress();
@@ -35,15 +42,20 @@ onMounted(() => {
 
 
 <template>
-  <div>
+  <div class="home-layout">
     홈 화면입니다
+    <div class="library-wrapper">
+      <LibraryInfo></LibraryInfo>
+      <LibraryPopularBooks></LibraryPopularBooks>
+      <LibraryChart></LibraryChart>
+    </div>
+    <PerformanceHero/>
   </div>
 </template>
 
 <style lang="scss" scoped>
-div {
+.home-layout {
   display: grid;
-  height: 100vh;
 }
 
 .btn {
@@ -54,5 +66,11 @@ div {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.library-wrapper {
+  display: flex;
+  height: 340px;
+  justify-content: space-between;
 }
 </style>
