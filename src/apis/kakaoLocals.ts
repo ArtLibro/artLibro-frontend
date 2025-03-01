@@ -1,8 +1,8 @@
 import { KakaoLocalApi } from '@/config/axiosKakaoLocalConfig.ts'
-import type { KakaoAddress, Location } from '@/types/location.types.ts'
+import type { KakaoAddress, LocationInfo } from '@/types/location.types.ts'
 
 // TODO 개선 필요
-export const getAddressByLocation = async (location : Location) : Promise<KakaoAddress> => {
+export const getAddressByLocation = async (location : LocationInfo) : Promise<KakaoAddress> => {
   try {
     const response = await KakaoLocalApi.get('/geo/coord2address.JSON',{
       params : {

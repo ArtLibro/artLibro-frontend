@@ -1,11 +1,11 @@
 import { reactive } from 'vue'
 import { defineStore } from 'pinia'
-import type { Location } from '@/types/location.types.ts'
+import type { LocationInfo } from '@/types/location.types.ts'
 
 export const useLocationStore = defineStore('location', () => {
-  const userLocation = reactive<Location>({latitude : null, longitude: null});
+  const userLocation = reactive<LocationInfo>({latitude : null, longitude: null});
 
-  function setUserLocation(location: Location) {
+  function setUserLocation(location: LocationInfo) {
     userLocation.latitude = location.latitude;
     userLocation.longitude = location.longitude;
   }

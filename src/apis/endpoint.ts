@@ -13,4 +13,6 @@ const LIBRARY_KEY = import.meta.env.VITE_API_LIBRARY_KEY
 
 export const LIBRARY_ENDPOINT = Object.freeze({
   bookList: `/srchBooks?authKey=${LIBRARY_KEY}`,
+  libraryDetail : `/extends/libSrch?authKey=${LIBRARY_KEY}`,
+  libraryPopularBook : `/extends/loanItemSrchByLib?authKey=${LIBRARY_KEY}`,
 })
