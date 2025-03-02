@@ -9,7 +9,7 @@ import PerformanceView from '@/views/PerformanceView.vue'
 import ChallengeView from '@/views/ChallengeView.vue'
 import PerformanceSearchView from '@/views/PerformanceSearchView.vue'
 import CommunityDetailView from '@/views/CommunityDetailView.vue'
-import CommunityWrite from '@/views/CommunityWrite.vue'
+import CommunityWriteView from '@/views/CommunityWriteView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -55,7 +55,7 @@ const router = createRouter({
     {
       path: '/communityWrite',
       name: 'communityWrite',
-      component: CommunityWrite,
+      component: CommunityWriteView,
     },
     {
       path: '/login',
