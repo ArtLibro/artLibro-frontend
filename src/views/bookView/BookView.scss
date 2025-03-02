@@ -1,0 +1,146 @@
+.wrap {
+  width: 1426px;
+  margin: 0 auto;
+
+  .book_header {
+    background-image: url('/images/search-book-bg.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 490px;
+    margin-bottom: 67px;
+  }
+
+  .container {
+    width: 1246px;
+    margin: 0 auto;
+
+    .keyword_container {
+      width: 100%;
+      margin-bottom: 76px;
+
+      h2 {
+        font-size: $text-title-300;
+        font-weight: bold;
+        margin-bottom: 24px;
+      }
+
+      .keyword_badge_container {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+
+        .badge {
+          display: inline-block;
+          border-radius: 30px;
+          border: 1px solid #d3d0cb;
+          padding: 0.5rem 1rem;
+          color: #61605d;
+        }
+      }
+    }
+
+    .book_list_container {
+      width: 100%;
+      font-size: $text-title-300;
+      font-weight: bold;
+
+      .book_list_header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 60px;
+
+        h2 {
+          font-size: $text-title-300;
+        }
+
+        .book_list_header_right {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          width: 57%;
+          justify-content: space-between;
+
+          .search_container {
+            width: 580px;
+
+            .search_input_group {
+              display: flex;
+            }
+          }
+        }
+      }
+
+      .book-list {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        column-gap: 20px;
+        row-gap: 44px;
+
+        .book-item {
+          max-width: 230px;
+
+          .book-item-image {
+            width: 100%;
+            height: 312px;
+            margin-bottom: 6px;
+
+            img {
+              width: 100%;
+              height: 100%;
+              border: 1px solid #e2e0dd;
+              border-radius: 8px;
+            }
+          }
+
+          .book-item-info {
+            .book-badge-container {
+              width: 100%;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 6px;
+
+              .book-badge {
+                font-size: 11px;
+                display: inline-block;
+                border-radius: 3px;
+                background-color: #ede4f8;
+                border: 1px solid $secondary-color-300;
+                padding: 0.4rem 8px;
+                color: $secondary-color-purple;
+              }
+
+              .book-publisher {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                font-size: 14px;
+                color: $text-color-300;
+              }
+            }
+
+            .book-title {
+              font-size: 20px;
+              margin-bottom: 4px;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+
+            .book-author {
+              font-size: 14px;
+              color: $text-color-300;
+              margin: 0;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+          }
+        }
+      }
+    }
+  }
+}
