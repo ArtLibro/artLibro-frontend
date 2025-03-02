@@ -53,8 +53,8 @@ const router = createRouter({
     },
     // UI 확인용 임시 경로 -> 수정 예정
     {
-      path: '/community-write',
-      name: 'community-write',
+      path: '/communityWrite',
+      name: 'communityWrite',
       component: CommunityWrite,
     },
     {
