@@ -1,8 +1,6 @@
 <template>
   <div class="wrap">
-    <div class="book_header">
-
-    </div>
+    <div class="book_header"></div>
     <div class="container">
 
       <div class="keyword_container">
@@ -77,9 +75,11 @@
           <p>검색 결과가 없습니다.</p>
         </div>
 
-        <div @click="handleFetchNextPage">더보기</div>
+        <div ref="loadMoreTrigger" class="load-more-trigger"></div>
       </div>
     </div>
+
+    <div class="goToTop" @click="handleGoToTop">TOP</div>
   </div>
 </template>
 
@@ -90,11 +90,12 @@ import { searchTypeOptions, sortTypeOptions } from '@/constants/booksOption';
 import QUERY_KEY from '@/constants/queryKey';
 import type { BookItem, SearchTypeValue, SortOptionValue } from '@/types/libraryType';
 import { useInfiniteQuery, type InfiniteData } from '@tanstack/vue-query';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 const searchType = ref<SearchTypeValue>('도서명');
 const searchKeyword = ref('');
 const sortType = ref<SortOptionValue>('loan');
+const loadMoreTrigger = ref<HTMLDivElement | null>(null);
 
 const handleSearch = () => {
   refetch();
@@ -105,27 +106,38 @@ const handleSortTypeChange = (value: SortOptionValue) => {
   refetch();
 }
 
-const handleFetchNextPage = () => {
-  fetchNextPage();
-  console.log(data.value)
-}
-
-// const { data, refetch } = useQuery<BookItem[]>({
-//   queryKey: QUERY_KEY.BOOKS.bookList(searchKeyword.value, searchType.value),
-//   queryFn: () => getBookList(searchKeyword.value, 1, searchType.value, sortType.value),
-//   enabled: true,
-// })
-
 //todo: 타입 수정 필요
-const { data, refetch, fetchNextPage } = useInfiniteQuery<BookItem[], unknown, InfiniteData<BookItem[]>, unknown[], number>({
+const { data, refetch, fetchNextPage, hasNextPage } = useInfiniteQuery<BookItem[], unknown, InfiniteData<BookItem[]>, unknown[], number>({
   queryKey: QUERY_KEY.BOOKS.bookList(searchKeyword.value, searchType.value),
-  queryFn: ({ pageParam }) => getBookList(searchKeyword.value, pageParam, searchType.value, sortType.value),
+  queryFn: ({ pageParam = 1 }) => getBookList(searchKeyword.value, pageParam, searchType.value, sortType.value),
   initialPageParam: 1,
   getNextPageParam: (lastPage, allPages) =>
     lastPage.length === 15 ? allPages.length + 1 : undefined,
   enabled: true,
 });
 
+let observer: IntersectionObserver | null = null;
+
+onMounted(() => {
+  observer = new IntersectionObserver((entries) => {
+    const target = entries[0];
+    if (target.isIntersecting && hasNextPage.value) {
+      fetchNextPage();
+    }
+
+  }, { rootMargin: '100px' });
+
+  if (loadMoreTrigger.value) {
+    observer.observe(loadMoreTrigger.value);
+  }
+});
+
+const handleGoToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  })
+}
 </script>
 
 <style lang="scss" scoped>

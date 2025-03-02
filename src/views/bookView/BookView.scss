@@ -1,6 +1,7 @@
 .wrap {
   width: 1426px;
   margin: 0 auto 130px;
+  position: relative;
 
   .book_header {
     background-image: url('/images/search-book-bg.png');
@@ -234,6 +235,21 @@
           }
         }
       }
+
+      .loadMoreTrigger {
+        height: 1px;
+        background: transparent;
+      }
     }
+  }
+
+  .goToTop {
+    padding: 1rem;
+    background-color: rebeccapurple;
+    position: fixed;
+    bottom: 100px;
+    right: 100px;
+    border-radius: 10px;
+    cursor: pointer;
   }
 }
