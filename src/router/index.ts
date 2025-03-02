@@ -9,6 +9,7 @@ import PerformanceView from '@/views/PerformanceView.vue'
 import ChallengeView from '@/views/ChallengeView.vue'
 import PerformanceSearchView from '@/views/PerformanceSearchView.vue'
 import CommunityDetailView from '@/views/CommunityDetailView.vue'
+import CommunityWrite from '@/views/CommunityWrite.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -49,6 +50,12 @@ const router = createRouter({
       path: '/communityDetail',
       name: 'communityDetail',
       component: CommunityDetailView,
+    },
+    // UI 확인용 임시 경로 -> 수정 예정
+    {
+      path: '/community-write',
+      name: 'community-write',
+      component: CommunityWrite,
     },
     {
       path: '/login',
