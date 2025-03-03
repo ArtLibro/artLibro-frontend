@@ -36,16 +36,27 @@ defineProps<{
 
 <style lang="scss" scoped>
 .post-card {
-  width: 416px;
+  width: 330px;
   height: 217px;
-  background: $secondary-color-300;
-  color: white;
+  background: white;
+  color: $text-color-500;
   padding: 30px;
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   margin-right: 0px;
+  border: 2px solid #d4d8ff;
+  border-radius: 10px;
+  box-shadow: 0px 5px 20px #d4d8ff;
+
+  /* 호버했을 때 애니메이션 효과 */
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  &:hover {
+    transform: translateY(-10px);
+  }
 
   .post-info {
     display: flex;
@@ -66,7 +77,7 @@ defineProps<{
   .divider {
     width: 100%;
     height: 1px;
-    background: white;
+    background: $text-color-200;
   }
 
   .post-meta {
