@@ -7,6 +7,8 @@ import LibraryInfo from '@/components/HomeView/LibraryInfo.vue'
 import LibraryPopularBooks from '@/components/HomeView/LibraryPopularBooks.vue'
 import PerformanceHero from '@/components/HomeView/PerformanceHero.vue'
 import LibraryChart from '@/components/HomeView/LibraryChart.vue'
+import PerformanceMonthly from '@/components/HomeView/PerformanceMonthly.vue'
+import PerformanceAward from '@/components/HomeView/PerformanceAward.vue'
 
 const locationStore = useLocationStore();
 onMounted(() => {
@@ -50,12 +52,16 @@ onMounted(() => {
       <LibraryChart></LibraryChart>
     </div>
     <PerformanceHero/>
+    <PerformanceMonthly/>
+    <PerformanceAward/>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .home-layout {
   display: grid;
+  height: auto;
+  margin-bottom: 50px;
 }
 
 .btn {
