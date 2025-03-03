@@ -1,4 +1,4 @@
-import { KakaoLocalApi } from '@/config/axiosKakaoLocalConfig.ts'
+import KakaoLocalApi from '@/config/axiosKakaoLocalConfig.ts'
 import type { KakaoAddress, LocationInfo } from '@/types/location.types.ts'
 
 // TODO 개선 필요
