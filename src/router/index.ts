@@ -2,14 +2,14 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
-import CommunityView from '@/views/CommunityView.vue'
+import CommunityView from '@/views/community/CommunityView.vue'
 import BookView from '@/views/BookView.vue'
 import LibraryView from '@/views/LibraryView.vue'
 import PerformanceView from '@/views/PerformanceView.vue'
 import ChallengeView from '@/views/ChallengeView.vue'
 import PerformanceSearchView from '@/views/PerformanceSearchView.vue'
-import CommunityDetailView from '@/views/CommunityDetailView.vue'
-import CommunityWriteView from '@/views/CommunityWriteView.vue'
+import CommunityDetailView from '@/views/community/CommunityDetailView.vue'
+import CommunityWriteView from '@/views/community/CommunityWriteView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -44,19 +44,17 @@ const router = createRouter({
       name: 'community',
       component: CommunityView,
     },
-
-    // UI 확인용 임시 경로 -> 수정 예정
+    // 커뮤니티 메인페이지
+    { path: '/community', name: 'community', component: CommunityView },
+    // 커뮤니티 상세페이지 (아직)
     {
-      path: '/communityDetail',
-      name: 'communityDetail',
+      path: '/community/:id',
+      name: 'community-detail',
       component: CommunityDetailView,
+      props: true,
     },
-    // UI 확인용 임시 경로 -> 수정 예정
-    {
-      path: '/communityWrite',
-      name: 'communityWrite',
-      component: CommunityWriteView,
-    },
+    // 커뮤니티 게시글 작성페이지
+    { path: '/community/write', name: 'community-write', component: CommunityWriteView },
     {
       path: '/login',
       name: 'login',
