@@ -2,11 +2,14 @@
 import { ref } from 'vue'
 import { UploadOutlined } from '@ant-design/icons-vue'
 import type { UploadProps } from 'ant-design-vue'
+import { createPost } from '@/apis/community/post'
+
+const emit = defineEmits(['postCreated'])
 
 const categories = ['도서', '공연/행사']
-const selectedCategory = ref<string>('도서')
-const title = ref<string>('')
-const content = ref<string>('')
+const selectedCategory = ref('도서')
+const title = ref('')
+const content = ref('')
 const fileList = ref<UploadProps['fileList']>([])
 
 // 파일 업로드 핸들러
@@ -14,13 +17,21 @@ const handleFileChange: UploadProps['onChange'] = (info) => {
   fileList.value = info.fileList
 }
 
-const handleSubmit = () => {
-  console.log('게시글 제출', {
-    category: selectedCategory.value,
-    title: title.value,
-    content: content.value,
-    files: fileList.value,
-  })
+// 게시글 저장 후 부모 컴포넌트로 이벤트 전달
+const handleSubmit = async () => {
+  const imageFile = fileList.value.length > 0 ? fileList.value[0].originFileObj : null
+
+  await createPost(
+    {
+      category: selectedCategory.value,
+      title: title.value,
+      content: content.value,
+    },
+    imageFile,
+  )
+
+  alert('🎉 게시글이 등록되었습니다!')
+  emit('postCreated')
 }
 </script>
 

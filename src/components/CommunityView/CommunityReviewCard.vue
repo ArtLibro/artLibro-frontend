@@ -12,16 +12,21 @@ defineProps<{
     category: string
   }
 }>()
+
+// 로그인 기능 구현 전 더미 데이터
+const defaultUserName = '홍길동'
+const defaultTime = '1시간 전'
+const defaultAvatar = '/images/user-dummy.png'
 </script>
 
 <template>
   <div class="review-card">
     <div class="review-content">
       <div class="user-info">
-        <img :src="review.avatar" alt="프로필사진" class="review-avatar" />
+        <img :src="defaultAvatar" alt="프로필사진" class="review-avatar" />
         <div class="user-details">
-          <span class="user-name">{{ review.user }}</span>
-          <span class="time">{{ review.time }}</span>
+          <span class="user-name">{{ defaultUserName }}</span>
+          <span class="time">{{ defaultTime }}</span>
         </div>
       </div>
       <h3 class="review-title">{{ review.title }}</h3>
