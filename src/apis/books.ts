@@ -11,6 +11,10 @@ interface BookListParams {
   sort?: SortOptionValue
 }
 
+import type { BookItem } from '@/types/libraryType'
+import type { KakaoAddress } from '@/types/location.types.ts'
+import { regions } from '@/constants/detail-region-code.ts'
+
 export const getBookList = async (
   searchKeyword: string,
   pageNo: number,
@@ -43,5 +47,34 @@ export const getBookList = async (
   } catch (error) {
     console.error(error)
     throw error
+  }
+}
+
+export const getLibraryInfo = async (address : KakaoAddress) => {
+  try{
+    const detailRegionCode = regions[address.regionDepth2];
+    const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryDetail, {
+      params : {
+        dtl_region : detailRegionCode,
+        format: 'json',
+      }
+    })
+    console.log(response.data)
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const getLibraryPopularBooks = async (libCode : string) => {
+  try{
+    const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryPopularBook, {
+      params : {
+        libCode : libCode,
+        format: 'json',
+      }
+    })
+    console.log(response.data)
+  } catch (error) {
+    console.error(error)
   }
 }
