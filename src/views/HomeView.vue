@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import BookItem from '@/components/common/BookItem.vue'
 import HeroImage from '@/components/Home/HeroImage.vue'
 import RankBook from '@/components/Home/RankBook.vue'
 import { useQuery } from '@tanstack/vue-query'
@@ -22,6 +21,7 @@ import PerformanceHero from '@/components/HomeView/PerformanceHero.vue'
 import LibraryChart from '@/components/HomeView/LibraryChart.vue'
 import PerformanceMonthly from '@/components/HomeView/PerformanceMonthly.vue'
 import PerformanceAward from '@/components/HomeView/PerformanceAward.vue'
+import HomeBookItem from '@/components/common/HomeBookItem.vue'
 
 const now = new Date()
 const year = now.getFullYear() - 1
@@ -137,21 +137,22 @@ onMounted(() => {
     <HeroImage />
     <div class="title">대출 급상승 도서</div>
     <div class="bookitem-container">
-<!--      <swiper-->
-<!--        :slidesPerView="1"-->
-<!--        :spaceBetween="16"-->
-<!--        :loop="true"-->
-<!--        :pagination="{ clickable: true }"-->
-<!--        :navigation="true"-->
-<!--        :modules="[Navigation]"-->
-<!--        class="mySwiper"-->
-<!--      >-->
-<!--        <swiper-slide v-for="(chunk, index) in bookChunk" :key="index">-->
-<!--          <div style="display: flex">-->
-<!--            <BookItem v-for="item in chunk" :key="item.id" :title="item.id" />-->
-<!--          </div>-->
-<!--        </swiper-slide>-->
-<!--      </swiper>-->
+      <swiper
+        :slidesPerView="1"
+        :spaceBetween="16"
+        :loop="true"
+        :pagination="{ clickable: true }"
+        :navigation="true"
+        :modules="[Navigation]"
+        class="mySwiper"
+      >
+        <swiper-slide v-for="(chunk, index) in bookChunk" :key="index">
+          <div style="display: flex">
+            <HomeBookItem v-for="item in chunk" :key="item.id" :title="item.id" />
+          </div>
+          <div class="" style="width: 100px; height: 100px; background: red"></div>
+        </swiper-slide>
+      </swiper>
     </div>
     <div class="title">이달의 인기 대출 도서</div>
     <div class="bookCategory">
@@ -192,8 +193,8 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .home-layout {
-  display: grid;
-  height: auto;
+  max-width: 1246px;
+  margin: 0 auto;
   margin-bottom: 50px;
 }
 

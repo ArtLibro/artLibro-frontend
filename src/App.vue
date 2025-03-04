@@ -16,7 +16,7 @@ import Footer from '@/components/common/Footer.vue'
 .body-layout {
   display: grid;
   justify-content: center;
-  width: 100vw;
+  // width: 100vw;
 }
 
 .content-wrapper {
