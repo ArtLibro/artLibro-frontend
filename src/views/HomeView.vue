@@ -2,9 +2,6 @@
 import BookItem from '@/components/common/BookItem.vue'
 import HeroImage from '@/components/Home/HeroImage.vue'
 import RankBook from '@/components/Home/RankBook.vue'
-<<<<<<< HEAD
-import { RouterLink } from 'vue-router'
-=======
 import { useQuery } from '@tanstack/vue-query'
 import { computed, ref } from 'vue'
 import { getBook } from '@/apis/HomeApi'
@@ -93,7 +90,6 @@ const bookChunk = computed(() => {
 console.log('나와야합니다', bookChunk)
 
 console.log(data2.value)
->>>>>>> 8010e39 (feat: 메인 api 연결중 , 공연 개발중)
 </script>
 
 <template>
@@ -167,16 +163,10 @@ console.log(data2.value)
 </template>
 
 <style lang="scss" scoped>
-<<<<<<< HEAD
-div {
-  display: grid;
-}
-=======
 // div {
 //   display: grid;
 //   height: 100vh;
 // }
->>>>>>> 8010e39 (feat: 메인 api 연결중 , 공연 개발중)
 
 .btn {
   background-color: $primary-color-100;
