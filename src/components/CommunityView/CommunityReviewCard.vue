@@ -1,8 +1,11 @@
 <script setup lang="ts">
-defineProps<{
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const props = defineProps<{
   review: {
+    id: string
     user: string
-    time: string
     title: string
     content: string
     likes: number
@@ -10,23 +13,23 @@ defineProps<{
     image: string
     avatar: string
     category: string
+    time: string
   }
 }>()
 
-// 로그인 기능 구현 전 더미 데이터
-const defaultUserName = '홍길동'
-const defaultTime = '1시간 전'
-const defaultAvatar = '/images/user-dummy.png'
+const goToDetail = () => {
+  router.push(`/community/${props.review.id}`)
+}
 </script>
 
 <template>
-  <div class="review-card">
+  <div class="review-card" @click="goToDetail">
     <div class="review-content">
       <div class="user-info">
-        <img :src="defaultAvatar" alt="프로필사진" class="review-avatar" />
+        <img src="/images/user-dummy.png" alt="유저 프로필" class="review-avatar" />
         <div class="user-details">
-          <span class="user-name">{{ defaultUserName }}</span>
-          <span class="time">{{ defaultTime }}</span>
+          <span class="user-name">홍길동</span>
+          <span class="time">{{ review.time }}</span>
         </div>
       </div>
       <h3 class="review-title">{{ review.title }}</h3>
@@ -42,6 +45,7 @@ const defaultAvatar = '/images/user-dummy.png'
 
 <style lang="scss" scoped>
 .review-card {
+  cursor: pointer;
   width: 1130px;
   height: 240px;
 
@@ -61,7 +65,7 @@ const defaultAvatar = '/images/user-dummy.png'
 .user-info {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
   font-size: 14px;
   color: $text-color-600;
 }
@@ -72,12 +76,13 @@ const defaultAvatar = '/images/user-dummy.png'
 }
 
 .review-avatar {
-  width: 48px;
-  height: 48px;
+  width: 35px;
+  height: 35px;
 }
 
 .user-name {
-  font-size: $text-size-300;
+  font-size: $text-size-200;
+  color: $text-color-400;
 }
 
 .time {
@@ -104,9 +109,10 @@ const defaultAvatar = '/images/user-dummy.png'
 }
 
 .review-image {
-  width: 173px;
-  height: 247px;
+  width: 150px;
+  height: 200px;
   object-fit: cover;
   margin-left: 30px;
+  box-shadow: 0px 1px 4px $text-color-300;
 }
 </style>

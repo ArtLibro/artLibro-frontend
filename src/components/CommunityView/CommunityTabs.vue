@@ -7,8 +7,8 @@ const activeKey = ref('1')
 <template>
   <a-tabs v-model:activeKey="activeKey" size="large">
     <a-tab-pane key="1" tab="전체"></a-tab-pane>
-    <a-tab-pane key="2" tab="도서">도서 리뷰 리스트</a-tab-pane>
-    <a-tab-pane key="3" tab="공연/행사">공연/행사 리뷰 리스트</a-tab-pane>
+    <a-tab-pane key="2" tab="도서"></a-tab-pane>
+    <a-tab-pane key="3" tab="공연/행사"></a-tab-pane>
   </a-tabs>
 </template>
 
