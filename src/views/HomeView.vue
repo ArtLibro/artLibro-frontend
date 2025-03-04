@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import BookItem from '@/components/common/BookItem.vue'
+import CategoryTab1 from '@/components/common/CategoryTab1.vue'
+import HeroImage from '@/components/Home/HeroImage.vue'
+import RankBook from '@/components/Home/RankBook.vue'
+import { RouterLink } from 'vue-router'
 import { onMounted } from 'vue'
 import { useLocationStore } from '@/stores/locationStore.ts'
 import { getAddressByLocation } from '@/apis/kakaoLocals.ts'
@@ -37,15 +42,55 @@ onMounted(() => {
   console.log(`컴포넌트가 마운트 됐습니다.`);
   navigator.geolocation.getCurrentPosition(success, error);
 })
-
-
 </script>
 
 
 
 <template>
   <div class="home-layout">
-    홈 화면입니다
+    <RouterLink to="/">Home</RouterLink>
+    <RouterLink to="/about">About</RouterLink>
+    <button class="btn">주요 색상 SCSS 사용하기</button>
+    <HeroImage />
+    <div class="title">대출 급상승 도서</div>
+    <div class="bokkitem-container">
+      <BookItem />
+      <BookItem />
+      <BookItem />
+      <BookItem />
+      <BookItem />
+      <BookItem />
+    </div>
+    <div class="title">이달의 인기 대출 도서</div>
+    <div class="bookCategory">
+      <CategoryTab1 />
+      <CategoryTab1 />
+      <CategoryTab1 />
+      <CategoryTab1 />
+      <CategoryTab1 />
+      <CategoryTab1 />
+    </div>
+    <div style="display: flex">
+      <div class="rankBook-container">
+        <RankBook />
+        <RankBook />
+        <RankBook />
+      </div>
+      <div class="rankBook-container">
+        <RankBook />
+        <RankBook />
+        <RankBook />
+      </div>
+      <div class="rankBook-container">
+        <RankBook />
+        <RankBook />
+        <RankBook />
+      </div>
+      <div class="rankBook-container">
+        <RankBook />
+        <RankBook />
+        <RankBook />
+      </div>
     <div class="library-wrapper">
       <LibraryInfo></LibraryInfo>
       <LibraryPopularBooks></LibraryPopularBooks>
@@ -78,5 +123,25 @@ onMounted(() => {
   display: flex;
   height: 340px;
   justify-content: space-between;
+
+.title {
+  margin-bottom: 24px;
+  font-size: 30px;
+  font-weight: 600;
+  margin-top: 57px;
+}
+
+.bokkitem-container {
+  display: flex;
+}
+
+.bookCategory {
+  display: flex;
+  margin-bottom: 17px;
+}
+
+.rankBook-container {
+  display: flex;
+  flex-direction: column;
 }
 </style>

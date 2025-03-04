@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import PerformanceDetailView from '@/views/PerformanceDetailView.vue'
 import HomeView from '@/views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
@@ -71,6 +72,12 @@ const router = createRouter({
       path: '/book',
       name: 'book',
       component: BookView,
+    },
+    //화면 보려고 급하게 만들었습니다.
+    {
+      path: '/performancedetail',
+      name: 'performancedetail',
+      component: PerformanceDetailView,
     },
   ],
 })
