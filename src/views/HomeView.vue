@@ -12,7 +12,6 @@ import 'swiper/css/pagination'
 import 'swiper/css/navigation'
 import { Navigation } from 'swiper/modules'
 import RoundCategoryTab from '@/components/Home/RoundCategoryTab.vue'
-import { RouterLink } from 'vue-router'
 import { onMounted } from 'vue'
 import { useLocationStore } from '@/stores/locationStore.ts'
 import { getAddressByLocation } from '@/apis/kakaoLocals.ts'
@@ -138,42 +137,25 @@ onMounted(() => {
     <HeroImage />
     <div class="title">대출 급상승 도서</div>
     <div class="bookitem-container">
-      <!-- <BookItem
-        v-for="item in bookwormList"
-        :key="item"
-        :title="item.book.bookname"
-        :authors="item.book.authors"
-        :bookimage="item.book.bookImageURL"
-      /> -->
-      <!-- <swiper :slidesPerView="1" spaceBetween="10">
-        <swiper-slide v-for="(group, index) in tmpArray" :key="index">
-          <div class="slide-group">
-            <div v-for="(slide, idx) in group" :key="idx" class="slide">
-              {{ slide }}
-            </div>
-          </div>
-        </swiper-slide>
-      </swiper> -->
-
-      <swiper
-        :slidesPerView="1"
-        :spaceBetween="16"
-        :loop="true"
-        :pagination="{ clickable: true }"
-        :navigation="true"
-        :modules="[Navigation]"
-        class="mySwiper"
-      >
-        <swiper-slide v-for="(chunk, index) in bookChunk" :key="index">
-          <div style="display: flex">
-            <BookItem v-for="item in chunk" :key="item.id" :title="item.id" />
-          </div>
-        </swiper-slide>
-      </swiper>
+<!--      <swiper-->
+<!--        :slidesPerView="1"-->
+<!--        :spaceBetween="16"-->
+<!--        :loop="true"-->
+<!--        :pagination="{ clickable: true }"-->
+<!--        :navigation="true"-->
+<!--        :modules="[Navigation]"-->
+<!--        class="mySwiper"-->
+<!--      >-->
+<!--        <swiper-slide v-for="(chunk, index) in bookChunk" :key="index">-->
+<!--          <div style="display: flex">-->
+<!--            <BookItem v-for="item in chunk" :key="item.id" :title="item.id" />-->
+<!--          </div>-->
+<!--        </swiper-slide>-->
+<!--      </swiper>-->
     </div>
     <div class="title">이달의 인기 대출 도서</div>
     <div class="bookCategory">
-      <RoundCategoryTab v-for="(value, key) in rankCateTab" :key="key" :name="value" :code="key" />
+      <RoundCategoryTab v-for="(value, key) in rankCateTab" :key="key" :name="value" />
     </div>
     <div style="display: flex">
       <div class="rankBook-container">

@@ -9,7 +9,6 @@ import router from './router'
 import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
 import { setupCalendar } from 'v-calendar'
 
-const queryClient = new QueryClient()
 const app = createApp(App)
 
 const queryClient = new QueryClient({
