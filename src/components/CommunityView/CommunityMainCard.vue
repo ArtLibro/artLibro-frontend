@@ -110,12 +110,13 @@ defineProps<{
     position: absolute;
     top: 0;
     right: 0;
-    background: black;
+    background: $text-color-400;
     color: white;
     font-size: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-top-right-radius: 5px;
   }
 }
 </style>

@@ -12,6 +12,16 @@ import { setupCalendar } from 'v-calendar'
 const queryClient = new QueryClient()
 const app = createApp(App)
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      retry: 1,
+    },
+  },
+})
+
 app.use(Antd)
 app.use(createPinia())
 app.use(router)

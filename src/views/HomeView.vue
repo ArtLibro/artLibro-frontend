@@ -16,6 +16,13 @@ import { RouterLink } from 'vue-router'
 import { onMounted } from 'vue'
 import { useLocationStore } from '@/stores/locationStore.ts'
 import { getAddressByLocation } from '@/apis/kakaoLocals.ts'
+import { getLibraryInfo, getLibraryPopularBooks } from '@/apis/books.ts'
+import LibraryInfo from '@/components/HomeView/LibraryInfo.vue'
+import LibraryPopularBooks from '@/components/HomeView/LibraryPopularBooks.vue'
+import PerformanceHero from '@/components/HomeView/PerformanceHero.vue'
+import LibraryChart from '@/components/HomeView/LibraryChart.vue'
+import PerformanceMonthly from '@/components/HomeView/PerformanceMonthly.vue'
+import PerformanceAward from '@/components/HomeView/PerformanceAward.vue'
 
 const now = new Date()
 const year = now.getFullYear() - 1
@@ -110,6 +117,8 @@ onMounted(() => {
     const getAddress = async () => {
       const data = await getAddressByLocation(locationStore.userLocation)
       console.log(data)
+      const library = await getLibraryInfo(data)
+      const libraryPopularBooks = await getLibraryPopularBooks('111526')
     }
 
     getAddress()
@@ -125,7 +134,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="layout">
+  <div class="home-layout">
     <RouterLink to="/">Home</RouterLink>
     <RouterLink to="/about">About</RouterLink>
     <button class="btn">주요 색상 SCSS 사용하기</button>
@@ -191,13 +200,22 @@ onMounted(() => {
         <RankBook />
       </div>
     </div>
+    <div class="library-wrapper">
+      <LibraryInfo></LibraryInfo>
+      <LibraryPopularBooks></LibraryPopularBooks>
+      <LibraryChart></LibraryChart>
+    </div>
+    <PerformanceHero />
+    <PerformanceMonthly />
+    <PerformanceAward />
   </div>
 </template>
 
 <style lang="scss" scoped>
-div {
+.home-layout {
   display: grid;
-  height: 100vh;
+  height: auto;
+  margin-bottom: 50px;
 }
 
 .btn {
@@ -210,10 +228,10 @@ div {
   cursor: pointer;
 }
 
-.layout {
-  max-width: 1246px;
-  margin: 0 auto;
-}
+.library-wrapper {
+  display: flex;
+  height: 340px;
+  justify-content: space-between;
 
 .title {
   margin-bottom: 24px;
