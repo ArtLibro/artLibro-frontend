@@ -3,7 +3,6 @@ import HeroImage from '@/components/Home/HeroImage.vue'
 import RankBook from '@/components/Home/RankBook.vue'
 import { useQuery } from '@tanstack/vue-query'
 import { computed, ref } from 'vue'
-import { getBook } from '@/apis/HomeApi'
 import type { QueryItemRankBook, QueryItemReader } from '@/types/Book'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/css'
@@ -14,7 +13,7 @@ import RoundCategoryTab from '@/components/Home/RoundCategoryTab.vue'
 import { onMounted } from 'vue'
 import { useLocationStore } from '@/stores/locationStore.ts'
 import { getAddressByLocation } from '@/apis/kakaoLocals.ts'
-import { getLibraryInfo, getLibraryPopularBooks } from '@/apis/books.ts'
+import { getBookToHome, getLibraryInfo, getLibraryPopularBooks } from '@/apis/books.ts'
 import LibraryInfo from '@/components/HomeView/LibraryInfo.vue'
 import LibraryPopularBooks from '@/components/HomeView/LibraryPopularBooks.vue'
 import PerformanceHero from '@/components/HomeView/PerformanceHero.vue'
@@ -44,28 +43,28 @@ const query = ref<[QueryItemReader, QueryItemRankBook]>([
   {
     type: 'reader',
     isbn13: '9788983922571;9788983921475;',
-    path: '/recommandList',
   },
   {
     startDt: formattedDate,
     kdc: 1,
     pagesize: 1,
     pageNumber: 20,
-    path: '/loanItemSrch',
   },
 ])
 
-// /////////////////////////////////////////////
+// 다독자 api
 const { data: data1 } = useQuery({
   queryKey: ['avid-reader', query],
-  queryFn: () => getBook(query.value[0], query.value[0].path),
+  queryFn: () => getBookToHome(query.value[0]),
 })
 
+// 인기도서
 const { data: data2 } = useQuery({
   queryKey: ['rank-book', query],
-  queryFn: () => getBook(query.value[1], query.value[1].path),
+  queryFn: () => getBookToHome(query.value[1]),
 })
 
+console.log('data1.value', data1.value)
 // const bookwormList = data1.value?.response.docs
 // const bookrankList = data2.value?.response.docs
 
@@ -150,7 +149,6 @@ onMounted(() => {
           <div style="display: flex">
             <HomeBookItem v-for="item in chunk" :key="item.id" :title="item.id" />
           </div>
-          <div class="" style="width: 100px; height: 100px; background: red"></div>
         </swiper-slide>
       </swiper>
     </div>
