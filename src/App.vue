@@ -1,18 +1,24 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
+import Header from '@/components/common/Header.vue'
+import Footer from '@/components/common/Footer.vue'
 </script>
 
 <template>
-  <RouterView />
+  <div class="body-layout">
+    <Header/>
+    <RouterView />
+    <Footer/>
+  </div>
 </template>
 
 <style lang="scss" scoped>
-.btn {
-  background-color: $primary-color-100;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+.body-layout {
+  display: grid;
+  justify-content: center;
+}
+
+.content-wrapper {
+  max-width: 1246px;
 }
 </style>
