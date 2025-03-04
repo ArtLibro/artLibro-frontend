@@ -23,7 +23,7 @@ const handleLeft = () => {
 onMounted(async () => {
   try {
     const data = await getAwardPerformances();
-    awardPerformances.value = data.db;
+    awardPerformances.value = data.dbs.db;
   } catch (error) {
     console.error('API 요청 실패:', error);
   }
@@ -35,7 +35,7 @@ onMounted(async () => {
     <div class="title">수상을 받은 공연을 만나보세요</div>
     <div class="content">
       <button @click="handleLeft" class="button">
-        <img src="/icons/arrow-left.svg" height="21" width="21" alt="arrow-left"/>
+        <img src="/icons/arrow-left.svg" height="15" width="15" alt="arrow-left"/>
       </button>
       <div class="award">
         <div v-for="(item, index) in awardPerformances" :key="index">
@@ -58,7 +58,7 @@ onMounted(async () => {
         </div>
       </div>
       <button @click="handleRight" class="button">
-
+        <img src="/icons/arrow-right.svg" height="15" width="15" alt="arrow-right"/>
       </button>
     </div>
   </div>
