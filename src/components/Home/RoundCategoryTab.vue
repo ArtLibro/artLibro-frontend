@@ -1,7 +1,12 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+defineProps({
+  name: String,
+  code: Number,
+})
+</script>
 
 <template>
-  <div class="categorybtn">종합</div>
+  <div class="categorybtn">{{ name }}</div>
 </template>
 
 <style lang="scss" scoped>
