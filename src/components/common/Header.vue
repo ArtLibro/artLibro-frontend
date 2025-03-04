@@ -11,7 +11,7 @@ import { RouterLink } from 'vue-router'
       <div class="router-container">
         <RouterLink to="/book" class="router-link">도서</RouterLink>
         <img src="/icons/divider.svg" width="24" height="24" alt="Divider" />
-        <RouterLink to="/library" class="router-link">도서관</RouterLink>
+        <RouterLink to="/library-search" class="router-link">도서관</RouterLink>
         <img src="/icons/divider.svg" width="24" height="24" alt="Divider" />
         <RouterLink to="/performance" class="router-link">공연/행사</RouterLink>
         <img src="/icons/divider.svg" width="24" height="24" alt="Divider" />

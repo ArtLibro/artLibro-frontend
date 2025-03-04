@@ -5,7 +5,7 @@ import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import CommunityView from '@/views/community/CommunityView.vue'
 import BookView from '@/views/bookView/BookView.vue'
-import LibraryView from '@/views/LibraryView.vue'
+import LibrarySearchView from '@/views/LibrarySearchView.vue'
 import ChallengeView from '@/views/ChallengeView.vue'
 import PerformanceSearchView from '@/views/PerformanceSearchView.vue'
 import CommunityDetailView from '@/views/community/CommunityDetailView.vue'
@@ -25,9 +25,9 @@ const router = createRouter({
       component: BookView,
     },
     {
-      path: '/library',
-      name: 'library',
-      component: LibraryView,
+      path: '/library-search',
+      name: 'library-search',
+      component: LibrarySearchView,
     },
     {
       path: '/performance',

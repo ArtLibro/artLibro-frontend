@@ -11,7 +11,7 @@
 <style scoped lang="scss">
 .library-chart {
   width: 480px;
-  height: 320px;
+  height: 280px;
   background-color: #777777;
   border-radius: 10px;
 }
