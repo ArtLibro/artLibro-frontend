@@ -17,6 +17,7 @@
   margin-right: 20px;
   display: flex;
   align-items: center;
+  cursor: pointer;
 }
 
 .active {

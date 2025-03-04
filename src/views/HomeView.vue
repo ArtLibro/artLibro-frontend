@@ -48,9 +48,6 @@ onMounted(() => {
 
 <template>
   <div class="home-layout">
-    <RouterLink to="/">Home</RouterLink>
-    <RouterLink to="/about">About</RouterLink>
-    <button class="btn">주요 색상 SCSS 사용하기</button>
     <HeroImage />
     <div class="title">대출 급상승 도서</div>
     <div class="bokkitem-container">
@@ -124,6 +121,7 @@ onMounted(() => {
   display: flex;
   height: 340px;
   justify-content: space-between;
+}
 
 .title {
   margin-bottom: 24px;

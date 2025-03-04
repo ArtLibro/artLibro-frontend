@@ -34,26 +34,32 @@ onMounted(async () => {
   <div class="award-layout">
     <div class="title">수상을 받은 공연을 만나보세요</div>
     <div class="content">
-      <button @click="handleLeft">◀</button>
-      <div v-for="(item, index) in awardPerformances" :key="index">
-        <AwardCardActive
-          v-show="index === currentIndex"
-          :index="index"
-          :prfnm="item.prfnm"
-          :poster="item.poster"
-          :mt20id="item.mt20id"
-          :fcltynm="item.fcltynm"
-        />
-        <AwardCardDefault
-          v-show="index !== currentIndex"
-          :index="index"
-          :prfnm="item.prfnm"
-          :poster="item.poster"
-          :mt20id="item.mt20id"
-          :fcltynm="item.fcltynm"
-        />
+      <button @click="handleLeft" class="button">
+        <img src="/icons/arrow-left.svg" height="21" width="21" alt="arrow-left"/>
+      </button>
+      <div class="award">
+        <div v-for="(item, index) in awardPerformances" :key="index">
+          <AwardCardActive
+            v-show="index === currentIndex"
+            :index="index"
+            :prfnm="item.prfnm"
+            :poster="item.poster"
+            :mt20id="item.mt20id"
+            :fcltynm="item.fcltynm"
+          />
+          <AwardCardDefault
+            v-show="index !== currentIndex"
+            :index="index"
+            :prfnm="item.prfnm"
+            :poster="item.poster"
+            :mt20id="item.mt20id"
+            :fcltynm="item.fcltynm"
+          />
+        </div>
       </div>
-      <button @click="handleRight">▶</button>
+      <button @click="handleRight" class="button">
+
+      </button>
     </div>
   </div>
 </template>
@@ -73,7 +79,28 @@ onMounted(async () => {
 
 .content {
   display: flex;
+  width: 1246px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.award {
+  display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  margin-top: 30px;
+  width: 1150px;
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  border : 1px solid $text-color-200;
+  background-color: transparent;
+  cursor: pointer;
 }
 </style>
