@@ -1,9 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import PerformanceDetailView from '@/views/PerformanceDetailView.vue'
 import HomeView from '@/views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
-import CommunityView from '@/views/community/CommunityView.vue'
-import BookView from '@/views/BookView.vue'
+import CommunityView from '@/views/CommunityView.vue'
+import BookView from '@/views/bookView/BookView.vue'
 import LibraryView from '@/views/LibraryView.vue'
 import PerformanceView from '@/views/PerformanceView.vue'
 import ChallengeView from '@/views/ChallengeView.vue'
@@ -69,6 +70,12 @@ const router = createRouter({
       path: '/book',
       name: 'book',
       component: BookView,
+    },
+    //화면 보려고 급하게 만들었습니다.
+    {
+      path: '/performancedetail',
+      name: 'performancedetail',
+      component: PerformanceDetailView,
     },
   ],
 })
