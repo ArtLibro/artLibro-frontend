@@ -7,12 +7,15 @@ import { computed, ref } from 'vue'
 import { getBook } from '@/apis/HomeApi'
 import type { QueryItemRankBook, QueryItemReader } from '@/types/Book'
 import { Swiper, SwiperSlide } from 'swiper/vue'
-
 import 'swiper/css'
 import 'swiper/css/pagination'
 import 'swiper/css/navigation'
 import { Navigation } from 'swiper/modules'
 import RoundCategoryTab from '@/components/Home/RoundCategoryTab.vue'
+import { RouterLink } from 'vue-router'
+import { onMounted } from 'vue'
+import { useLocationStore } from '@/stores/locationStore.ts'
+import { getAddressByLocation } from '@/apis/kakaoLocals.ts'
 
 const now = new Date()
 const year = now.getFullYear() - 1
@@ -90,6 +93,35 @@ const bookChunk = computed(() => {
 console.log('나와야합니다', bookChunk)
 
 console.log(data2.value)
+
+const locationStore = useLocationStore()
+onMounted(() => {
+  function success(position: GeolocationPosition) {
+    const latitude = position.coords.latitude
+    const longitude = position.coords.longitude
+
+    if (
+      latitude !== locationStore.userLocation.latitude ||
+      longitude !== locationStore.userLocation.longitude
+    ) {
+      locationStore.setUserLocation({ latitude, longitude })
+      console.log(locationStore.userLocation)
+    }
+    const getAddress = async () => {
+      const data = await getAddressByLocation(locationStore.userLocation)
+      console.log(data)
+    }
+
+    getAddress()
+  }
+
+  function error() {
+    alert('에러')
+  }
+
+  console.log(`컴포넌트가 마운트 됐습니다.`)
+  navigator.geolocation.getCurrentPosition(success, error)
+})
 </script>
 
 <template>
@@ -163,16 +195,16 @@ console.log(data2.value)
 </template>
 
 <style lang="scss" scoped>
-// div {
-//   display: grid;
-//   height: 100vh;
-// }
+div {
+  display: grid;
+  height: 100vh;
+}
 
 .btn {
   background-color: $primary-color-100;
   color: white;
   padding: 10px 15px;
-  width: 300px;
+  width: 200px;
   border: none;
   border-radius: 5px;
   cursor: pointer;

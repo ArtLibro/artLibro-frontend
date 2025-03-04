@@ -18,8 +18,6 @@ import { RouterLink } from 'vue-router'
         <RouterLink to="/challenge" class="router-link">문화챌린지</RouterLink>
         <img src="/icons/divider.svg" width="24" height="24" alt="Divider" />
         <RouterLink to="/community" class="router-link">커뮤니티</RouterLink>
-        <img src="/icons/divider.svg" width="24" height="24" alt="Divider" />
-        <RouterLink to="/performancedetail" class="router-link">임시삭제해야함</RouterLink>
       </div>
     </div>
     <div class="router-container">
