@@ -29,7 +29,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
+  <div class="monthly-container">
     <div class="title">이달의 TOP3 공연/행사</div>
     <div class="category-wrapper">
       <RoundCategoryTab v-for="(item, index) in performanceCategories" :name="item" :key="index+'category'" />
@@ -49,10 +49,15 @@ onMounted(async () => {
 </template>
 
 <style scoped lang="scss">
+.monthly-container {
+  margin-top: 40px;
+}
+
 .title {
   color : $text-color-500;
   font-size: 24px;
   font-weight: bold;
+  margin-bottom : 20px;
 }
 
 .performance-wrapper {
