@@ -6,13 +6,7 @@ import { UserOutlined, InfoCircleOutlined } from "@ant-design/icons-vue";
 const address = ref<string>("");
 const domain = ref<string>("@naver.com");
 const password1 = ref<string>("");
-const password2 = ref<string>("");
-const userName = ref<string>("");
 
-const value15 = ref<string>('Sign Up');
-
-
-const visible = ref<boolean>(true);
 </script>
 
 <template>
