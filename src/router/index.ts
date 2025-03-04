@@ -10,6 +10,7 @@ import ChallengeView from '@/views/ChallengeView.vue'
 import PerformanceSearchView from '@/views/PerformanceSearchView.vue'
 import CommunityDetailView from '@/views/community/CommunityDetailView.vue'
 import CommunityWriteView from '@/views/community/CommunityWriteView.vue'
+import BookDetailView from '@/views/bookDetail/BookDetailView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,6 +24,12 @@ const router = createRouter({
       path: '/book',
       name: 'book',
       component: BookView,
+    },
+    {
+      path: '/book/detail/:id',
+      name: 'book-detail',
+      component: BookDetailView,
+      props: true,
     },
     {
       path: '/library',

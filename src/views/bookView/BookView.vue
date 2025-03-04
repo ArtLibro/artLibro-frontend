@@ -21,7 +21,7 @@
               <form @submit.prevent="handleSearch" class="form">
                 <select v-model="searchType" class="select">
                   <option v-for="option in searchTypeOptions" :key="option.value" :value="option.value">{{ option.label
-                  }}</option>
+                    }}</option>
                 </select>
                 <div class="line"></div>
                 <div class="input_wrapper">
@@ -46,7 +46,8 @@
 
         <div v-if="data && data.pages.length > 0">
           <div class="book-list" v-for="datas in data.pages" :key="datas.length">
-            <div class="book-item" v-for="book in datas" :key="book.doc.isbn13">
+            <router-link class="book-item" v-for="book in datas" :key="book.doc.isbn13"
+              :to="`/book/detail/${book.doc.isbn13}`">
               <div class="book-item-image">
                 <img v-if="book.doc.bookImageURL" :src="book.doc.bookImageURL" alt="book-item-image">
                 <p v-else>이미지가 없습니다</p>
@@ -67,7 +68,7 @@
                 <h3 class="book-title">{{ book.doc.bookname }}</h3>
                 <p class="book-author">{{ book.doc.authors }}</p>
               </div>
-            </div>
+            </router-link>
           </div>
         </div>
 
