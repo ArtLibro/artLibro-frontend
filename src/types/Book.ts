@@ -1,7 +1,6 @@
 export interface QueryItemReader {
   type: string
   isbn13: string
-  path: string
 }
 
 export interface QueryItemRankBook {
@@ -9,5 +8,4 @@ export interface QueryItemRankBook {
   kdc: number
   pagesize: number
   pageNumber: number
-  path: string
 }

@@ -9,6 +9,7 @@ import { getPerformaceDetail } from '@/apis/PerformanceDetailApi'
 import type { PrfApi, PrfInfoDetail, PrfPlace } from '@/types/Performance'
 import { DatePicker } from 'v-calendar'
 import 'v-calendar/style.css'
+import { getPerformanceDetail } from '@/apis/kopis'
 
 const selectedColor = ref<string>('indigo')
 
@@ -36,12 +37,12 @@ const query = ref<PrfApi[]>([
 
 const { data: prfdetail } = useQuery({
   queryKey: ['performance-detail', query],
-  queryFn: () => getPerformaceDetail(query.value[0], query.value[0].path),
+  queryFn: () => getPerformanceDetail(query.value[0], query.value[0].path),
 })
 
 const { data: prfplaceData, isLoading } = useQuery({
   queryKey: ['performance-place', query],
-  queryFn: () => getPerformaceDetail(query.value[1], query.value[1].path),
+  queryFn: () => getPerformanceDetail(query.value[1], query.value[1].path),
 })
 
 const prfInfo = ref<PrfInfoDetail | null>(prfdetail.value)
