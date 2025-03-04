@@ -91,6 +91,7 @@ onMounted(() => {
         <RankBook />
         <RankBook />
       </div>
+    </div>
     <div class="library-wrapper">
       <LibraryInfo></LibraryInfo>
       <LibraryPopularBooks></LibraryPopularBooks>
