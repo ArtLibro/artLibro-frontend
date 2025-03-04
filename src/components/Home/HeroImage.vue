@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import MainSearch from '../common/MainSearch.vue'
+import MainSearch from './MainSearch.vue'
 </script>
 
 <template>
@@ -13,5 +13,9 @@ import MainSearch from '../common/MainSearch.vue'
 <style lang="scss" scoped>
 .heroImage {
   position: relative;
+}
+
+.heroImage img {
+  width: 100%;
 }
 </style>

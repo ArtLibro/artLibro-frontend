@@ -6,9 +6,9 @@ import Footer from '@/components/common/Footer.vue'
 
 <template>
   <div class="body-layout">
-    <Header/>
+    <Header />
     <RouterView />
-    <Footer/>
+    <Footer />
   </div>
 </template>
 
@@ -16,6 +16,7 @@ import Footer from '@/components/common/Footer.vue'
 .body-layout {
   display: grid;
   justify-content: center;
+  width: 100vw;
 }
 
 .content-wrapper {

@@ -25,6 +25,7 @@ const options = ref<SelectProps['options']>([
       style="width: 100px"
       :options="options"
       :field-names="{ label: 'name', value: 'id', options: 'children' }"
+      class="custom-select"
     ></a-select>
     <input type="text" class="search-input" placeholder="검색어를 입력하세요" />
     <button type="button" class="searchbtn">검색</button>
@@ -47,15 +48,17 @@ const options = ref<SelectProps['options']>([
   background: white;
 }
 
-.ant-select:not(.ant-select-customize-input) .ant-select-selector {
-  border: none;
+.search-bar .custom-select.ant-select .ant-select-selector {
+  background-color: lightblue !important; /* 배경 색상 변경 */
+  border-radius: 8px !important; /* 둥근 테두리 */
+  border-color: #1890ff !important; /* 테두리 색상 변경 */
 }
-
 .search-input {
   border: none;
   outline: none;
   flex: 1;
-  margin: 0 15px 0 33px;
+  margin: 0 15px 0 20px;
+  font-size: 18px;
 }
 
 .search-input::placeholder {

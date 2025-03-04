@@ -1,10 +1,22 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+defineProps({
+  // 원래 title String
+  title: Number,
+  authors: String,
+  bookimage: String,
+})
+</script>
 
 <template>
   <div class="bookItem">
+    <!-- <img
+      :src="bookimage"
+      alt="ddd"
+      style="width: 195px; height: 260px; background: gray; border-radius: 12px"
+    /> -->
     <div style="width: 195px; height: 260px; background: gray; border-radius: 12px"></div>
-    <div class="bookItem-title">타입스크립트 실전 프론트엔드</div>
-    <div class="bookItem-subtitle">보리스 체르니 지음 ; 우정은 옮김</div>
+    <div class="bookItem-title">{{ title }}</div>
+    <div class="bookItem-subtitle">{{ authors }}</div>
   </div>
 </template>
 
@@ -23,6 +35,7 @@
   text-wrap: nowrap;
   text-overflow: ellipsis;
   margin-top: 27px;
+  width: 193px;
 }
 
 .bookItem-subtitle {

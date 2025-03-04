@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import { RouterLink } from 'vue-router'
 </script>
 
@@ -33,12 +32,14 @@ import { RouterLink } from 'vue-router'
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width : 1246px;
-  height : 64px;
+  width: 1246px;
+  height: 64px;
   border-bottom: #eaeaea solid 1px;
 }
 
-a, a:link, a:visited {
+a,
+a:link,
+a:visited {
   text-decoration: none;
   color: inherit;
 }
@@ -71,7 +72,7 @@ a, a:link, a:visited {
   display: flex;
   justify-content: center;
   align-items: center;
-  color : #FFFFFF !important;
+  color: #ffffff !important;
   background-color: #6472fc;
   height: 29px;
   width: 90px;

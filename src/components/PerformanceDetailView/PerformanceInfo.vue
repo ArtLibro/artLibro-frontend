@@ -1,10 +1,28 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import type { PropType } from 'vue'
+
+defineProps({
+  prfnm: String,
+  prfSchedule: {
+    type: Array as PropType<string[]>,
+    required: true,
+  },
+  fcltynm: String,
+  prfruntime: String,
+  prfcast: String,
+  pcseguidance: String,
+  prfage: String,
+  genrenm: String,
+  poster: String,
+  relates: Object,
+})
+</script>
 
 <template>
   <div class="performaceInfo">
-    <div class="poster"></div>
+    <img class="poster" :src="poster" />
     <div class="post-info-container">
-      <div class="title">메모리 대학로</div>
+      <div class="title">{{ prfnm }}</div>
       <!-- 태그 링크로 변경 -->
       <div class="homepage-link-btn">
         공식홈페이지 가기
@@ -20,55 +38,69 @@
             <img class="post-info-icon" src="/public/icons/stage-calendar.svg" alt="일정" />
             <span>일정</span>
           </td>
-          <td class="post-info">2025.02.07 ~ 2025.02.29</td>
+          <td class="post-info">{{ prfSchedule[0] }} ~ {{ prfSchedule[1] }}</td>
         </tr>
         <tr>
           <td class="post-info post-info-center">
             <img class="post-info-icon" src="/public/icons/stage-time.svg" alt="시간" />
             <span>시간</span>
           </td>
-          <td class="post-info">2시간</td>
+          <td class="post-info">{{ prfruntime }}</td>
         </tr>
         <tr>
           <td class="post-info post-info-center">
             <img class="post-info-icon" src="/public/icons/stage-map.svg" alt="장소" />
             <span>장소</span>
           </td>
-          <td class="post-info">후암스테이지 (후암스테이지 (구. 마라카 3관, 오씨어터))</td>
+          <td class="post-info">
+            <div class="post-info-overflow">{{ fcltynm }}</div>
+          </td>
         </tr>
         <tr>
           <td class="post-info post-info-center">
             <img class="post-info-icon" src="/public/icons/stage-actor.svg" alt="배우" />
             <span>배우</span>
           </td>
-          <td class="post-info">배지원, 안동렬, 서동주, 이현아, 이수재, 정한, 이시은 등</td>
+          <td class="post-info">
+            <div class="post-info-overflow">
+              {{ prfcast }}
+            </div>
+          </td>
         </tr>
         <tr>
           <td class="post-info post-info-center">
             <img class="post-info-icon" src="/public/icons/stage-ticket.svg" alt="가격" />
             <span>가격</span>
           </td>
-          <td class="post-info">전석 15,000원</td>
+          <td class="post-info">{{ pcseguidance }}</td>
         </tr>
         <tr>
           <td class="post-info post-info-center">
             <img class="post-info-icon" src="/public/icons/stage-age.svg" alt="연령" />
             <span>연령</span>
           </td>
-          <td class="post-info">만 11세 이상</td>
+          <td class="post-info">{{ prfage }}</td>
         </tr>
         <tr>
           <td class="post-info post-info-center">
             <img class="post-info-icon" src="/public/icons/stage-category.svg" alt="장르" />
             <span>장르</span>
           </td>
-          <td class="post-info">뮤지컬</td>
+          <td class="post-info">{{ genrenm }}</td>
         </tr>
       </table>
       <div class="ticket-title">티켓 구매하러 가기</div>
-      <div class="ticket-box"></div>
-      <div class="ticket-box"></div>
-      <div class="ticket-box"></div>
+      <div class="ticket-container" v-if="relates?.relate?.length > 0">
+        <a
+          target="_blank"
+          v-for="item in relates?.relate?.slice(0, 3)"
+          class="ticket-link"
+          :key="item.relatenm"
+          :href="item.relateurl"
+          >{{ item.relatenm }}
+        </a>
+      </div>
+      <!-- {{ relates }} -->
     </div>
   </div>
 </template>
@@ -90,7 +122,6 @@
   width: 281px;
   height: 400px;
   border-radius: 8px;
-  background-color: beige;
 }
 
 .post-info-container {
@@ -104,6 +135,8 @@
   margin-bottom: 21px;
   margin-top: 8px;
 }
+
+// v-for="item in relates?.relate?.slice(0, 3) || []"
 
 .post-info {
   font-size: 18px;
@@ -120,6 +153,13 @@
   height: 20px;
   margin-right: 13px;
   // display: inline-block;
+}
+
+.post-info-overflow {
+  width: 450px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .homepage-link-btn {
@@ -144,12 +184,22 @@
   margin-top: 15px;
 }
 
-.ticket-box {
+.ticket-container {
+  display: flex;
+  width: 400px;
+}
+
+.ticket-link {
   width: 119px;
   height: 32px;
   border-radius: 6px;
   border: 1px solid $text-color-100;
   display: inline-block;
   margin-right: 10px;
+  text-decoration: none;
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
