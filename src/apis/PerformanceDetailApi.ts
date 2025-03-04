@@ -2,7 +2,7 @@ import type { PrfApi, PrfInfoDetail, PrfPlace } from '@/types/Performance'
 import axios from 'axios'
 import { XMLParser } from 'fast-xml-parser'
 
-const KOPIS_API_KEY = import.meta.env.VITE_KOPIS_API_KEY
+const KOPIS_API_KEY = import.meta.env.VITE_KOPIS_KEY
 
 const axiosApi = axios.create({
   baseURL: 'http://kopis.or.kr/openApi/restful',
