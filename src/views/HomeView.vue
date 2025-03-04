@@ -232,6 +232,7 @@ onMounted(() => {
   display: flex;
   height: 340px;
   justify-content: space-between;
+}
 
 .title {
   margin-bottom: 24px;
