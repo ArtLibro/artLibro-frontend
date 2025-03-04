@@ -8,7 +8,9 @@ defineProps<AwardCardPropsWithIndex>()
 
 <template>
   <div>
-    <div>{{ index+1 }}</div>
+    <div class="rank" :class="{ 'primary': index === 0 || index === 1, 'gray': index > 1 }">
+      {{ index + 1 }}
+    </div>
     <img :src="poster" height="205" width="153" alt="performance-image" class="image"/>
   </div>
 </template>
@@ -16,5 +18,25 @@ defineProps<AwardCardPropsWithIndex>()
 <style scoped lang="scss">
 .image {
   border-radius: 8px;
+}
+
+.rank {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color : white;
+  font-size: 18px;
+  font-weight: bold;
+  width: 38px;
+  height: 38px;
+  border-radius: 5px;
+}
+
+.primary {
+  background-color: $primary-color-100;
+}
+
+.gray {
+  background-color: #C5C5C5;
 }
 </style>
