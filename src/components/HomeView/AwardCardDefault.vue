@@ -7,7 +7,7 @@ defineProps<AwardCardPropsWithIndex>()
 </script>
 
 <template>
-  <div>
+  <div class="award-card">
     <div class="rank" :class="{ 'primary': index === 0 || index === 1, 'gray': index > 1 }">
       {{ index + 1 }}
     </div>
@@ -16,11 +16,20 @@ defineProps<AwardCardPropsWithIndex>()
 </template>
 
 <style scoped lang="scss">
+.award-card {
+  position: relative;
+  display: inline-block;
+}
+
 .image {
   border-radius: 8px;
+  display: block;
 }
 
 .rank {
+  position: absolute;
+  top: -15px;
+  right: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
