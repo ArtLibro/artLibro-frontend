@@ -1,11 +1,22 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { defineProps, defineEmits } from 'vue'
 
-const current = ref(1)
+const props = defineProps<{ current: number; total: number; pageSize: number }>()
+const emit = defineEmits(['update:current'])
+
+const handlePageChange = (page: number) => {
+  emit('update:current', page)
+}
 </script>
 
 <template>
-  <a-pagination v-model:current="current" :total="50" show-less-items />
+  <a-pagination
+    :current="props.current"
+    :total="props.total"
+    :page-size="props.pageSize"
+    show-less-items
+    @change="handlePageChange"
+  />
 </template>
 
 <style lang="scss" scoped>

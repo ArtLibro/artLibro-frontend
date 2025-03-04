@@ -1,5 +1,13 @@
 <script setup lang="ts">
 import CommunityWriteForm from '@/components/CommunityWriteView/CommunityWriteForm.vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+// 게시글 작성 후 커뮤니티 메인페이지로 이동
+const handlePostCreated = () => {
+  router.push('/community')
+}
 </script>
 
 <template>
@@ -8,7 +16,7 @@ import CommunityWriteForm from '@/components/CommunityWriteView/CommunityWriteFo
       <img src="/images/community-write-background.png" alt="배경이미지" />
     </section>
     <div class="form-container">
-      <CommunityWriteForm />
+      <CommunityWriteForm @postCreated="handlePostCreated" />
     </div>
   </div>
 </template>
