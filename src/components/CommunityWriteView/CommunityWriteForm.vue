@@ -2,10 +2,11 @@
 import { ref, defineProps, defineEmits } from 'vue'
 import { UploadOutlined } from '@ant-design/icons-vue'
 import type { UploadProps } from 'ant-design-vue'
-import type { Post } from '@/types/community/communityType'
+import type { NewPost, Post } from '@/types/community/communityType'
+import { createPost, fetchPosts, updatePost } from '@/apis/community/post'
 
 const props = defineProps<{ existingPost?: Post }>()
-const emit = defineEmits(['postCreated'])
+const emit = defineEmits(['postCreated', 'postUpdated'])
 
 const categories = ['도서', '공연/행사']
 const selectedCategory = ref(props.existingPost?.category || '도서')
@@ -29,20 +30,38 @@ const handleFileChange: UploadProps['onChange'] = (info) => {
   fileList.value = info.fileList
 }
 
-// 저장 또는 수정 버튼 클릭 시 호출
 const handleSubmit = async () => {
-  const imageFile = fileList.value.length > 0 ? fileList.value[0].originFileObj : null
+  const imageFile = fileList.value?.[0]?.originFileObj ?? null
 
-  const postData: Post = {
-    category: selectedCategory.value,
-    title: title.value,
-    content: content.value,
-    image: props.existingPost?.image || null,
-    id: props.existingPost?.id || '',
-    createdAt: props.existingPost?.createdAt || '',
+  if (props.existingPost) {
+    // 기존 게시글이 있으면 수정
+    const updatedPost: Post = {
+      id: props.existingPost.id,
+      category: selectedCategory.value,
+      title: title.value,
+      content: content.value,
+      image: props.existingPost.image || null,
+      createdAt: props.existingPost.createdAt || '',
+    }
+
+    await updatePost(props.existingPost.id, updatedPost, imageFile)
+
+    emit('postUpdated', updatedPost, imageFile)
+  } else {
+    // 없으면 새로운 게시글 작성
+    const postData: NewPost = {
+      category: selectedCategory.value,
+      title: title.value,
+      content: content.value,
+    }
+
+    await createPost(postData, imageFile)
+
+    emit('postCreated')
   }
 
-  emit('postCreated', postData, imageFile)
+  await fetchPosts() // 최신 데이터 반영
+  alert(props.existingPost ? '🎉 게시글이 수정되었습니다!' : '🎉 게시글이 등록되었습니다!')
 }
 </script>
 
