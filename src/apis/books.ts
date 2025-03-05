@@ -101,10 +101,10 @@ export const getLibraryInfo = async (address: KakaoAddress) => {
     const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryDetail, {
       params: {
         dtl_region: detailRegionCode,
-      params: {
-        dtl_region: detailRegionCode,
-        format: 'json',
-      },
+        params: {
+          dtl_region: detailRegionCode,
+          format: 'json',
+        },
       },
     })
     console.log(response.data)
@@ -115,15 +115,13 @@ export const getLibraryInfo = async (address: KakaoAddress) => {
 
 export const getLibraryPopularBooks = async (libCode: string) => {
   try {
-export const getLibraryPopularBooks = async (libCode: string) => {
-  try {
     const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryPopularBook, {
       params: {
         libCode: libCode,
-      params: {
-        libCode: libCode,
-        format: 'json',
-      },
+        params: {
+          libCode: libCode,
+          format: 'json',
+        },
       },
     })
     console.log(response.data)
