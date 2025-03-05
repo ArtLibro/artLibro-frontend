@@ -58,6 +58,7 @@ export interface BookDetail {
   class_nm: string
   bookImageURL: string
   description: string
+  isbn13: string
 }
 
 // 도서 별 이용 분석 데이터 도서 타입
