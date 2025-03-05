@@ -9,6 +9,7 @@ import type {
 } from '@/types/library/library.types.ts'
 import HomeBookItem from '@/components/common/HomeBookItem.vue'
 import LibraryInfo from '@/components/LibraryDetailView/LibraryInfo.vue'
+import PopularBook from '@/components/LibraryDetailView/PopularBook.vue'
 
 const route = useRoute();
 const libId = Number(route.params.id);
@@ -42,8 +43,7 @@ onMounted(async () => {
         :operating-time="libraryData.lib.libInfo.operatingTime"
         :tel="libraryData.lib.libInfo.tel"
       />
-<!--      <HomeBookItem-->
-<!--      />-->
+      <PopularBook/>
     </div>
     <div v-else>
       로딩중...
