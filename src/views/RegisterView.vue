@@ -1,18 +1,78 @@
 <script lang="ts" setup>
-import { ref } from "vue";
-import { EyeTwoTone, EyeInvisibleOutlined } from "@ant-design/icons-vue";
-import { UserOutlined, InfoCircleOutlined } from "@ant-design/icons-vue";
+import { reactive, ref } from "vue";
+import { message } from "ant-design-vue";
+import axios from "axios";
+import router from "@/router";
 
 const address = ref<string>("");
 const domain = ref<string>("@naver.com");
 const password1 = ref<string>("");
 const password2 = ref<string>("");
-const userName = ref<string>("");
+const fullName = ref<string>("");
 
-const value15 = ref<string>('Sign Up');
+const user = reactive<User>({
+  email: "",
+  password: "",
+  name: "",
+  age: undefined,
+  address: "",
+  phone: "",
+  avatar: "",
+  hobby: [],
+});
+
+const validateEmail = () => {
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailPattern.test(address.value + domain.value);
+};
+
+const validatePassword = () => {
+  const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d|.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{4,16}$/;
+  // const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d|.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,16}$/;
 
 
-const visible = ref<boolean>(true);
+  return passwordPattern.test(password1.value);
+};
+
+
+
+
+
+const validateForm = () => {
+  if (!validateEmail()) {
+    message.error("올바른 이메일 주소를 입력해주세요.");
+    return false;
+  }
+  if (!fullName.value) {
+    message.error("닉네임을 입력해주세요.");
+    return false;
+  }
+  if (!validatePassword()) {
+    message.error("비밀번호는 8~16자이며, 영문/숫자/특수문자 중 2가지 이상 포함해야 합니다.");
+    return false;
+  }
+  if (password1.value !== password2.value) {
+    message.error("비밀번호가 일치하지 않습니다.");
+    return false;
+  }
+  return true;
+};
+
+const handleSignUp = async () => {
+  if (!validateForm()) return;
+
+  try {
+    const response = await axios.post("http://13.125.143.126:5005/signup", {
+      email: address.value + domain.value,
+      password: password1.value,
+      fullName: fullName.value,
+    });
+    message.success("회원가입 성공!");
+    router.push("/login");
+  } catch (error) {
+    message.error("회원가입 실패! 다시 시도해주세요.");
+  }
+};
 </script>
 
 <template>
@@ -24,7 +84,6 @@ const visible = ref<boolean>(true);
     <div class="input-group">
       <div>
         <div>이메일 입력</div>
-
         <a-input-group compact>
           <a-auto-complete class="input" v-model:value="address" placeholder="Email" />
           <a-select class="input-mail" v-model:value="domain">
@@ -33,10 +92,12 @@ const visible = ref<boolean>(true);
           </a-select>
         </a-input-group>
 
+
+
         <div class="input-text">닉네임 입력</div>
 
         <div class="components-input-demo-presuffix">
-          <a-input class="input-group1" v-model:value="userName" placeholder="닉네임을 입력해주세요">
+          <a-input class="input-group1" v-model:value="fullName" placeholder="닉네임을 입력해주세요">
             <template #prefix>
               <user-outlined />
             </template>
@@ -50,14 +111,16 @@ const visible = ref<boolean>(true);
         </div>
 
         <div class="input-text">비밀번호 입력</div>
-        <a-input-password v-model:value="password1" placeholder="비밀번호를 입력해주세요" />
+        <a-input-password v-model:value="password1" placeholder="비밀번호를 입력해주세요"  />
         <div class="small-text"> 영문 대·소문자/숫자.특수문자 중 2가지 이상 조합, 8~16글자 </div>
 
         <div class="input-text">비밀번호 확인</div>
-        <a-input-password v-model:value="password2" placeholder="비밀번호를 입력해주세요" />
+        <a-input-password v-model:value="password2" placeholder="비밀번호를 다시 입력해주세요" />
+
+
 
         <div>
-          <a-button type="primary" class="button">회원가입</a-button>
+          <a-button type="submit" class="button" @click="handleSignUp">회원가입</a-button>
         </div>
       </div>
 
@@ -135,5 +198,13 @@ const visible = ref<boolean>(true);
 .social-signup {
   margin-top: 60px;
   margin-left: 87.9px;
+}
+
+.text-error {
+  color: red;
+}
+
+.text-success {
+  color: green;
 }
 </style>

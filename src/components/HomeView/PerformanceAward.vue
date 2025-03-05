@@ -5,29 +5,29 @@ import type { AwardCardProps } from '@/types/peformance.types.ts'
 import AwardCardActive from '@/components/HomeView/AwardCardActive.vue'
 import AwardCardDefault from '@/components/HomeView/AwardCardDefault.vue'
 
-const currentIndex = ref<number>(0);
-const awardPerformances = ref<AwardCardProps[]>([]);
+const currentIndex = ref<number>(0)
+const awardPerformances = ref<AwardCardProps[]>([])
 
 const handleRight = () => {
   if (currentIndex.value < awardPerformances.value.length - 1) {
-    currentIndex.value += 1;
+    currentIndex.value += 1
   }
-};
+}
 
 const handleLeft = () => {
   if (currentIndex.value > 0) {
-    currentIndex.value -= 1;
+    currentIndex.value -= 1
   }
-};
+}
 
 onMounted(async () => {
   try {
-    const data = await getAwardPerformances();
-    awardPerformances.value = data.db;
+    const data = await getAwardPerformances()
+    awardPerformances.value = data.dbs.db
   } catch (error) {
-    console.error('API 요청 실패:', error);
+    console.error('API 요청 실패:', error)
   }
-});
+})
 </script>
 
 <template>
@@ -35,7 +35,7 @@ onMounted(async () => {
     <div class="title">수상을 받은 공연을 만나보세요</div>
     <div class="content">
       <button @click="handleLeft" class="button">
-        <img src="/icons/arrow-left.svg" height="21" width="21" alt="arrow-left"/>
+        <img src="/icons/arrow-left.svg" height="15" width="15" alt="arrow-left" />
       </button>
       <div class="award">
         <div v-for="(item, index) in awardPerformances" :key="index">
@@ -58,7 +58,7 @@ onMounted(async () => {
         </div>
       </div>
       <button @click="handleRight" class="button">
-
+        <img src="/icons/arrow-right.svg" height="15" width="15" alt="arrow-right" />
       </button>
     </div>
   </div>
@@ -99,7 +99,7 @@ onMounted(async () => {
   width: 38px;
   height: 38px;
   border-radius: 999px;
-  border : 1px solid $text-color-200;
+  border: 1px solid $text-color-200;
   background-color: transparent;
   cursor: pointer;
 }

@@ -3,11 +3,11 @@ import PerformanceDetailView from '@/views/PerformanceDetailView.vue'
 import HomeView from '@/views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
-import CommunityView from '@/views/community/CommunityView.vue'
 import BookView from '@/views/bookView/BookView.vue'
-import LibraryView from '@/views/LibraryView.vue'
+import LibrarySearchView from '@/views/LibrarySearchView.vue'
 import ChallengeView from '@/views/ChallengeView.vue'
 import PerformanceSearchView from '@/views/PerformanceSearchView.vue'
+import CommunityView from '@/views/community/CommunityView.vue'
 import CommunityDetailView from '@/views/community/CommunityDetailView.vue'
 import CommunityWriteView from '@/views/community/CommunityWriteView.vue'
 import BookDetailView from '@/views/bookDetail/BookDetailView.vue'
@@ -32,9 +32,9 @@ const router = createRouter({
       props: true,
     },
     {
-      path: '/library',
-      name: 'library',
-      component: LibraryView,
+      path: '/library-search',
+      name: 'library-search',
+      component: LibrarySearchView,
     },
     {
       path: '/performance',
@@ -53,15 +53,27 @@ const router = createRouter({
     },
     // 커뮤니티 메인페이지
     { path: '/community', name: 'community', component: CommunityView },
-    // 커뮤니티 상세페이지 (아직)
+    // 커뮤니티 상세페이지
     {
       path: '/community/:id',
       name: 'community-detail',
-      component: CommunityDetailView,
+      component: () => import('@/views/community/CommunityDetailView.vue'),
       props: true,
     },
     // 커뮤니티 게시글 작성페이지
-    { path: '/community/write', name: 'community-write', component: CommunityWriteView },
+    {
+      path: '/community/write',
+      name: 'community-write',
+      component: () => import('@/views/community/CommunityWriteView.vue'),
+      props: true,
+    },
+    // 커뮤니티 게시글 수정페이지
+    {
+      path: '/community/edit/:id',
+      name: 'community-edit',
+      component: () => import('@/views/community/CommunityEditView.vue'),
+      props: true,
+    },
     {
       path: '/login',
       name: 'login',

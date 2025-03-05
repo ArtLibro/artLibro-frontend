@@ -131,7 +131,7 @@ defineProps({
 
 .title {
   font-size: 32px;
-  font-weight: 400;
+  font-weight: 500;
   margin-bottom: 21px;
   margin-top: 8px;
 }

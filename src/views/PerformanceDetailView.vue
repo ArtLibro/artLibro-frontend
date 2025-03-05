@@ -1,20 +1,51 @@
 <script lang="ts" setup>
 import PerformanceInfo from '@/components/PerformanceDetailView/PerformanceInfo.vue'
-import { computed, ref, watchEffect } from 'vue'
+import { computed, onMounted, ref, watchEffect } from 'vue'
 import { Dayjs } from 'dayjs'
 import PerformanceTab from '@/components/PerformanceDetailView/PerformanceTab.vue'
 import PerformancePlace from '@/components/PerformanceDetailView/PerformancePlace.vue'
 import { useQuery } from '@tanstack/vue-query'
-import { getPerformaceDetail } from '@/apis/PerformanceDetailApi'
 import type { PrfApi, PrfInfoDetail, PrfPlace } from '@/types/Performance'
 import { DatePicker } from 'v-calendar'
 import 'v-calendar/style.css'
+import { getAwardPerformances, getPerformanceDetail, getPerformances } from '@/apis/kopis'
+import PerformanceRelatedDetail from '@/components/PerformanceDetailView/PerformanceAward.vue'
+import PerformanceAward from '@/components/PerformanceDetailView/PerformanceAward.vue'
+import PerformanceRecommend from '@/components/PerformanceDetailView/PerformanceRecommend.vue'
 
 const selectedColor = ref<string>('indigo')
 
-// 공연장소 // 지워야 할거
-// const prfplace = ref<string>('')
 const prfplaceId = ref<string>('')
+
+const contentHeight = ref(1000) // 초기 콘텐츠 높이 (1000px)
+const isEnd = ref(false) // 더보기 버튼을 숨길지 여부
+const additionalContent = ref(3) // 더 추가할 콘텐츠의 갯수
+
+const genres = [
+  { genre: '연극', code: 'AAAA' },
+  { genre: '무용(서양/한국무용)', code: 'BBBC' },
+  { genre: '대중무용', code: 'BBBE' },
+  { genre: '서양음악(클래식)', code: 'CCCA' },
+  { genre: '한국음악(국악)', code: 'CCCC' },
+  { genre: '대중음악', code: 'CCCD' },
+  { genre: '복합', code: 'EEEA' },
+  { genre: '서커스/마술', code: 'EEEB' },
+  { genre: '뮤지컬', code: 'GGGA' },
+]
+// const showMoreContent = () => {
+//   showMore.value = true // "더보기" 클릭 시 콘텐츠를 펼침
+// }
+
+const loadMoreContent = () => {
+  if (additionalContent.value > 0) {
+    contentHeight.value += 1000 // 1000px씩 늘려준다.
+    additionalContent.value-- // 추가 콘텐츠 갯수를 하나 줄인다.
+  } else {
+    // 추가 콘텐츠가 없으면 콘텐츠 끝까지 표시
+    contentHeight.value += 1000 // 기본 높이를 추가하고
+    isEnd.value = true // 끝에 도달했으므로 버튼 숨김
+  }
+}
 
 // PF220430,PF132236 =>공연상세
 const query = ref<PrfApi[]>([
@@ -36,15 +67,46 @@ const query = ref<PrfApi[]>([
 
 const { data: prfdetail } = useQuery({
   queryKey: ['performance-detail', query],
-  queryFn: () => getPerformaceDetail(query.value[0], query.value[0].path),
+  queryFn: () => getPerformanceDetail('prfInfo'),
 })
 
 const { data: prfplaceData, isLoading } = useQuery({
   queryKey: ['performance-place', query],
-  queryFn: () => getPerformaceDetail(query.value[1], query.value[1].path),
+  queryFn: () => getPerformanceDetail('prfPlace'),
 })
 
+// const { data: prfAward } = useQuery({
+//   queryKey: ['performance-award', query],
+//   queryFn: () => getAwardPerformances('prfAward'),
+// })
+
 const prfInfo = ref<PrfInfoDetail | null>(prfdetail.value)
+const awardPerformances = ref([])
+const recommendPerformance = ref([])
+
+onMounted(async () => {
+  try {
+    const data = await getAwardPerformances(
+      genres.find((item) => item.genre === prfInfo?.value?.genrenm),
+    )
+    awardPerformances.value = data.dbs.db
+  } catch (error) {
+    console.error('API 요청 실패:', error)
+  }
+})
+
+onMounted(async () => {
+  try {
+    const data = await getPerformances(
+      genres.find((item) => item.genre === prfInfo?.value?.genrenm),
+    )
+    recommendPerformance.value = data.dbs.db
+  } catch (error) {
+    console.error('API 요청 실패:', error)
+  }
+})
+
+console.log('recommendPerformance', recommendPerformance)
 
 watchEffect(() => {
   if (prfdetail.value) {
@@ -58,21 +120,6 @@ watchEffect(() => {
   }
 })
 
-// watchEffect(() => {
-//   if (isLoading.value) {
-//     console.log('데이터 로딩 중...')
-//   } else if (prfplaceData.value) {
-//     console.log('prfplaceData:', prfplaceData.value)
-//   }
-// })
-
-// watchEffect(() => {
-//   if (isLoading.value) {
-//     console.log('데이터 로딩 중...')
-//   } else if (prfplaceData.value) {
-//     console.log('prfplaceData:', prfplaceData.value)
-//   }
-// })
 watchEffect(() => {
   if (isLoading.value) {
     console.log('데이터 로딩 중...')
@@ -84,8 +131,6 @@ watchEffect(() => {
   }
 })
 
-// const prfplace = ref<PrfPlace | null>(prfplaceData.value)
-
 console.log('발견', prfplaceData.value)
 
 console.log('나와주새ㅔ여', prfplaceData.value)
@@ -94,7 +139,7 @@ console.log('prfplaceId', prfplaceId.value)
 
 console.log('야호 나오니~?', prfdetail.value)
 
-console.log('이름이 뭐야~?', prfInfo.value?.mt10id)
+console.log('이름이 뭐야~?', prfplaceData.value)
 
 const startDate = ref(prfInfo.value?.prfpdfrom)
 const endtDate = ref(prfInfo.value?.prfpdto)
@@ -106,13 +151,6 @@ const dateRange = ref<object>({
   start: new Date('' + formattedStd),
   end: new Date('' + formattedEnd),
 })
-
-console.log('궁금', prfInfo)
-console.log('궁금11111111111', prfInfo.value?.fcltynm)
-
-// const prfplace = '' + data2.value?.fcltynm.replace(/\s?\(.*\)/, '')
-
-// console.log('이애ㅐㅐㅐㅐㅐㅐㅐ', prfplace.mt10id
 
 const activeKey = ref<string>('1')
 
@@ -151,20 +189,21 @@ const onTabChange = (key) => {
     <a-tabs :active-key="activeKey" @change="onTabChange" class="performanceTab-container">
       <a-tab-pane key="1" tab="공연 상세 정보" class="performanceTab">
         <div class="poster-detail-container">
-          <div v-if="Array.isArray(prfInfo?.styurls?.styurl)" class="poster-description">
-            <!-- prfInfo.styurls.styurl이 배열일 때 -->
-            <div v-for="(item, index) in prfInfo?.styurls?.styurl" :key="index">
-              <img :src="item" alt="포스터 설명" />
+          <div :style="{ height: contentHeight + 'px' }" class="content" ref="content">
+            <div v-if="Array.isArray(prfInfo?.styurls?.styurl)" class="poster-description">
+              <!-- prfInfo.styurls.styurl이 배열일 때 -->
+              <div v-for="(item, index) in prfInfo?.styurls?.styurl" :key="index">
+                <img :src="item" alt="포스터 설명" />
+              </div>
+            </div>
+            <div v-else>
+              <div>
+                <img :src="prfInfo?.styurls?.styurl" alt="포스터 설명" class="poster-description" />
+              </div>
             </div>
           </div>
 
-          <div v-else>
-            <div>
-              <img :src="prfInfo?.styurls?.styurl" alt="포스터 설명" class="poster-description" />
-            </div>
-          </div>
-
-          <div class="show-more">펼쳐보기</div>
+          <button class="show-more" v-if="!isEnd" @click="loadMoreContent">펼쳐보기</button>
         </div>
       </a-tab-pane>
 
@@ -185,9 +224,42 @@ const onTabChange = (key) => {
           :restbarrier="prfplaceData?.restbarrier"
           :elevbarrier="prfplaceData?.elevbarrier"
           :runwbarrier="prfplaceData?.runwbarrier"
+          :latitude="prfplaceData?.la"
+          :longitude="prfplaceData?.lo"
         />
       </a-tab-pane>
-      <a-tab-pane key="3" tab="연관 공연 정보" class="performanceTab">Tab 3 Content</a-tab-pane>
+      <a-tab-pane key="3" tab="연관 공연 정보" class="performanceTab">
+        <div class="prf-related-container">
+          <div class="prf-related-card" style="margin-bottom: 72px">
+            <div class="prf-related-title">{{ prfInfo?.genrenm }} 수상작을 만나보세요</div>
+            <div class="prf-related-layer">
+              <PerformanceAward
+                v-for="(item, index) in awardPerformances.slice(0, 4)"
+                :key="index"
+                :prfnm="item.prfnm"
+                :fcltynm="item.fcltynm"
+                :awards="item.awards"
+                :poster="item.poster"
+              />
+            </div>
+          </div>
+          <div class="prf-related-card">
+            <div class="prf-related-title">추천하는 다른 {{ prfInfo?.genrenm }}</div>
+            <div class="prf-recommend-case">
+              <PerformanceRecommend
+                v-for="(item, index) in recommendPerformance"
+                :key="index"
+                :area="item.area"
+                :prfnm="item.prfnm"
+                :prfpdfrom="item.prfpdfrom"
+                :prfpdto="item.prfpdto"
+                :poster="item.poster"
+                :fcltynm="item.fcltynm"
+              />
+            </div>
+          </div>
+        </div>
+      </a-tab-pane>
     </a-tabs>
   </div>
 </template>
@@ -196,6 +268,11 @@ const onTabChange = (key) => {
 .layout {
   max-width: 1246px;
   margin: 0 auto;
+  margin: 70px 0 50px 0;
+}
+.content {
+  height: 1000px;
+  overflow: hidden;
 }
 
 .poster-container {
@@ -218,11 +295,14 @@ const onTabChange = (key) => {
   height: 61px;
   border-radius: 6px;
   background: #f1f1ef;
-  font-size: 20px;
+  font-size: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 500;
+  font-weight: 600;
+  color: #4d4c4c;
+  border: 1px solid #dddddd;
+  cursor: pointer;
 }
 
 .calendar-container {
@@ -282,7 +362,7 @@ const onTabChange = (key) => {
   width: 100%;
   border: 1px solid $text-color-100;
   border-radius: 12px;
-  margin-top: 54px;
+  margin-top: 70px;
 }
 ::v-deep .performanceTab-container .ant-tabs-nav::before {
   border-bottom: none;
@@ -320,5 +400,43 @@ const onTabChange = (key) => {
 
 ::v-deep .performanceTab-container .ant-tabs-nav-list .ant-tabs-ink-bar {
   background: $secondary-color-300;
+}
+
+.prf-related-container {
+  margin-top: 20px;
+}
+
+.prf-related-layer {
+  width: 948px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+}
+
+.prf-related-card {
+  width: 100%;
+  padding: 45px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  background: $text-color-100;
+  border: 1px solid $text-color-100;
+  box-shadow: 0 0 24px 0 rgb(140 139 153 / 50%);
+  border: 1px solid #dfdfdf;
+}
+
+.prf-related-title {
+  font-size: 35px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.prf-recommend-case {
+  width: 1100px;
+  display: flex;
+  padding: 55px 0;
+  box-sizing: border-box;
+  margin: 0 auto;
+  flex-wrap: wrap;
 }
 </style>

@@ -1,3 +1,4 @@
+// ////////////////////////////////////////////////////////////
 import LibraryApi from '@/config/axiosLibraryConfig'
 import { LIBRARY_ENDPOINT } from './endpoint'
 import type { BookItem, SearchTypeValue, SortOptionValue } from '@/types/libraryType'
@@ -12,6 +13,7 @@ interface BookListParams {
   author?: string
   sort?: SortOptionValue
 }
+import type { QueryItemRankBook, QueryItemReader } from '@/types/Book'
 
 export const getBookList = async (
   searchKeyword: string,
@@ -99,7 +101,10 @@ export const getLibraryInfo = async (address: KakaoAddress) => {
     const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryDetail, {
       params: {
         dtl_region: detailRegionCode,
+      params: {
+        dtl_region: detailRegionCode,
         format: 'json',
+      },
       },
     })
     console.log(response.data)
@@ -110,14 +115,58 @@ export const getLibraryInfo = async (address: KakaoAddress) => {
 
 export const getLibraryPopularBooks = async (libCode: string) => {
   try {
+export const getLibraryPopularBooks = async (libCode: string) => {
+  try {
     const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryPopularBook, {
       params: {
         libCode: libCode,
+      params: {
+        libCode: libCode,
         format: 'json',
+      },
       },
     })
     console.log(response.data)
   } catch (error) {
     console.error(error)
+  }
+}
+
+/// 추가 /////
+
+export const getBookToHome = async (query: QueryItemReader | QueryItemRankBook) => {
+  try {
+    let params: { [key: string]: any } = { format: 'json' }
+    let bookType: string = ''
+    if ('type' in query) {
+      bookType = LIBRARY_ENDPOINT.bookwormList
+      params = {
+        ...params,
+        type: query.type,
+        isbn13: query.isbn13,
+      }
+    }
+
+    if ('startDt' in query) {
+      bookType = LIBRARY_ENDPOINT.bookRankList
+      params = {
+        ...params,
+        startDt: query.startDt,
+        kdc: query.kdc,
+        pagesize: query.pagesize,
+        pageNumber: query.pageNumber,
+      }
+    }
+
+    console.log()
+
+    const response = await LibraryApi.get(bookType, { params })
+
+    // 확인 조금만 하고 위코드로 변경
+    // const responseData = await response.data.response.docs
+    const responseData = await response.data
+    return responseData
+  } catch (error) {
+    throw error
   }
 }

@@ -13,6 +13,8 @@ export const LIBRARY_ENDPOINT = Object.freeze({
   libraryLoanPossible: `/libSrchByBook?authKey=${LIBRARY_KEY}`, // 도서관 대출 가능 여부
   libraryDetail: `/extends/libSrch?authKey=${LIBRARY_KEY}`,
   libraryPopularBook: `/extends/loanItemSrchByLib?authKey=${LIBRARY_KEY}`,
+  bookwormList: `/recommandList?authKey=${LIBRARY_KEY}`,
+  bookRankList: `/loanItemSrch?authKey=${LIBRARY_KEY}`,
 })
 
 /**
@@ -28,4 +30,7 @@ const todayDate = `${today.getFullYear()}${String(today.getMonth() + 1).padStart
 export const KOPIS_ENDPOINT = Object.freeze({
   awardList: `/prfawad?service=${KOPIS_KEY}&stdate=${firstDate}&eddate=${todayDate}&cpage=1&rows=5`,
   monthlyList: `/boxoffice?service=${KOPIS_KEY}&stdate=${firstDate}&eddate=${todayDate}&cpage=1&rows=5`,
+  prfDetailList: `/pblprfr/PF132236?service=${KOPIS_KEY}`,
+  prfDetailPlace: `/prfplc/FC001431?service=${KOPIS_KEY}`,
+  prfSearch: `/pblprfr?service=${KOPIS_KEY}&stdate=${firstDate}&eddate=${todayDate}&cpage=1&rows=8`,
 })

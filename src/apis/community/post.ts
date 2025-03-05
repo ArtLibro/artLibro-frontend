@@ -23,14 +23,14 @@ export const fetchPosts = async (): Promise<Post[]> => {
       `${API_BASE_URL}/posts/channel/${CHANNEL_ID}`,
     )
 
-    return response.data.map((post) => {
-      let category = '알 수 없음'
+    return response.data.map((post): Post => {
+      let category: '도서' | '공연/행사' = '도서' // default
       let title = post.title
       let content = ''
 
       try {
         const parsedData = JSON.parse(post.title)
-        category = parsedData.category ?? '알 수 없음'
+        category = parsedData.category ?? '도서'
         title = parsedData.title ?? post.title
         content = parsedData.content ?? ''
       } catch (error) {
@@ -43,7 +43,7 @@ export const fetchPosts = async (): Promise<Post[]> => {
         title,
         content,
         image: post.image || null,
-        createdAt: post.createdAt,
+        createdAt: post.createdAt || '',
       }
     })
   } catch (error) {
