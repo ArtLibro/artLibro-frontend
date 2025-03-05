@@ -61,7 +61,6 @@ export const getLibraryInfo = async (address: KakaoAddress) => {
         format: 'json',
       },
     })
-    console.log(response.data)
     return response.data
   } catch (error) {
     console.error(error)
@@ -76,14 +75,27 @@ export const getLibraryInfoByRegion = async (regionCode : number) => {
         format: 'json',
       },
     })
-    console.log(response.data.response)
     return response.data.response
   } catch (error) {
     console.error(error)
   }
 }
 
-export const getLibraryPopularBooks = async (libCode: string) => {
+export const getLibraryInfoByLibraryCode = async (libraryCode : number) => {
+  try {
+    const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryDetail, {
+      params: {
+        libCode: libraryCode,
+        format: 'json',
+      },
+    })
+    return response.data.response
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const getLibraryPopularBooks = async (libCode: number) => {
   try {
     const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryPopularBook, {
       params: {
@@ -91,7 +103,7 @@ export const getLibraryPopularBooks = async (libCode: string) => {
         format: 'json',
       },
     })
-    console.log(response.data)
+    return response.data.response
   } catch (error) {
     console.error(error)
   }
