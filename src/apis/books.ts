@@ -62,6 +62,22 @@ export const getLibraryInfo = async (address: KakaoAddress) => {
       },
     })
     console.log(response.data)
+    return response.data
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const getLibraryInfoByRegion = async (regionCode : number) => {
+  try {
+    const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryDetail, {
+      params: {
+        region: regionCode,
+        format: 'json',
+      },
+    })
+    console.log(response.data.response)
+    return response.data.response
   } catch (error) {
     console.error(error)
   }
