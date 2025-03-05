@@ -1,28 +1,47 @@
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import { fetchPosts } from '@/apis/community/post'
 import CommunityDetailComment from '@/components/CommunityDetailView/CommunityDetailComment.vue'
 import CommunityDetailContent from '@/components/CommunityDetailView/CommunityDetailContent.vue'
 import CommunityDetailNextPost from '@/components/CommunityDetailView/CommunityDetailNextPost.vue'
+import type { Post } from '@/types/community/communityType'
+
+const route = useRoute()
+const post = ref<Post | null>(null)
+
+// 특정 게시글 데이터 불러오기
+const loadPostDetail = async () => {
+  const posts = await fetchPosts()
+  post.value = posts.find((p) => p.id === route.params.id) || null
+  console.log('📌 불러온 게시글:', post.value)
+}
+
+onMounted(loadPostDetail)
 </script>
 
 <template>
-  <div class="page-container">
+  <div v-if="post" class="page-container">
     <section class="background">
       <img src="/images/community-background.png" alt="배경이미지" />
     </section>
 
     <div class="content-wrapper">
       <div class="content-area">
-        <CommunityDetailContent />
+        <CommunityDetailContent :post="post" />
         <div class="bottom-section">
           <div class="comments-container">
-            <CommunityDetailComment />
+            <CommunityDetailComment :postId="post.id" />
           </div>
           <div class="sidebar">
-            <CommunityDetailNextPost />
+            <CommunityDetailNextPost :currentPostId="post.id" />
           </div>
         </div>
       </div>
     </div>
+  </div>
+  <div v-else>
+    <p>게시글을 불러오는 중...</p>
   </div>
 </template>
 

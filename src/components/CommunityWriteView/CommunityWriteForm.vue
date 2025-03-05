@@ -1,43 +1,54 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, defineProps, defineEmits } from 'vue'
 import { UploadOutlined } from '@ant-design/icons-vue'
 import type { UploadProps } from 'ant-design-vue'
-import { createPost } from '@/apis/community/post'
+import type { Post } from '@/types/community/communityType'
 
+const props = defineProps<{ existingPost?: Post }>()
 const emit = defineEmits(['postCreated'])
 
 const categories = ['도서', '공연/행사']
-const selectedCategory = ref('도서')
-const title = ref('')
-const content = ref('')
+const selectedCategory = ref(props.existingPost?.category || '도서')
+const title = ref(props.existingPost?.title || '')
+const content = ref(props.existingPost?.content || '')
 const fileList = ref<UploadProps['fileList']>([])
 
-// 파일 업로드 핸들러
+// 기존 이미지가 있다면 표시
+if (props.existingPost?.image) {
+  fileList.value = [
+    {
+      uid: '-1',
+      name: '기존 이미지',
+      status: 'done',
+      url: props.existingPost.image,
+    },
+  ]
+}
+
 const handleFileChange: UploadProps['onChange'] = (info) => {
   fileList.value = info.fileList
 }
 
-// 게시글 저장 후 부모 컴포넌트로 이벤트 전달
+// 저장 또는 수정 버튼 클릭 시 호출
 const handleSubmit = async () => {
   const imageFile = fileList.value.length > 0 ? fileList.value[0].originFileObj : null
 
-  await createPost(
-    {
-      category: selectedCategory.value,
-      title: title.value,
-      content: content.value,
-    },
-    imageFile,
-  )
+  const postData: Post = {
+    category: selectedCategory.value,
+    title: title.value,
+    content: content.value,
+    image: props.existingPost?.image || null,
+    id: props.existingPost?.id || '',
+    createdAt: props.existingPost?.createdAt || '',
+  }
 
-  alert('🎉 게시글이 등록되었습니다!')
-  emit('postCreated')
+  emit('postCreated', postData, imageFile)
 }
 </script>
 
 <template>
   <div class="post-form-container">
-    <h2 class="form-title">✏️ &nbsp; 게시글 쓰기</h2>
+    <h2 class="form-title">{{ existingPost ? '📝 게시글 수정' : '✏️ 게시글 쓰기' }}</h2>
 
     <a-card class="form-card">
       <a-form layout="vertical">
@@ -73,7 +84,9 @@ const handleSubmit = async () => {
         </a-form-item>
 
         <a-form-item>
-          <a-button type="primary" block @click="handleSubmit">작성 완료</a-button>
+          <a-button type="primary" block @click="handleSubmit">
+            {{ existingPost ? '수정 완료' : '작성 완료' }}
+          </a-button>
         </a-form-item>
       </a-form>
     </a-card>
@@ -135,6 +148,30 @@ const handleSubmit = async () => {
   :deep(.ant-form-item-label > label) {
     font-size: $text-size-300 !important;
     font-weight: bold;
+  }
+
+  /* input창 설정 */
+  :deep(.ant-input) {
+    padding: 10px 10px;
+    font-size: $text-size-200;
+  }
+
+  /* 파일선택 버튼 설정 */
+  :deep(.ant-upload) {
+    font-size: 16px;
+    border-radius: 8px;
+  }
+
+  :deep(.ant-btn) {
+    padding: 8px 15px;
+    font-size: 16px;
+    height: 40px;
+    border-radius: 8px;
+  }
+
+  /* 업로드한 파일 리스트 설정 */
+  :deep(.ant-upload-list-item) {
+    margin-top: 10px; // 업로드한 파일과 버튼에 간격 추가
   }
 }
 </style>
