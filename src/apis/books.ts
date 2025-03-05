@@ -1,4 +1,3 @@
-// ////////////////////////////////////////////////////////////
 import LibraryApi from '@/config/axiosLibraryConfig'
 import { LIBRARY_ENDPOINT } from './endpoint'
 import type { BookItem, SearchTypeValue, SortOptionValue } from '@/types/libraryType'
@@ -129,8 +128,6 @@ export const getLibraryPopularBooks = async (libCode: string) => {
     console.error(error)
   }
 }
-
-/// 추가 /////
 
 export const getBookToHome = async (query: QueryItemReader | QueryItemRankBook) => {
   try {
