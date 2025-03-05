@@ -6,16 +6,17 @@ import CommunityMainCard from '@/components/CommunityView/CommunityMainCard.vue'
 import CommunityReviewCard from '@/components/CommunityView/CommunityReviewCard.vue'
 import CommunityTabs from '@/components/CommunityView/CommunityTabs.vue'
 import { useRouter } from 'vue-router'
+import type { Post } from '@/types/community/communityType'
 
 const router = useRouter()
 
 // API에서 불러온 게시글 저장 (메인카드, 리뷰카드 공용으로 사용)
-const posts = ref([])
+const posts = ref<Post[]>([])
 
 // CommunityMainCard 최신 글 6개만 보여줌
 const latestMainPosts = computed(() => posts.value.slice(0, 6))
 
-// 탭 필터링 (도서, 공연/행사) -> 아직
+// 탭 필터링 (도서, 공연/행사)
 const activeKey = ref('1')
 const filteredReviews = computed(() =>
   activeKey.value === '1'
@@ -61,10 +62,14 @@ onMounted(loadPosts)
       <CommunityMainCard v-for="(post, index) in latestMainPosts" :key="index" :post="post" />
     </div>
 
-    <div class="review-container">
+    <div class="review-header">
       <div class="review-tabs">
         <CommunityTabs v-model:activeKey="activeKey" />
       </div>
+      <button class="new-post-button" @click="goToWritePage">리뷰 작성</button>
+    </div>
+
+    <div class="review-container">
       <div class="review-list">
         <CommunityReviewCard
           v-for="(post, index) in paginatedReviews"
@@ -80,7 +85,6 @@ onMounted(loadPosts)
         :total="filteredReviews.length"
         :page-size="reviewsPerPage"
       />
-      <button class="new-post-button" @click="goToWritePage">리뷰 작성(테스트)</button>
     </div>
   </div>
 </template>
@@ -95,6 +99,7 @@ onMounted(loadPosts)
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-top: 30px;
 }
 
 .title-icon {
@@ -117,17 +122,25 @@ onMounted(loadPosts)
   justify-content: center;
 }
 
+/* 리뷰 탭과 버튼을 한 줄로 정렬 */
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1170px;
+  margin: 60px auto 20px;
+}
+
 .review-container {
   max-width: 1170px;
-  margin: 40px auto;
+  margin: 20px auto;
 }
 
 .review-tabs {
-  flex: 0 0 200px;
+  flex-shrink: 0;
 }
 
 .review-list {
-  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -148,11 +161,12 @@ onMounted(loadPosts)
   width: 130px;
   height: 45px;
   background-color: white;
+  font-size: $text-size-200;
+  font-weight: bold;
   color: $secondary-color-300;
   border-radius: 10px;
   border: 1px solid $secondary-color-300;
-  position: absolute;
-  right: 0;
+  margin-right: 20px;
 
   &:hover {
     background-color: $secondary-color-300;

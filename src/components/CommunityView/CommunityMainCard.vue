@@ -1,6 +1,10 @@
 <script setup lang="ts">
-defineProps<{
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const props = defineProps<{
   post: {
+    id: string
     title: string
     image: string
     date: string
@@ -9,10 +13,14 @@ defineProps<{
     likes: number
   }
 }>()
+
+const goToDetail = () => {
+  router.push(`/community/${props.post.id}`)
+}
 </script>
 
 <template>
-  <div class="post-card">
+  <div class="post-card" @click="goToDetail">
     <div class="post-info">
       <h3 class="post-title">{{ post.title }}</h3>
       <p class="post-date">{{ post.date }}</p>
@@ -36,6 +44,11 @@ defineProps<{
 
 <style lang="scss" scoped>
 .post-card {
+  cursor: pointer;
+  transition: transform 0.2s;
+  &:hover {
+    transform: scale(1.02);
+  }
   width: 330px;
   height: 217px;
   background: white;
