@@ -79,7 +79,7 @@
           </div>
         </div>
         <div class="book-library-info-right">
-          <div>지도 섹션</div>
+          <div id="map" style="width:100%;height:100%;"></div>
         </div>
       </div>
     </div>
@@ -134,6 +134,8 @@ const isLoading = ref(false)
 const regionValue = ref<number>(11)
 const regionValue1 = ref<string>('세부 지역 선택')
 
+const selectedLibrary = ref<any>(null)
+
 // 지역 선택 옵션
 const regionOptions = computed(() => {
   return REGION_CODE.map((region) => {
@@ -166,6 +168,10 @@ const formatLibraryLoanPossibleData = (libraryData: any) => {
     latitude: item.lib.latitude,
     longitude: item.lib.longitude,
   }));
+
+  selectedLibrary.value = tableData.value[0]
+
+  console.log(selectedLibrary.value)
 }
 
 onMounted(async () => {
@@ -187,6 +193,46 @@ onMounted(async () => {
     isLoading.value = false
   }
 });
+
+let map: any = null;
+let marker: any = null;
+
+const initMap = (lat: number = 37.566826, lng: number = 126.9786567) => {
+  if ((window as any).kakao) {
+    const kakao = (window as any).kakao
+
+    // 지도가 이미 초기화되어 있다면, 다시 생성하지 않도록 처리
+    if (map) {
+      // 지도 위치만 업데이트
+      const latLng = new kakao.maps.LatLng(lat, lng)
+      map.setCenter(latLng) // 지도 중심 변경
+      marker.setPosition(latLng) // 마커 위치 변경
+      return
+    }
+
+    // 지도 생성
+    kakao.maps.load(() => {
+      const container = document.getElementById('map')
+      const options = {
+        center: new kakao.maps.LatLng(lat, lng),
+        level: 3,
+      }
+
+      map = new kakao.maps.Map(container, options) // 지도 객체 생성
+
+      const markerPosition = new kakao.maps.LatLng(lat, lng)
+      marker = new kakao.maps.Marker({ // 마커 객체 생성
+        position: markerPosition,
+      })
+
+      marker.setMap(map)
+    })
+  }
+}
+
+onMounted(() => {
+  initMap();
+})
 
 const handleRegionChange = async (value: number) => {
   try {
@@ -212,7 +258,10 @@ const handleDetailRegionChange = async (value: number) => {
 const libraryClickHandler = (record: any) => {
   return {
     onClick: () => {
-      console.log(record)
+      selectedLibrary.value = record
+
+      console.log(selectedLibrary.value)
+      initMap(selectedLibrary.value.latitude, selectedLibrary.value.longitude)
     }
   }
 }
