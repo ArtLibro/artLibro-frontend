@@ -49,7 +49,7 @@
             </div>
 
             <div class="bookmark">
-              <BookMartIcon strokeColor="#fff" />
+              <BookMarkIcon strokeColor="#fff" />
               <span>북마크</span>
             </div>
           </div>
@@ -82,19 +82,25 @@
           <div id="map" style="width:100%;height:100%;"></div>
         </div>
       </div>
+
+      <!-- 함께 대출된 관련 도서 -->
+      <LoanBookSlider :coLoanBooksDatas="coLoanBooksData" />
+      <!-- 함께 대출된 관련 도서 -->
     </div>
     <!-- 도서관 정보 -->
+
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import BookMartIcon from './components/BookMartIcon.vue';
-import { getBookDetail, getLibraryLoanPossible } from '@/apis/books';
-import type { BookDetail } from '@/types/libraryType';
+import BookMarkIcon from '@/components/bookDetail/BookMarkIcon.vue';
+import { getBookDetail, getLibraryLoanPossible, getLibraryUsageAnalysis } from '@/apis/books';
+import type { BookDetail, CoLoanBook } from '@/types/libraryType';
 import GoToBack from '@/components/common/GoToBack.vue';
 import { REGION_CODE } from '@/constants/regionCode';
 import { REGION_DETAIL_CODE } from '@/constants/regionDetailCode';
+import LoanBookSlider from '@/components/bookDetail/LoanBookSlider.vue';
 
 const props = defineProps({
   id: {
@@ -136,6 +142,8 @@ const regionValue1 = ref<string>('세부 지역 선택')
 
 const selectedLibrary = ref<any>(null)
 
+const coLoanBooksData = ref<CoLoanBook[]>([])
+
 // 지역 선택 옵션
 const regionOptions = computed(() => {
   return REGION_CODE.map((region) => {
@@ -170,8 +178,6 @@ const formatLibraryLoanPossibleData = (libraryData: any) => {
   }));
 
   selectedLibrary.value = tableData.value[0]
-
-  console.log(selectedLibrary.value)
 }
 
 onMounted(async () => {
@@ -232,6 +238,17 @@ const initMap = (lat: number = 37.566826, lng: number = 126.9786567) => {
 
 onMounted(() => {
   initMap();
+})
+
+onMounted(async () => {
+  try {
+    const { coLoanBooksData: fetchCoLoanBooksData, readerRecBooksData: fetchReaderRecBooksData } = await getLibraryUsageAnalysis(+props.id)
+
+    coLoanBooksData.value = fetchCoLoanBooksData
+    console.log(fetchReaderRecBooksData)
+  } catch (error) {
+    console.error('데이터 로딩 중 오류 발생:', error)
+  }
 })
 
 const handleRegionChange = async (value: number) => {
