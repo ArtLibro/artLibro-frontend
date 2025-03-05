@@ -1,3 +1,5 @@
+import type { Book } from '@/types/libraryType.ts'
+
 export const regionCodes = {
   '서울' : 11,
   '부산' : 21,
@@ -20,7 +22,7 @@ export const regionCodes = {
 
 export type RegionKey = keyof typeof regionCodes;
 
-type Libraries = {
+export type Libraries = {
   lib : {
     libInfo : LibraryInfoResult
   }
@@ -47,4 +49,13 @@ export interface LibraryInfoResult {
   longitude : string;
   operatingTime : string;
   tel : string;
+}
+
+export interface LibraryPopularBooksType {
+  age0Books : Book[];
+  age6Books : Book[];
+  age8Books : Book[];
+  age14Books : Book[];
+  age20Books : Book[];
+  loanBooks : Book[];
 }

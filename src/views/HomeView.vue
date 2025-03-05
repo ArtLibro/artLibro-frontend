@@ -146,7 +146,7 @@ onMounted(() => {
       const data = await getAddressByLocation(locationStore.userLocation)
       console.log(data)
       const library = await getLibraryInfo(data)
-      const libraryPopularBooks = await getLibraryPopularBooks('111526')
+      const libraryPopularBooks = await getLibraryPopularBooks(111526)
     }
 
     getAddress()

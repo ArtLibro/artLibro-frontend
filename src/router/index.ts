@@ -8,6 +8,7 @@ import LibrarySearchView from '@/views/LibrarySearchView.vue'
 import ChallengeView from '@/views/ChallengeView.vue'
 import PerformanceSearchView from '@/views/PerformanceSearchView.vue'
 import CommunityView from '@/views/community/CommunityView.vue'
+import LibraryDetailView from '@/views/LibraryDetailView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,9 +24,14 @@ const router = createRouter({
       component: BookView,
     },
     {
-      path: '/library-search',
+      path: '/library/search',
       name: 'library-search',
       component: LibrarySearchView,
+    },
+    {
+      path: '/library/detail/:id',
+      name: 'library-detail',
+      component: LibraryDetailView,
     },
     {
       path: '/performance',
