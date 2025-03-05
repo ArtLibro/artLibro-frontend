@@ -48,3 +48,13 @@ export interface SearchType {
   label: SearchTypeLabel
   value: SearchTypeValue
 }
+
+export interface BookDetail {
+  bookname: string
+  authors: string
+  publisher: string
+  publication_year: string
+  class_nm: string
+  bookImageURL: string
+  description: string
+}
