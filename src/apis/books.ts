@@ -1,6 +1,8 @@
 import LibraryApi from '@/config/axiosLibraryConfig'
 import { LIBRARY_ENDPOINT } from './endpoint'
 import type { BookItem, SearchTypeValue, SortOptionValue } from '@/types/libraryType'
+import type { KakaoAddress } from '@/types/location.types.ts'
+import { regions } from '@/constants/detail-region-code.ts'
 
 interface BookListParams {
   pageNo: number
@@ -10,10 +12,6 @@ interface BookListParams {
   author?: string
   sort?: SortOptionValue
 }
-
-import type { BookItem } from '@/types/libraryType'
-import type { KakaoAddress } from '@/types/location.types.ts'
-import { regions } from '@/constants/detail-region-code.ts'
 
 export const getBookList = async (
   searchKeyword: string,
@@ -50,14 +48,59 @@ export const getBookList = async (
   }
 }
 
-export const getLibraryInfo = async (address : KakaoAddress) => {
-  try{
-    const detailRegionCode = regions[address.regionDepth2];
-    const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryDetail, {
-      params : {
-        dtl_region : detailRegionCode,
+export const getBookDetail = async (isbn13: number) => {
+  try {
+    const response = await LibraryApi.get(LIBRARY_ENDPOINT.bookDetail, {
+      params: {
+        isbn13: isbn13,
+        loaninfoYN: 'Y',
         format: 'json',
-      }
+      },
+    })
+
+    const detailData = response.data.response.detail[0].book
+    const loanInfoData = response.data.response.loanInfo
+
+    return {
+      detailData,
+      loanInfoData,
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+// 대출 가능한 도서관 조회
+export const getLibraryLoanPossible = async (
+  isbn13: number,
+  regionCode: number,
+  detailRegionCode: number | null,
+) => {
+  try {
+    const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryLoanPossible, {
+      params: {
+        isbn: isbn13,
+        region: regionCode,
+        dtl_region: detailRegionCode,
+        format: 'json',
+        pageSize: 300,
+        pageNo: 1,
+      },
+    })
+    return response.data.response
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const getLibraryInfo = async (address: KakaoAddress) => {
+  try {
+    const detailRegionCode = regions[address.regionDepth2]
+    const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryDetail, {
+      params: {
+        dtl_region: detailRegionCode,
+        format: 'json',
+      },
     })
     console.log(response.data)
   } catch (error) {
@@ -65,13 +108,13 @@ export const getLibraryInfo = async (address : KakaoAddress) => {
   }
 }
 
-export const getLibraryPopularBooks = async (libCode : string) => {
-  try{
+export const getLibraryPopularBooks = async (libCode: string) => {
+  try {
     const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryPopularBook, {
-      params : {
-        libCode : libCode,
+      params: {
+        libCode: libCode,
         format: 'json',
-      }
+      },
     })
     console.log(response.data)
   } catch (error) {
