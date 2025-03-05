@@ -8,7 +8,10 @@ const KOPIS_KEY = import.meta.env.VITE_KOPIS_KEY
 */
 
 export const LIBRARY_ENDPOINT = Object.freeze({
-  bookList: `/srchBooks?authKey=${LIBRARY_KEY}`,
+  bookList: `/srchBooks?authKey=${LIBRARY_KEY}`, // 도서 리스트
+  bookDetail: `/srchDtlList?authKey=${LIBRARY_KEY}`, // 도서 상세
+  libraryLoanPossible: `/libSrchByBook?authKey=${LIBRARY_KEY}`, // 도서관 대출 가능 여부
+  libraryUsageAnalysis: `/usageAnalysisList?authKey=${LIBRARY_KEY}`, // 도서 별 이용 분석
   libraryDetail: `/extends/libSrch?authKey=${LIBRARY_KEY}`,
   libraryPopularBook: `/extends/loanItemSrchByLib?authKey=${LIBRARY_KEY}`,
   bookwormList: `/recommandList?authKey=${LIBRARY_KEY}`,
