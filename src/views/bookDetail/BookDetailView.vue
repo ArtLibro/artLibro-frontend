@@ -38,14 +38,14 @@
             </div>
 
             <div class="book-description">
-              <p>{{ detailData?.description }}</p>
+              <p v-html="detailData?.description"></p>
             </div>
           </div>
 
           <div class="book-detail-sub-contents">
             <div class="book-loan-count-container">
               <p class="book-loan-count-title">대출건수</p>
-              <p class="book-loan-count">{{ loanInfoData?.[0]?.Total?.loanCnt }}</p>
+              <p class="book-loan-count">{{ loanCount }}</p>
             </div>
 
             <div class="bookmark">
@@ -93,7 +93,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watchEffect } from 'vue';
 import BookMarkIcon from '@/components/bookDetail/BookMarkIcon.vue';
 import { getBookDetail, getLibraryLoanPossible, getLibraryUsageAnalysis } from '@/apis/books';
 import type { BookDetail, CoLoanBook } from '@/types/libraryType';
@@ -144,6 +144,12 @@ const selectedLibrary = ref<any>(null)
 
 const coLoanBooksData = ref<CoLoanBook[]>([])
 
+
+// 대출 건수
+const loanCount = computed(() => {
+  return loanInfoData.value?.[0]?.Total?.loanCnt || '정보 없음'
+})
+
 // 지역 선택 옵션
 const regionOptions = computed(() => {
   return REGION_CODE.map((region) => {
@@ -180,7 +186,7 @@ const formatLibraryLoanPossibleData = (libraryData: any) => {
   selectedLibrary.value = tableData.value[0]
 }
 
-onMounted(async () => {
+watchEffect(async () => {
   isLoading.value = true
   try {
     // 도서 상세 데이터 조회
@@ -240,7 +246,7 @@ onMounted(() => {
   initMap();
 })
 
-onMounted(async () => {
+watchEffect(async () => {
   try {
     const { coLoanBooksData: fetchCoLoanBooksData, readerRecBooksData: fetchReaderRecBooksData } = await getLibraryUsageAnalysis(+props.id)
 
