@@ -20,6 +20,7 @@
   display: flex;
   height: 470px;
   align-items: center;
+  justify-content: space-between;
 }
 
 .line-image {

@@ -141,13 +141,41 @@ export const getLibraryInfo = async (address: KakaoAddress) => {
         },
       },
     })
-    console.log(response.data)
+    return response.data
   } catch (error) {
     console.error(error)
   }
 }
 
-export const getLibraryPopularBooks = async (libCode: string) => {
+export const getLibraryInfoByRegion = async (regionCode : number) => {
+  try {
+    const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryDetail, {
+      params: {
+        region: regionCode,
+        format: 'json',
+      },
+    })
+    return response.data.response
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const getLibraryInfoByLibraryCode = async (libraryCode : number) => {
+  try {
+    const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryDetail, {
+      params: {
+        libCode: libraryCode,
+        format: 'json',
+      },
+    })
+    return response.data.response
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const getLibraryPopularBooks = async (libCode: number) => {
   try {
     const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryPopularBook, {
       params: {
@@ -158,7 +186,7 @@ export const getLibraryPopularBooks = async (libCode: string) => {
         },
       },
     })
-    console.log(response.data)
+    return response.data.response
   } catch (error) {
     console.error(error)
   }
