@@ -20,7 +20,7 @@
                     currentMainBook?.publication_year }}</span></div>
                 </div>
               </div>
-              <div class="slider-item-main-image">
+              <div class="slider-item-main-image" @click="bookClickHandler(currentMainBook?.isbn13)">
                 <img :src="currentMainBook?.bookImageURL" alt="dummy-book">
               </div>
 
@@ -60,6 +60,7 @@ import { getBookDetail } from '@/apis/books';
 import type { BookDetail, CoLoanBook } from '@/types/libraryType';
 import type { PropType } from 'vue';
 import { computed, ref, watchEffect } from 'vue';
+import { useRouter } from 'vue-router';
 
 const props = defineProps({
   coLoanBooksDatas: {
@@ -67,6 +68,12 @@ const props = defineProps({
     required: true,
   },
 })
+
+const router = useRouter();
+
+const bookClickHandler = (isbn13: string) => {
+  router.push(`/book/detail/${+isbn13}`);
+}
 
 const bookDetails = ref<BookDetail[]>([]);
 
@@ -118,6 +125,7 @@ const handleLeftButton = () => {
 
 const handleRightButton = () => {
   currentIndex.value = (currentIndex.value + 1) % bookDetails.value.length;
+  console.log(currentMainBook.value)
 }
 
 </script>
@@ -191,6 +199,7 @@ const handleRightButton = () => {
           .slider-item-main-image {
             width: 191px;
             height: 288px;
+            cursor: pointer;
 
             img {
               width: 100%;
