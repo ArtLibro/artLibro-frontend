@@ -1,11 +1,38 @@
 <script lang="ts" setup>
+import router from "@/router";
+import { useAuthStore } from "@/stores/authStore";
+import { message } from "ant-design-vue";
 import { ref } from "vue";
-import { EyeTwoTone, EyeInvisibleOutlined } from "@ant-design/icons-vue";
-import { UserOutlined, InfoCircleOutlined } from "@ant-design/icons-vue";
+
+const authStore = useAuthStore();
+
 
 const address = ref<string>("");
 const domain = ref<string>("@naver.com");
-const password1 = ref<string>("");
+const password = ref<string>("");
+
+const validateForm = () => {
+  if (!address.value) {
+    message.error("이메일을 입력해주세요.");
+    return false;
+  }
+  if (!password.value) {
+    message.error("비밀번호를 입력해주세요.");
+    return false;
+  }
+  return true;
+};
+
+
+const handleLogin = async () => {
+  if (!validateForm()) return;
+
+  const success  = await authStore.login(address.value + domain.value, password.value);
+
+  if (success) {
+    router.push("/"); // 로그인 성공 시 이동
+  }
+};
 
 </script>
 
@@ -29,10 +56,10 @@ const password1 = ref<string>("");
 
 
         <div class="input-text">비밀번호 입력</div>
-        <a-input-password v-model:value="password1" placeholder="비밀번호를 입력해주세요" />
+        <a-input-password v-model:value="password" placeholder="비밀번호를 입력해주세요" />
         <div class="small-text"> 영문 대·소문자/숫자.특수문자 중 2가지 이상 조합, 8~16글자 </div>
 
-        <a-button type="primary" class="button">로그인</a-button>
+        <a-button type="primary" class="button" @click="handleLogin" >로그인</a-button>
 
       </div>
 
