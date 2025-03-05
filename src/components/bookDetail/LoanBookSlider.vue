@@ -78,7 +78,6 @@ const fetchBookDetail = async () => {
 
     const response = await Promise.all(bookPromiss);
     bookDetails.value = response.map(result => result.detailData);
-
   } catch (error) {
     console.error('책 상세 정보 가져오기 실패', error);
     throw error;
@@ -106,7 +105,7 @@ const subBooks = computed(() => {
     (currentIndex.value + 2) % bookDetails.value.length,
   ]
 
-  return bookDetails.value.filter((_, index) => nextIndex.includes(index));
+  return [bookDetails.value[nextIndex[0]], bookDetails.value[nextIndex[1]]];
 })
 
 const handleLeftButton = () => {
