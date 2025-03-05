@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { LibraryInfoResult } from '@/types/library/library.types.ts'
+import { RouterLink } from 'vue-router'
 
 type LibraryResultListProps = Pick<LibraryInfoResult, 'libCode' | 'libName' | 'homepage' | 'address'>
 
@@ -11,7 +12,9 @@ defineProps<LibraryResultListProps>()
     <div class="place-info">{{ address.split(' ')[0] }}</div>
     <div class="library-name">{{ libName }}</div>
     <div class="library-address">{{ address }}</div>
-    <img src="/icons/library/link.svg" alt="link" width="22" height="22"/>
+    <RouterLink :to="`/library/detail/${libCode}`" class="router-link">
+      <img src="/icons/library/link.svg" alt="link" width="22" height="22"/>
+    </RouterLink>
   </div>
 </template>
 
@@ -45,5 +48,10 @@ defineProps<LibraryResultListProps>()
   height: 32px;
   border-radius: 999px;
   border: 1px solid $secondary-color-300;
+}
+
+.router-link {
+  width: 22px;
+  height: 22px;
 }
 </style>
