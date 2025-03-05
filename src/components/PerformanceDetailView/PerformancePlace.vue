@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 
-// import { KakaoMap, KakaoMapMarker } from 'vue3-kakao-maps'
-
-defineProps({
+const props = defineProps({
   fcltynm: String,
   seatscale: String,
   parkinglot: String,
@@ -18,63 +16,37 @@ defineProps({
   restbarrier: String,
   elevbarrier: String,
   runwbarrier: String,
+  latitude: Number,
+  longitude: Number,
 })
 
-// const coordinate = {
-//   lat: 37.566826,
-//   lng: 126.9786567,
-// }
+const { latitude, longitude } = props
 
-const { VITE_KAKAO_MAP_KEY } = import.meta.env.VITE_KAKAOMAP_KEY
+console.log('latitude', latitude)
 
-// const mapContainer = ref<HTMLElement | null>(null)
 onMounted(() => {
-  // 카카오 맵 SDK를 동적으로 로드
-  const script = document.createElement('script')
-  script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${VITE_KAKAO_MAP_KEY}&autoload=false`
-  script.onload = initMap // SDK 로드 완료 후 initMap 호출
-  document.head.appendChild(script)
-})
+  // window.kakao가 존재하는지 확인하고, 타입 단언을 사용하여 타입을 지정
+  if ((window as any).kakao) {
+    const kakao = (window as any).kakao
 
-// const loadKakaoMap = (container: HTMLElement): void => {
-//   const script = document.createElement('script')
-//   script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${VITE_KAKAO_MAP_KEY}&autoload=false`
-//   document.head.appendChild(script)
+    kakao.maps.load(() => {
+      const container = document.getElementById('map')
+      const options = {
+        center: new kakao.maps.LatLng(latitude, longitude), // 서울의 위도, 경도
+        level: 3, // 확대 레벨
+      }
 
-//   script.onload = () => {
-//     // kakao 객체가 로드되었는지 확인하고 지도 초기화
+      const map = new kakao.maps.Map(container, options)
 
-//     const kakao = window?.kakao as any
-//     if (kakao && kakao.maps) {
-//       kakao.maps.load(() => {
-//         const options = {
-//           center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도 중심 좌표
-//           level: 3, // 지도 확대 레벨
-//           maxLevel: 5, // 지도 축소 제한 레벨
-//         }
+      const markerPosition = new kakao.maps.LatLng(latitude, longitude)
+      const marker = new kakao.maps.Marker({
+        position: markerPosition,
+      })
 
-//         // 지도 인스턴스 생성
-//         new kakao.maps.Map(container, options)
-//       })
-//     } else {
-//       console.error('Kakao Map API가 로드되지 않았습니다.')
-//     }
-//   }
-
-//   script.onerror = () => {
-//     console.error('Kakao Map API 로딩 오류 발생')
-//   }
-// }
-
-const initMap = () => {
-  const kakao = window?.kakao as any
-  const container = document.getElementById('map')
-  const options = {
-    center: new kakao.maps.LatLng(33.450701, 126.570667),
-    level: 3,
+      marker.setMap(map)
+    })
   }
-  new kakao.maps.Map(container, options)
-}
+})
 </script>
 
 <template>
@@ -153,15 +125,14 @@ const initMap = () => {
     </div>
   </div>
 
-  <!-- /// -->
-  <!-- <KakaoMap :lat="coordinate.lat" :lng="coordinate.lng" :draggable="true">
-    <KakaoMapMarker :lat="coordinate.lat" :lng="coordinate.lng"></KakaoMapMarker>
-  </KakaoMap> -->
-  <!-- <div ref="mapContainer" style="width: 100%; height: 70vh"></div> -->
-  <div id="map" style="width: 100%; height: 400px"></div>
+  <div id="map" style="width: 100%; height: 600px"></div>
 </template>
 
 <style lang="scss" scoped>
+.performance-place-container {
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
 .performance-place-info {
   width: 100%;
   background: #f8f8f8;

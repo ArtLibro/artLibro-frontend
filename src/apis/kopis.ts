@@ -13,36 +13,48 @@ export const getMonthlyPerformances = async () => {
   }
 }
 
-export const getAwardPerformances = async () => {
+export const getAwardPerformances = async (genre: object) => {
   try {
-    const response = await KopisApi.get(KOPIS_ENDPOINT.awardList)
+    // 추가
+    const queryParam = genre ? `&shcate=${genre.code}` : ''
+    const response = await KopisApi.get(KOPIS_ENDPOINT.awardList + queryParam)
     const data = await response.data
-    console.log(data)
+
     return data
   } catch (error) {
     console.error(error)
   }
 }
 
-/// 추가
+export const getPerformances = async (genre: object) => {
+  try {
+    // 추가
+    const queryParam = genre ? `&shcate=${genre.code}` : ''
+    const response = await KopisApi.get(KOPIS_ENDPOINT.prfSearch + queryParam)
+    const data = await response.data
+    return data
+  } catch (error) {
+    console.error(error)
+  }
+}
 
-export const getPerformanceDetail = async (query: PrfApi, path: string) => {
+/// 추가 prfSearch
+// query: PrfApi 삭제 상태
+export const getPerformanceDetail = async (type: string) => {
   try {
     let params: { [key: string]: any } = {}
+    let prftype: string = ''
 
-    // path 정리 필요
-    console.log(path)
-    if ('shprfnmfct' in query) {
-      params = {
-        ...params,
-        shprfnmfct: query.shprfnmfct,
-        cpage: query.cpage,
-        rows: query.rows,
-      }
+    if (type === 'prfInfo') {
+      prftype = KOPIS_ENDPOINT.prfDetailList
     }
 
-    const response = await KopisApi.get(KOPIS_ENDPOINT.prfDetailList, { params })
-    const data = await response.data
+    if (type === 'prfPlace') {
+      prftype = KOPIS_ENDPOINT.prfDetailPlace
+    }
+
+    const response = await KopisApi.get(prftype, { params })
+    const data = await response.data.dbs.db
 
     return data
   } catch (error) {

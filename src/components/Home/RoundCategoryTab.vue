@@ -5,7 +5,7 @@ defineProps({
 </script>
 
 <template>
-  <div class="categorybtn">{{ name }}</div>
+  <div class="categorybtn" @click="$emit('click')">{{ name }}</div>
 </template>
 
 <style lang="scss" scoped>
@@ -21,11 +21,6 @@ defineProps({
   margin-right: 20px;
   display: flex;
   align-items: center;
-}
-
-.active {
-  background: $secondary-color-300;
-  color: white;
-  border: none;
+  cursor: pointer;
 }
 </style>

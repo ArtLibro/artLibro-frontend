@@ -83,9 +83,7 @@ export const getLibraryPopularBooks = async (libCode: string) => {
 
 /// 추가 /////
 
-export const getBookToHome = async (
-  query: QueryItemReader | QueryItemRankBook,
-): Promise<object> => {
+export const getBookToHome = async (query: QueryItemReader | QueryItemRankBook) => {
   try {
     let params: { [key: string]: any } = { format: 'json' }
     let bookType: string = ''
@@ -108,6 +106,8 @@ export const getBookToHome = async (
         pageNumber: query.pageNumber,
       }
     }
+
+    console.log()
 
     const response = await LibraryApi.get(bookType, { params })
 
