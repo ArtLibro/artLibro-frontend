@@ -49,6 +49,7 @@ export interface SearchType {
   value: SearchTypeValue
 }
 
+// 도서 상세 정보
 export interface BookDetail {
   bookname: string
   authors: string
@@ -57,4 +58,30 @@ export interface BookDetail {
   class_nm: string
   bookImageURL: string
   description: string
+}
+
+// 도서 별 이용 분석 데이터 도서 타입
+export interface analysisBooksType {
+  authors: string
+  bookname: string
+  isbn13: string
+  publication_year: string
+  publisher: string
+  vol: string
+}
+
+// 추천 도서 타입
+export interface ReaderRecBook {
+  book: Book
+}
+
+// 연관 대출 도서 타입
+export interface CoLoanBook {
+  book: Book
+}
+
+// 전체 응답 타입
+export interface BookRecommendation {
+  readerRecBooks: ReaderRecBook[]
+  coLoanBooks: CoLoanBook[]
 }

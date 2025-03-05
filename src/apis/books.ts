@@ -1,6 +1,11 @@
 import LibraryApi from '@/config/axiosLibraryConfig'
 import { LIBRARY_ENDPOINT } from './endpoint'
-import type { BookItem, SearchTypeValue, SortOptionValue } from '@/types/libraryType'
+import type {
+  BookItem,
+  BookRecommendation,
+  SearchTypeValue,
+  SortOptionValue,
+} from '@/types/libraryType'
 import type { KakaoAddress } from '@/types/location.types.ts'
 import { regions } from '@/constants/detail-region-code.ts'
 
@@ -68,6 +73,7 @@ export const getBookDetail = async (isbn13: number) => {
     }
   } catch (error) {
     console.error(error)
+    throw error
   }
 }
 
@@ -91,6 +97,35 @@ export const getLibraryLoanPossible = async (
     return response.data.response
   } catch (error) {
     console.error(error)
+    throw error
+  }
+}
+
+// 도서 별 이용 분석
+export const getLibraryUsageAnalysis = async (isbn13: number) => {
+  try {
+    const response = await LibraryApi.get<{ response: BookRecommendation }>(
+      LIBRARY_ENDPOINT.libraryUsageAnalysis,
+      {
+        params: {
+          isbn13: isbn13,
+          format: 'json',
+        },
+      },
+    )
+
+    // 연관 대출 도서
+    const coLoanBooksData = response.data.response.coLoanBooks
+    // 다독자를 위한 추천 도서
+    const readerRecBooksData = response.data.response.readerRecBooks
+
+    return {
+      coLoanBooksData,
+      readerRecBooksData,
+    }
+  } catch (error) {
+    console.error(error)
+    throw error
   }
 }
 
