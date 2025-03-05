@@ -27,6 +27,9 @@ const year = now.getFullYear() - 1
 const month = String(now.getMonth() + 1).padStart(2, '0')
 const day = String(now.getDate()).padStart(2, '0')
 const formattedDate = `${year}-${month}-${day}`
+const filteredBooks = ref([])
+const rankBook = ref([])
+const activeTab = ref(null)
 
 const rankCateTab = ref({
   1: '철학',
@@ -42,11 +45,11 @@ const rankCateTab = ref({
 const query = ref<[QueryItemReader, QueryItemRankBook]>([
   {
     type: 'reader',
-    isbn13: '9788983922571;9788983921475;',
+    isbn13: '9788983922571;9788983921475;9788983921994 ',
   },
   {
     startDt: formattedDate,
-    kdc: 1,
+    kdc: 0,
     pagesize: 1,
     pageNumber: 20,
   },
@@ -59,45 +62,72 @@ const { data: data1 } = useQuery({
 })
 
 // 인기도서
-const { data: data2 } = useQuery({
-  queryKey: ['rank-book', query],
-  queryFn: () => getBookToHome(query.value[1]),
+onMounted(async () => {
+  try {
+    const data = await getBookToHome(query.value[1])
+    rankBook.value = data.response.docs // 응답된 책 데이터를 저장
+    filteredBooks.value = rankBook.value.slice(0, 12) // 초기 필터링, 12개만 표시
+  } catch (error) {
+    console.error('API 요청 실패:', error)
+  }
 })
 
-console.log('data1.value', data1.value)
-// const bookwormList = data1.value?.response.docs
-// const bookrankList = data2.value?.response.docs
-
-const tmpArray = ref([
-  { title: 'dkdk', id: 1 },
-  { title: 'dkdk', id: 2 },
-  { title: 'dkdk', id: 3 },
-  { title: 'dkdk', id: 4 },
-  { title: 'dkdk', id: 5 },
-  { title: 'dkdk', id: 6 },
-  { title: 'dkdk', id: 7 },
-  { title: 'dkdk', id: 8 },
-  { title: 'dkdk', id: 9 },
-  { title: 'dkdk', id: 10 },
-  { title: 'dkdk', id: 11 },
-  { title: 'dkdk', id: 12 },
-  { title: 'dkdk', id: 13 },
-  { title: 'dkdk', id: 14 },
-  { title: 'dkdk', id: 15 },
-])
-
 const bookChunk = computed(() => {
-  const chunkSize = 6
+  const chunkSize = 8
+  const limitedArray = data1.value?.response?.docs?.slice(0, 24) || []
+
   const result = []
-  for (let i = 0; i < tmpArray.value.length; i += chunkSize) {
-    result.push(tmpArray.value.slice(i, i + chunkSize))
+  for (let i = 0; i < limitedArray.length; i += chunkSize) {
+    result.push(data1.value?.response?.docs.slice(i, i + chunkSize))
   }
   return result
 })
 
-console.log('나와야합니다', bookChunk)
+// 카테고리 아이디 가져오기
+const getCategoryId = (categoryName) => {
+  for (let key in rankCateTab.value) {
+    if (rankCateTab.value[key] === categoryName) {
+      return key
+    }
+  }
+  return null
+}
 
-console.log(data2.value)
+const filterTab = async (categoryName, key) => {
+  try {
+    // categoryName을 이용해서 카테고리 ID를 얻는다
+    const categoryId = getCategoryId(categoryName)
+    if (!categoryId) {
+      console.error('카테고리 ID를 찾을 수 없습니다.')
+      return
+    }
+
+    query.value[1].kdc = categoryId
+
+    const data = await getBookToHome(query.value[1])
+
+    const books = data.response.docs
+
+    // 필터된 데이터로 갱신하고, 12개만 추출
+    rankBook.value = books
+    filteredBooks.value = books.slice(0, 12)
+    activeTab.value = key
+  } catch (error) {
+    console.error('필터링 실패:', error)
+  }
+}
+
+//탭 필터 기능
+const getColumns = (filteredBooks) => {
+  const columns = [[], [], [], []]
+
+  filteredBooks.forEach((item, index) => {
+    const columnIndex = index % 4
+    columns[columnIndex].push(item)
+  })
+
+  return columns
+}
 
 const locationStore = useLocationStore()
 onMounted(() => {
@@ -138,44 +168,52 @@ onMounted(() => {
     <div class="bookitem-container">
       <swiper
         :slidesPerView="1"
-        :spaceBetween="16"
+        :spaceBetween="10"
         :loop="true"
         :pagination="{ clickable: true }"
         :navigation="true"
         :modules="[Navigation]"
         class="mySwiper"
       >
-        <swiper-slide v-for="(chunk, index) in bookChunk" :key="index">
+        <swiper-slide v-for="(chunk, index) in bookChunk.slice(0, 24)" :key="index">
           <div style="display: flex">
-            <HomeBookItem v-for="item in chunk" :key="item.id" :title="item.id" />
+            <HomeBookItem
+              v-for="item in chunk"
+              :key="item"
+              :title="item.book.bookname"
+              :authors="item.book.authors"
+              :bookimage="item.book.bookImageURL"
+            />
           </div>
         </swiper-slide>
       </swiper>
     </div>
+    <div class="category-buttons"></div>
     <div class="title">이달의 인기 대출 도서</div>
     <div class="bookCategory">
-      <RoundCategoryTab v-for="(value, key) in rankCateTab" :key="key" :name="value" />
+      <RoundCategoryTab
+        v-for="(value, key) in rankCateTab"
+        :key="key"
+        :name="value"
+        @click="filterTab(value, key)"
+        :class="['categorybtn', { active: activeTab === key }]"
+      />
     </div>
     <div style="display: flex">
-      <div class="rankBook-container">
-        <RankBook />
-        <RankBook />
-        <RankBook />
-      </div>
-      <div class="rankBook-container">
-        <RankBook />
-        <RankBook />
-        <RankBook />
-      </div>
-      <div class="rankBook-container">
-        <RankBook />
-        <RankBook />
-        <RankBook />
-      </div>
-      <div class="rankBook-container">
-        <RankBook />
-        <RankBook />
-        <RankBook />
+      <div
+        v-for="(column, colIndex) in getColumns(filteredBooks)"
+        :key="colIndex"
+        class="rankBook-column"
+      >
+        <div v-for="item in column" :key="item.id" class="rankBook-container">
+          <RankBook
+            :bookname="item.doc.bookname"
+            :ranking="item.doc.ranking"
+            :authors="item.doc.authors"
+            :bookImageURL="item.doc.bookImageURL"
+          />
+          <!-- {{ item }} -->
+        </div>
       </div>
     </div>
     <div class="library-wrapper">
@@ -261,5 +299,11 @@ onMounted(() => {
   height: 80%;
   justify-content: center;
   align-items: self-end;
+}
+
+.categorybtn.active {
+  background: $secondary-color-300;
+  color: white;
+  border: none;
 }
 </style>

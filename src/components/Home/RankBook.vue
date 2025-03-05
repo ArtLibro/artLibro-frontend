@@ -1,14 +1,22 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+defineProps({
+  bookname: String,
+  ranking: String,
+  authors: String,
+  bookImageURL: String,
+})
+</script>
 
 <template>
   <div class="rankbookItem">
     <div class="rankbook"></div>
+    <img :src="bookImageURL" alt="책사진" class="rankbook-img" />
     <div class="rankbook-text">
-      <div class="title">퇴마록 국내편</div>
-      <div class="subtitle">이우혁</div>
+      <div class="title">{{ bookname }}</div>
+      <div class="subtitle">{{ authors }}</div>
     </div>
-    <div class="rank-num">2</div>
-    <div class="rank-shadow">2</div>
+    <div class="rank-num">{{ ranking }}</div>
+    <div class="rank-shadow">{{ ranking }}</div>
   </div>
 </template>
 
@@ -21,10 +29,9 @@
   width: 305px;
 }
 
-.rankbook {
+.rankbook-img {
   width: 72px;
   height: 101px;
-  background: gray;
   border-radius: 0 4px 4px 0;
 }
 
