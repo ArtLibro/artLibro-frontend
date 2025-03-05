@@ -184,6 +184,8 @@ const formatLibraryLoanPossibleData = (libraryData: any) => {
   }));
 
   selectedLibrary.value = tableData.value[0]
+
+  initMap(selectedLibrary.value.latitude, selectedLibrary.value.longitude);
 }
 
 watchEffect(async () => {
@@ -282,8 +284,6 @@ const libraryClickHandler = (record: any) => {
   return {
     onClick: () => {
       selectedLibrary.value = record
-
-      console.log(selectedLibrary.value)
       initMap(selectedLibrary.value.latitude, selectedLibrary.value.longitude)
     }
   }
