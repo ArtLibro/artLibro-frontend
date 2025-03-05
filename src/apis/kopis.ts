@@ -6,7 +6,6 @@ export const getMonthlyPerformances = async () => {
   try {
     const response = await KopisApi.get(KOPIS_ENDPOINT.monthlyList)
     const data = await response.data
-    console.log(data)
     return data
   } catch (error) {
     console.error(error)

@@ -16,6 +16,7 @@ export const LIBRARY_ENDPOINT = Object.freeze({
   libraryPopularBook: `/extends/loanItemSrchByLib?authKey=${LIBRARY_KEY}`,
   bookwormList: `/recommandList?authKey=${LIBRARY_KEY}`,
   bookRankList: `/loanItemSrch?authKey=${LIBRARY_KEY}`,
+  readQuantityAnalysis: `/readQt?authKey=${LIBRARY_KEY}`,
 })
 
 /**
