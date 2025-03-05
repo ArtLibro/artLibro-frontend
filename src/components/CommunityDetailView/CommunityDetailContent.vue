@@ -7,6 +7,15 @@ import { computed } from 'vue'
 
 const props = defineProps<{ post: Post }>()
 
+// 기본 이미지 경로
+const defaultBookImage = '/images/community-no-image.png'
+
+// 책 이미지가 없을 경우 기본 이미지 사용
+const bookImage = computed(() => (props.post.image ? props.post.image : defaultBookImage))
+
+// 현재 이미지가 기본 이미지인지 체크
+const isDefaultImage = computed(() => bookImage.value === defaultBookImage)
+
 // createdAt을 YYYY-MM-DD 형식으로 변환
 const formattedDate = computed(() => {
   return props.post.createdAt ? dayjs(props.post.createdAt).format('YYYY-MM-DD') : ''
@@ -26,9 +35,6 @@ const handleDelete = async () => {
 const goToEditPage = () => {
   router.push(`/community/edit/${props.post.id}`) // 수정페이지로 이동
 }
-
-// test
-console.log('CommunityDetailContent에서 받은 post:', props.post)
 </script>
 
 <template>
@@ -50,7 +56,12 @@ console.log('CommunityDetailContent에서 받은 post:', props.post)
       </div>
 
       <div class="book-image">
-        <img v-if="post.image" :src="post.image" alt="게시글 이미지" class="post-image" />
+        <img
+          :src="bookImage"
+          alt="게시글 이미지"
+          class="post-image"
+          :class="{ 'default-image': isDefaultImage }"
+        />
       </div>
 
       <div class="review-container">
@@ -199,11 +210,20 @@ console.log('CommunityDetailContent에서 받은 post:', props.post)
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
+.default-image {
+  background-color: white;
+  padding: 90px 40px;
+  box-sizing: border-box; /* 패딩이 내부에 포함되도록 설정 */
+  object-fit: contain;
+  width: 100%;
+  height: auto;
+}
+
 .review-container {
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
-  min-height: 380px;
+  min-height: 390px;
   background: white;
   border-radius: 20px;
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
@@ -211,7 +231,7 @@ console.log('CommunityDetailContent에서 받은 post:', props.post)
 }
 
 .review-text {
-  width: 100%;
+  width: 900px;
   font-size: $text-size-300;
   font-weight: lighter;
   line-height: 1.6;
