@@ -52,11 +52,6 @@ const router = createRouter({
       name: 'challenge',
       component: ChallengeView,
     },
-    {
-      path: '/community',
-      name: 'community',
-      component: CommunityView,
-    },
     // 커뮤니티 메인페이지
     { path: '/community', name: 'community', component: CommunityView },
     // 커뮤니티 상세페이지

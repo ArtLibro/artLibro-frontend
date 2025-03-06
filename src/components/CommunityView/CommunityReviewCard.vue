@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -16,6 +17,15 @@ const props = defineProps<{
     time: string
   }
 }>()
+
+// 기본 이미지 경로
+const defaultBookImage = '/images/community-no-image.png'
+
+// 책 이미지가 없을 때 기본 이미지로 대체
+const reviewImage = computed(() => props.review.image || defaultBookImage)
+
+// 기본 이미지인지 확인
+const isDefaultImage = computed(() => reviewImage.value === defaultBookImage)
 
 const goToDetail = () => {
   router.push(`/community/${props.review.id}`)
@@ -39,7 +49,11 @@ const goToDetail = () => {
         <span>댓글 {{ review.comments }}</span>
       </div>
     </div>
-    <img :src="review.image" alt="책표지" class="review-image" />
+    <img
+      :src="reviewImage"
+      :class="{ 'review-image': true, 'default-image': isDefaultImage }"
+      alt="책표지"
+    />
   </div>
 </template>
 
@@ -114,5 +128,11 @@ const goToDetail = () => {
   object-fit: cover;
   margin-left: 30px;
   box-shadow: 0px 1px 4px $text-color-300;
+}
+
+.default-image {
+  opacity: 0.5;
+  padding: 50px 30px;
+  object-fit: fill;
 }
 </style>

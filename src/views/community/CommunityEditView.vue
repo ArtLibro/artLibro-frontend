@@ -19,7 +19,6 @@ const loadPostDetail = async () => {
 const handlePostUpdated = async (updatedPost: Post, imageFile: File | null) => {
   if (!post.value) return
   await updatePost(post.value.id, updatedPost, imageFile)
-  alert('✅ 게시글이 수정되었습니다!')
   router.push(`/community/${post.value.id}`)
 }
 
@@ -32,7 +31,7 @@ onMounted(loadPostDetail)
       <img src="/images/community-write-background.png" alt="배경이미지" />
     </section>
     <div class="form-container" v-if="post">
-      <CommunityWriteForm :existingPost="post" @postCreated="handlePostUpdated" />
+      <CommunityWriteForm :existingPost="post" @postUpdated="handlePostUpdated" />
     </div>
     <div v-else>
       <p>게시글 정보를 불러오는 중...</p>

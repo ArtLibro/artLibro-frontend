@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { Post } from '@/types/community/communityType'
+import type { NewPost, Post } from '@/types/community/communityType'
 
 const API_BASE_URL = 'http://13.209.75.182:5001'
 // 관리자 토큰
@@ -24,17 +24,17 @@ export const fetchPosts = async (): Promise<Post[]> => {
     )
 
     return response.data.map((post): Post => {
-      let category: '도서' | '공연/행사' = '도서' // default
+      let category: '도서' | '공연/행사' = '도서'
       let title = post.title
       let content = ''
 
       try {
-        const parsedData = JSON.parse(post.title)
+        const parsedData = JSON.parse(post.title) // -> JSON 파싱
         category = parsedData.category ?? '도서'
         title = parsedData.title ?? post.title
         content = parsedData.content ?? ''
       } catch (error) {
-        console.warn('⚠️ JSON 파싱 실패:', error)
+        console.warn('⛔️ JSON 파싱 실패, 일반 문자열로 처리:', error)
       }
 
       return {
@@ -53,9 +53,10 @@ export const fetchPosts = async (): Promise<Post[]> => {
 }
 
 // 게시글 추가
-export const createPost = async (post: Post, imageFile: File | null) => {
+export const createPost = async (post: NewPost, imageFile: File | null) => {
   try {
     const formData = new FormData()
+
     const jsonData = JSON.stringify({
       category: post.category,
       title: post.title,
@@ -72,6 +73,7 @@ export const createPost = async (post: Post, imageFile: File | null) => {
         'Content-Type': 'multipart/form-data',
       },
     })
+
     console.log('✅ 게시글 추가 성공!')
   } catch (error) {
     console.error('❌ 게시글 추가 실패:', error)
@@ -79,9 +81,19 @@ export const createPost = async (post: Post, imageFile: File | null) => {
 }
 
 // 게시글 수정
-export const updatePost = async (postId: string, post: Post, imageFile: File | null) => {
+export const updatePost = async (
+  postId: string,
+  post: Post | undefined,
+  imageFile: File | null,
+) => {
+  if (!post) {
+    console.error('❌ 게시글 수정 실패: post 데이터가 없습니다.')
+    return
+  }
+
   try {
     const formData = new FormData()
+
     const jsonData = JSON.stringify({
       category: post.category,
       title: post.title,
@@ -99,6 +111,7 @@ export const updatePost = async (postId: string, post: Post, imageFile: File | n
         'Content-Type': 'multipart/form-data',
       },
     })
+
     console.log('✅ 게시글 수정 성공!')
   } catch (error) {
     console.error('❌ 게시글 수정 실패:', error)
