@@ -76,7 +76,7 @@
             </div>
 
             <div class="homepage-button-container">
-              <a :href="selectedLibrary?.homepage" target="_blank">홈페이지 이동</a>
+              <p @click="handleLibraryClick">홈페이지 이동</p>
             </div>
           </div>
 
@@ -222,6 +222,7 @@ watchEffect(async () => {
 
 let map: any = null;
 let marker: any = null;
+let infowindow: any = null;
 
 const initMap = (lat: number = 37.566826, lng: number = 126.9786567) => {
   if ((window as any).kakao) {
@@ -233,6 +234,9 @@ const initMap = (lat: number = 37.566826, lng: number = 126.9786567) => {
       const latLng = new kakao.maps.LatLng(lat, lng)
       map.setCenter(latLng) // 지도 중심 변경
       marker.setPosition(latLng) // 마커 위치 변경
+
+      infowindow.setContent(`${selectedLibrary.value.libraryName ? `<div style="padding:5px; text-align: center; font-size: 14px;">${selectedLibrary.value.libraryName}</div>` : ''}`);
+      infowindow.setPosition(latLng);
       return
     }
 
@@ -251,8 +255,24 @@ const initMap = (lat: number = 37.566826, lng: number = 126.9786567) => {
         position: markerPosition,
       })
 
+      infowindow = new kakao.maps.InfoWindow({
+        content: `${selectedLibrary?.value?.libraryName ? `<div style="padding:5px; text-align: center;">${selectedLibrary.value.libraryName}</div>` : ''}`,
+        position: markerPosition
+      });
+
+
       marker.setMap(map)
+      infowindow.open(map, marker);
+
+      kakao.maps.event.addListener(marker, 'click', handleLibraryClick);
     })
+  }
+}
+
+const handleLibraryClick = () => {
+  const result = confirm(`${selectedLibrary.value.libraryName} 홈페이지로 이동하시겠습니까?`);
+  if (result) {
+    window.open(selectedLibrary.value.homepage, '_blank');
   }
 }
 
@@ -297,8 +317,6 @@ const libraryClickHandler = (record: any) => {
     onClick: () => {
       selectedLibrary.value = record
       initMap(selectedLibrary.value.latitude, selectedLibrary.value.longitude)
-
-      console.log(record)
     }
   }
 }
