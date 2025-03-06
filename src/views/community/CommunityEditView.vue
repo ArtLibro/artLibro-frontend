@@ -1,13 +1,17 @@
 <script setup lang="ts">
 import CommunityWriteForm from '@/components/CommunityWriteView/CommunityWriteForm.vue'
 import { useRouter, useRoute } from 'vue-router'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { fetchPosts, updatePost } from '@/apis/community/post'
 import type { Post } from '@/types/community/communityType'
+import { useAuthStore } from '@/stores/authStore'
 
 const router = useRouter()
 const route = useRoute()
 const post = ref<Post | null>(null)
+
+const authStore = useAuthStore()
+const userId = computed(() => authStore.userId)
 
 // 기존 게시글 데이터 불러오기
 const loadPostDetail = async () => {
@@ -18,8 +22,21 @@ const loadPostDetail = async () => {
 // 게시글 수정 후 상세페이지로 이동
 const handlePostUpdated = async (updatedPost: Post, imageFile: File | null) => {
   if (!post.value) return
-  await updatePost(post.value.id, updatedPost, imageFile)
-  router.push(`/community/${post.value.id}`)
+
+  if (post.value.userId !== userId.value) {
+    alert('작성자만 수정할 수 있습니다!')
+    return
+  }
+
+  // 만약 기존 이미지 삭제할 경우 추가 (URL이 아니라 imagePublicId만 저장)
+  const imageToDeletePublicId = post.value.imagePublicId ?? undefined
+
+  try {
+    await updatePost(post.value.id, updatedPost, imageFile, imageToDeletePublicId)
+    router.push(`/community/${post.value.id}`)
+  } catch (error) {
+    console.error('❌ 게시글 수정 중 에러 발생!', error)
+  }
 }
 
 onMounted(loadPostDetail)

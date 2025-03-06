@@ -1,5 +1,10 @@
 <script setup lang="ts">
+import { useAuthStore } from '@/stores/authStore'
+import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
+
+const authStore = useAuthStore()
+const userFullName = computed(() => authStore.fullName || '사용자')
 </script>
 
 <template>
@@ -23,9 +28,17 @@ import { RouterLink } from 'vue-router'
         <RouterLink to="/performance/PF151901" class="router-link">임시 디테일</RouterLink>
       </div>
     </div>
+
     <div class="router-container">
-      <RouterLink to="/login" class="login">로그인</RouterLink>
-      <RouterLink to="/register" class="register">회원가입</RouterLink>
+      <!-- 로그인 했을 때 -->
+      <template v-if="authStore.token">
+        <span class="user-info"> 환영합니다, {{ userFullName }}님! 🎉 </span>
+        <button class="logout" @click="authStore.logout">로그아웃</button>
+      </template>
+      <template v-else>
+        <RouterLink to="/login" class="login">로그인</RouterLink>
+        <RouterLink to="/register" class="register">회원가입</RouterLink>
+      </template>
     </div>
   </div>
 </template>
