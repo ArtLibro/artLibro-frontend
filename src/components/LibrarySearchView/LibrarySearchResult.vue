@@ -6,6 +6,7 @@ import LibraryResultList from '@/components/LibrarySearchView/LibraryResultList.
 import { onMounted } from 'vue'
 import { getLibraryInfoByRegion } from '@/apis/books.ts'
 import type { LibraryResult } from '@/types/library/library.types.ts'
+import Pagination from '@/components/common/Pagination.vue'
 
 const value = ref('ascend');
 const options = ref<SelectProps['options']>([
@@ -20,6 +21,8 @@ const options = ref<SelectProps['options']>([
 ]);
 
 const resultList = ref<LibraryResult['libs']>([]);
+const responseData = ref<LibraryResult>();
+const currentPage = ref(1);
 
 const handleChange = (value: string) => {
   console.log(`selected ${value}`);
@@ -29,7 +32,8 @@ const { regionCode } = inject('region');
 
 const fetchData = async () => {
   try {
-    const data: LibraryResult = await getLibraryInfoByRegion(regionCode.value);
+    const data: LibraryResult = await getLibraryInfoByRegion(regionCode.value, currentPage.value);
+    responseData.value = data;
     resultList.value = data.libs;
     console.log(data);
   } catch (error) {
@@ -37,6 +41,11 @@ const fetchData = async () => {
   }
 };
 
+const handleChangePage = async (value: number) => {
+  resultList.value = [];
+  currentPage.value = value;
+  await fetchData();
+}
 
 onMounted(() => {
   fetchData();
@@ -45,6 +54,13 @@ onMounted(() => {
 watch(regionCode, (newValue, oldValue) => {
   if (newValue !== oldValue) {
     resultList.value = [];
+    responseData.value = {
+      pageSize : 1,
+      pageNo : 1,
+      numFound : 0,
+      resultNum: 0,
+      libs : [],
+    };
     fetchData();
   }
 });
@@ -82,6 +98,14 @@ watch(regionCode, (newValue, oldValue) => {
           :lib-name="item.lib.libInfo.libName"
         />
       </div>
+      <div class="pagination-wrapper">
+        <Pagination
+          :current="currentPage"
+          :total="responseData?.numFound"
+          :page-size="responseData?.pageSize"
+          @update:current="handleChangePage"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -116,5 +140,13 @@ watch(regionCode, (newValue, oldValue) => {
   width: 936px;
   height: 752px;
   margin-top: 16px;
+}
+
+.pagination-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top : 110px;
+  width: 936px;
 }
 </style>

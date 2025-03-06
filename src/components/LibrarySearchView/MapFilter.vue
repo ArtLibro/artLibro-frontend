@@ -106,13 +106,13 @@ const handleMapClick = (code : number, place : string) => {
 </script>
 
 <template>
+<!--  <div>-->
+<!--    지역별 도서관-->
+<!--  </div>-->
+<!--  <div>-->
+<!--    {{ placeName}}-->
+<!--  </div>-->
   <div class="map-layout">
-    <div>
-      지역별 도서관
-    </div>
-    <div>
-      {{ placeName}}
-    </div>
     <svg width="258" height="474" viewBox="0 0 258 474" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
         v-for="item in svgs"
@@ -124,12 +124,22 @@ const handleMapClick = (code : number, place : string) => {
       />
     </svg>
   </div>
-
+  <div class="checkbox-wrapper">
+    <a-checkbox v-model:checked="checked">Checkbox</a-checkbox>
+  </div>
 </template>
 
 <style scoped lang="scss">
 .map-layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-top: 40px;
+  background-color: #FFFFFF;
+  padding: 10px;
+  height: 510px;
+  width: 260px;
+  border-radius: 10px;
 }
 
 .map-active {
@@ -141,5 +151,15 @@ const handleMapClick = (code : number, place : string) => {
   cursor: pointer;
   fill: $secondary-color-purple;
   stroke: #ABA9A5;
+}
+
+.checkbox-wrapper {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  width: 260px;
+  height: 180px;
+  background-color: #FFFFFF;
+  border-radius: 10px;
 }
 </style>

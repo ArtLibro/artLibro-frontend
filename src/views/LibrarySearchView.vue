@@ -31,5 +31,6 @@ provide('region',{
   margin-top: 40px;
   display: flex;
   justify-content: space-between;
+  margin-bottom: 40px;
 }
 </style>
