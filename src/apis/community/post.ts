@@ -1,11 +1,8 @@
-import axios from 'axios'
 import type { NewPost, Post } from '@/types/community/communityType'
+import { useAuthStore } from '@/stores/authStore'
+import axiosApi from '@/config/axiosConfig'
 
-const API_BASE_URL = 'http://13.209.75.182:5001'
-// 관리자 토큰
-const ADMIN_TOKEN =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY3N2Y3YTFjMzUwYzg3NDBkZTFiZDM5YiIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzQxMDAxOTQ2fQ.pGlwVCDtgfDAJmI5V2eFgAeR50N0DmP_tZVjT4tKQo0'
-// 관리자 토큰으로 생성한 채널 아이디
+// 채널 아이디
 const CHANNEL_ID = '67c5950406e63d3cffd3bb41'
 
 // API 응답 타입
@@ -14,25 +11,46 @@ interface ApiPostResponse {
   title: string
   image?: string
   createdAt?: string | null
+  author: {
+    _id: string
+    fullName: string
+  }
+}
+
+// 현재 로그인된 사용자 정보 가져오기 (전역에서 호출하면 안됨?)
+const getAuthToken = () => {
+  const authStore = useAuthStore()
+  return authStore.token
+}
+
+const getUserId = () => {
+  const authStore = useAuthStore()
+  return authStore.userId
+}
+
+const isAuthenticated = () => {
+  const authStore = useAuthStore()
+  return !!authStore.token
 }
 
 // 게시글 조회
 export const fetchPosts = async (): Promise<Post[]> => {
   try {
-    const response = await axios.get<ApiPostResponse[]>(
-      `${API_BASE_URL}/posts/channel/${CHANNEL_ID}`,
-    )
-
+    const response = await axiosApi.get<ApiPostResponse[]>(`/posts/channel/${CHANNEL_ID}`)
     return response.data.map((post): Post => {
       let category: '도서' | '공연/행사' = '도서'
       let title = post.title
       let content = ''
+      let userId = post.author?._id || '익명'
+      let authorName = post.author?.fullName || '익명' // -> 닉네임
 
       try {
-        const parsedData = JSON.parse(post.title) // -> JSON 파싱
-        category = parsedData.category ?? '도서'
-        title = parsedData.title ?? post.title
-        content = parsedData.content ?? ''
+        if (title.startsWith('{') && title.endsWith('}')) {
+          const parsedData = JSON.parse(title)
+          category = parsedData.category ?? '도서'
+          title = parsedData.title ?? post.title
+          content = parsedData.content ?? ''
+        }
       } catch (error) {
         console.warn('⛔️ JSON 파싱 실패, 일반 문자열로 처리:', error)
       }
@@ -44,6 +62,8 @@ export const fetchPosts = async (): Promise<Post[]> => {
         content,
         image: post.image || null,
         createdAt: post.createdAt || '',
+        userId,
+        authorName,
       }
     })
   } catch (error) {
@@ -52,28 +72,38 @@ export const fetchPosts = async (): Promise<Post[]> => {
   }
 }
 
-// 게시글 추가
+// 게시글 생성
 export const createPost = async (post: NewPost, imageFile: File | null) => {
   try {
-    const formData = new FormData()
+    if (!isAuthenticated()) {
+      alert('로그인이 필요합니다!')
+      return
+    }
+
+    const token = getAuthToken()
+    const author = getUserId()
+    if (!author) {
+      alert('로그인 정보가 없습니다. 다시 로그인해주세요.')
+      return
+    }
 
     const jsonData = JSON.stringify({
       category: post.category,
       title: post.title,
-      content: post.content,
+      content: post.content, // -> content 필드 추가
     })
 
+    const formData = new FormData()
     formData.append('title', jsonData)
     if (imageFile) formData.append('image', imageFile)
     formData.append('channelId', CHANNEL_ID)
 
-    await axios.post(`${API_BASE_URL}/posts/create`, formData, {
+    await axiosApi.post('/posts/create', formData, {
       headers: {
-        Authorization: `Bearer ${ADMIN_TOKEN}`,
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'multipart/form-data',
       },
     })
-
     console.log('✅ 게시글 추가 성공!')
   } catch (error) {
     console.error('❌ 게시글 추가 실패:', error)
@@ -83,48 +113,57 @@ export const createPost = async (post: NewPost, imageFile: File | null) => {
 // 게시글 수정
 export const updatePost = async (
   postId: string,
-  post: Post | undefined,
+  updatedPost: Post,
   imageFile: File | null,
+  imageToDeletePublicId?: string,
 ) => {
-  if (!post) {
-    console.error('❌ 게시글 수정 실패: post 데이터가 없습니다.')
-    return
-  }
-
   try {
+    const token = getAuthToken()
     const formData = new FormData()
 
     const jsonData = JSON.stringify({
-      category: post.category,
-      title: post.title,
-      content: post.content,
+      category: updatedPost.category,
+      title: updatedPost.title,
+      content: updatedPost.content, // -> content 필드 추가
     })
 
     formData.append('title', jsonData)
     if (imageFile) formData.append('image', imageFile)
+    if (imageToDeletePublicId) formData.append('imageToDeletePublicId', imageToDeletePublicId)
     formData.append('postId', postId)
     formData.append('channelId', CHANNEL_ID)
 
-    await axios.put(`${API_BASE_URL}/posts/update`, formData, {
+    const response = await axiosApi.put('/posts/update', formData, {
       headers: {
-        Authorization: `Bearer ${ADMIN_TOKEN}`,
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'multipart/form-data',
       },
     })
 
-    console.log('✅ 게시글 수정 성공!')
+    if (!response || !response.data) {
+      throw new Error('서버 응답이 올바르지 않습니다.')
+    }
+
+    console.log('✅ 게시글 수정 성공!', response.data)
+    return response.data
   } catch (error) {
     console.error('❌ 게시글 수정 실패:', error)
+    throw error
   }
 }
 
 // 게시글 삭제
-export const deletePost = async (postId: string) => {
+export const deletePost = async (postId: string, author: string) => {
+  if (author !== getUserId()) {
+    alert('작성자만 삭제할 수 있습니다!')
+    return
+  }
+
   try {
-    await axios.delete(`${API_BASE_URL}/posts/delete`, {
+    const token = getAuthToken()
+    await axiosApi.delete('/posts/delete', {
       headers: {
-        Authorization: `Bearer ${ADMIN_TOKEN}`,
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
       data: { id: postId },
     })
