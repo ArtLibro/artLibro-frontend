@@ -3,14 +3,9 @@
     <div class="book_header"></div>
     <div class="container">
 
-      <div class="keyword_container">
-        <h2>이 달의 키워드</h2>
-        <div class="keyword_badge_container">
-          <div class="badge" v-for="badge in BOOK_BADGE_LIST" :key="badge.id">
-            <span># {{ badge.title }}</span>
-          </div>
-        </div>
-      </div>
+      <!-- 이달의 키워드 -->
+      <KeywordContainer @handleKeywordClick="handleKeywordClick" />
+      <!-- 이달의 키워드 -->
 
       <div class="book_list_container">
         <div class="book_list_header">
@@ -39,25 +34,20 @@
                 </select>
               </div>
             </div>
-
           </div>
-
         </div>
 
-        <div v-if="data && data.pages.length > 0">
+        <div v-if="data && data.pages[0].length > 0">
           <div class="book-list" v-for="datas in data.pages" :key="datas.length">
             <router-link class="book-item" v-for="book in datas" :key="book.doc.isbn13"
               :to="`/book/detail/${book.doc.isbn13}`">
               <div class="book-item-image">
-                <img v-if="book.doc.bookImageURL" :src="book.doc.bookImageURL" alt="book-item-image">
-                <p v-else>이미지가 없습니다</p>
+                <img v-if="book.doc.bookImageURL" :src="book.doc.bookImageURL" alt="도서 이미지">
+                <img v-else src="/images/no-image.png" alt="이미지 준비중입니다.">
               </div>
 
               <div class="book-item-info">
                 <div class="book-badge-container">
-                  <div class="book-badge">
-                    <span># 키워드</span>
-                  </div>
 
                   <div class="book-publisher">
                     <img src="/icons/book-publisher.svg" alt="book-publisher-icon">
@@ -73,30 +63,38 @@
         </div>
 
         <div v-else>
-          <p>검색 결과가 없습니다.</p>
+          <NotFound title="검색 결과가 없습니다." />
         </div>
 
         <div ref="loadMoreTrigger" class="load-more-trigger"></div>
       </div>
     </div>
 
-    <div class="goToTop" @click="handleGoToTop">TOP</div>
+    <GoToTop />
   </div>
 </template>
 
 <script setup lang="ts">
 import { getBookList } from '@/apis/books';
-import { BOOK_BADGE_LIST } from '@/constants/book-badge';
+import KeywordContainer from '@/components/bookView/KeywordContainer.vue';
+import GoToTop from '@/components/common/goToTop.vue';
+import NotFound from '@/components/common/NotFound.vue';
 import { searchTypeOptions, sortTypeOptions } from '@/constants/booksOption';
 import QUERY_KEY from '@/constants/queryKey';
 import type { BookItem, SearchTypeValue, SortOptionValue } from '@/types/libraryType';
 import { useInfiniteQuery, type InfiniteData } from '@tanstack/vue-query';
 import { onMounted, ref } from 'vue';
 
-const searchType = ref<SearchTypeValue>('도서명');
-const searchKeyword = ref('');
-const sortType = ref<SortOptionValue>('loan');
-const loadMoreTrigger = ref<HTMLDivElement | null>(null);
+const searchType = ref<SearchTypeValue>('도서명'); // 검색 타입
+const searchKeyword = ref(''); // 도서 검색 키워드
+const sortType = ref<SortOptionValue>('loan'); // 정렬 타입
+const loadMoreTrigger = ref<HTMLDivElement | null>(null); // 무한 스크롤 트리거
+const seletedKeyword = ref<string>('베스트셀러'); // 이달의 키워드 클릭 시 선택된 키워드
+
+const handleKeywordClick = (keyword: string) => {
+  seletedKeyword.value = keyword;
+  refetch();
+}
 
 const handleSearch = () => {
   refetch();
@@ -109,11 +107,11 @@ const handleSortTypeChange = (value: SortOptionValue) => {
 
 //todo: 타입 수정 필요
 const { data, refetch, fetchNextPage, hasNextPage } = useInfiniteQuery<BookItem[], unknown, InfiniteData<BookItem[]>, unknown[], number>({
-  queryKey: QUERY_KEY.BOOKS.bookList(searchKeyword.value, searchType.value),
-  queryFn: ({ pageParam = 1 }) => getBookList(searchKeyword.value, pageParam, searchType.value, sortType.value),
+  queryKey: QUERY_KEY.BOOKS.bookList(searchKeyword.value, searchType.value, seletedKeyword.value),
+  queryFn: ({ pageParam = 1 }) => getBookList(searchKeyword.value, pageParam, searchType.value, sortType.value, seletedKeyword.value),
   initialPageParam: 1,
   getNextPageParam: (lastPage, allPages) =>
-    lastPage.length === 15 ? allPages.length + 1 : undefined,
+    lastPage.length === 18 ? allPages.length + 1 : undefined,
   enabled: true,
 });
 
@@ -131,14 +129,12 @@ onMounted(() => {
   if (loadMoreTrigger.value) {
     observer.observe(loadMoreTrigger.value);
   }
-});
 
-const handleGoToTop = () => {
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth',
-  })
-}
+  setTimeout(() => {
+    seletedKeyword.value = '';
+  }, 1000);
+
+});
 </script>
 
 <style lang="scss" scoped>
