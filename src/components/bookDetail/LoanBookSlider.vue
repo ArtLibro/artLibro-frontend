@@ -152,7 +152,7 @@ const handleRightButton = () => {
 <style lang="scss" scoped>
 .loan-book-slider-container {
   width: 100%;
-  margin: 155px auto 0;
+  margin: 155px auto 60px;
 
   h1 {
     font-size: $text-title-200;
