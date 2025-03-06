@@ -15,14 +15,7 @@ export interface PrfInfoDetail {
   mt10id: string
 }
 
-export interface PrfApi {
-  path: string
-  cpage?: string
-  rows?: string
-  shprfnmfct?: string
-}
-
-export interface PrfPlace {
+export interface PrfPlaceInfo {
   fcltynm: string
   seatscale: string
   parkinglot: string
@@ -37,4 +30,30 @@ export interface PrfPlace {
   restbarrier: string
   elevbarrier: string
   runwbarrier: string
+  latitude: string
+  longitude: string
 }
+
+export interface PrfApi {
+  path: string
+  cpage?: string
+  rows?: string
+  shprfnmfct?: string
+}
+
+// export interface PrfPlace {
+//   fcltynm: string
+//   seatscale: string
+//   parkinglot: string
+//   mt13cnt: string
+//   opende: string
+//   restaurant: string
+//   cafe: string
+//   store: string
+//   nolibang: string
+//   suyu: string
+//   parkbarrier: string
+//   restbarrier: string
+//   elevbarrier: string
+//   runwbarrier: string
+// }

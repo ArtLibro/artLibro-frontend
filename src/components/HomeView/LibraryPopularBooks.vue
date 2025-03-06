@@ -4,13 +4,16 @@
   import 'swiper/css/pagination';
   import { Pagination } from 'swiper/modules';
   import { ref } from 'vue'
+  import type { Book } from '@/types/libraryType.ts'
 
   const modules = ref([Pagination]);
+
+  defineProps<{ books: Book[] }>();
 </script>
 
 <template>
   <div class="library-new-books">
-    <div class="title">가까운 도서관 TOP5 도서</div>
+    <div class="title">가까운 도서관 대출량 TOP10</div>
     <swiper
       :slidesPerView="3"
       :spaceBetween="30"
@@ -20,11 +23,9 @@
       :modules="modules"
       class="mySwiper"
     >
-      <swiper-slide>Slide 1</swiper-slide>
-      <swiper-slide>Slide 2</swiper-slide><swiper-slide>Slide 3</swiper-slide>
-      <swiper-slide>Slide 4</swiper-slide><swiper-slide>Slide 5</swiper-slide>
-      <swiper-slide>Slide 6</swiper-slide><swiper-slide>Slide 7</swiper-slide>
-      <swiper-slide>Slide 8</swiper-slide><swiper-slide>Slide 9</swiper-slide>
+      <swiper-slide v-for="book in books" :key="book.isbn13">
+        <img :src="book.bookImageURL" width="80" height="150"/>
+      </swiper-slide>
     </swiper>
   </div>
 </template>
@@ -53,6 +54,7 @@
 .swiper-slide {
   text-align: center;
   font-size: 18px;
+  height: 150px;
   background: #fff;
   display: flex;
   justify-content: center;
@@ -62,8 +64,7 @@
 .swiper-slide img {
   display: block;
   width: 100%;
-  height: 100%;
+  height: 150px;
   object-fit: cover;
 }
-
 </style>

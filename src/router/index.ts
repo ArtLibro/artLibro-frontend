@@ -8,6 +8,11 @@ import LibrarySearchView from '@/views/LibrarySearchView.vue'
 import ChallengeView from '@/views/ChallengeView.vue'
 import PerformanceSearchView from '@/views/PerformanceSearchView.vue'
 import CommunityView from '@/views/community/CommunityView.vue'
+import LibraryDetailView from '@/views/LibraryDetailView.vue'
+import CommunityDetailView from '@/views/community/CommunityDetailView.vue'
+import CommunityWriteView from '@/views/community/CommunityWriteView.vue'
+import BookDetailView from '@/views/bookDetail/BookDetailView.vue'
+import CallbackView from '@/views/CallbackView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,9 +28,20 @@ const router = createRouter({
       component: BookView,
     },
     {
-      path: '/library-search',
+      path: '/book/detail/:id',
+      name: 'book-detail',
+      component: BookDetailView,
+      props: true,
+    },
+    {
+      path: '/library/search',
       name: 'library-search',
       component: LibrarySearchView,
+    },
+    {
+      path: '/library/detail/:id',
+      name: 'library-detail',
+      component: LibraryDetailView,
     },
     {
       path: '/performance',
@@ -36,11 +52,6 @@ const router = createRouter({
       path: '/challenge',
       name: 'challenge',
       component: ChallengeView,
-    },
-    {
-      path: '/community',
-      name: 'community',
-      component: CommunityView,
     },
     // 커뮤니티 메인페이지
     { path: '/community', name: 'community', component: CommunityView },
@@ -76,17 +87,25 @@ const router = createRouter({
       component: RegisterView,
     },
     {
-      path: '/book',
-      name: 'book',
-      component: BookView,
+      path: '/auth/callback/:provider', // OAuth 콜백 경로 추가
+      name: 'auth-callback',
+      component: CallbackView,
+      props: true,
     },
     //화면 보려고 급하게 만들었습니다.
     {
-      path: '/performancedetail',
-      name: 'performancedetail',
-      component: PerformanceDetailView,
+      path: '/performance/:id',
+      name: 'performance-detail',
+      component: () => import('@/views/PerformanceDetailView.vue'),
     },
   ],
+  scrollBehavior(_, _1, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { top: 0, behavior: 'smooth' }
+    }
+  },
 })
 
 export default router
