@@ -1,7 +1,13 @@
-// ////////////////////////////////////////////////////////////
 import LibraryApi from '@/config/axiosLibraryConfig'
 import { LIBRARY_ENDPOINT } from './endpoint'
-import type { BookItem, SearchTypeValue, SortOptionValue } from '@/types/libraryType'
+import type {
+  BookItem,
+  BookRecommendation,
+  SearchTypeValue,
+  SortOptionValue,
+} from '@/types/libraryType'
+import type { KakaoAddress } from '@/types/location.types.ts'
+import { regions } from '@/constants/detail-region-code.ts'
 
 interface BookListParams {
   pageNo: number
@@ -11,10 +17,6 @@ interface BookListParams {
   author?: string
   sort?: SortOptionValue
 }
-
-import type { BookItem } from '@/types/libraryType'
-import type { KakaoAddress } from '@/types/location.types.ts'
-import { regions } from '@/constants/detail-region-code.ts'
 import type { QueryItemRankBook, QueryItemReader } from '@/types/Book'
 
 export const getBookList = async (
@@ -37,8 +39,6 @@ export const getBookList = async (
       params.author = searchKeyword
     }
 
-    console.log(params)
-
     const response = await LibraryApi.get(LIBRARY_ENDPOINT.bookList, {
       params,
     })
@@ -52,6 +52,81 @@ export const getBookList = async (
   }
 }
 
+export const getBookDetail = async (isbn13: number) => {
+  try {
+    const response = await LibraryApi.get(LIBRARY_ENDPOINT.bookDetail, {
+      params: {
+        isbn13: isbn13,
+        loaninfoYN: 'Y',
+        format: 'json',
+      },
+    })
+
+    const detailData = response.data.response.detail[0].book
+    const loanInfoData = response.data.response.loanInfo
+
+    return {
+      detailData,
+      loanInfoData,
+    }
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
+// 대출 가능한 도서관 조회
+export const getLibraryLoanPossible = async (
+  isbn13: number,
+  regionCode: number,
+  detailRegionCode: number | null,
+) => {
+  try {
+    const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryLoanPossible, {
+      params: {
+        isbn: isbn13,
+        region: regionCode,
+        dtl_region: detailRegionCode,
+        format: 'json',
+        pageSize: 300,
+        pageNo: 1,
+      },
+    })
+    return response.data.response
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
+// 도서 별 이용 분석
+export const getLibraryUsageAnalysis = async (isbn13: number) => {
+  try {
+    const response = await LibraryApi.get<{ response: BookRecommendation }>(
+      LIBRARY_ENDPOINT.libraryUsageAnalysis,
+      {
+        params: {
+          isbn13: isbn13,
+          format: 'json',
+        },
+      },
+    )
+
+    // 연관 대출 도서
+    const coLoanBooksData = response.data.response.coLoanBooks
+    // 다독자를 위한 추천 도서
+    const readerRecBooksData = response.data.response.readerRecBooks
+
+    return {
+      coLoanBooksData,
+      readerRecBooksData,
+    }
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
 export const getLibraryInfo = async (address: KakaoAddress) => {
   try {
     const detailRegionCode = regions[address.regionDepth2]
@@ -59,15 +134,44 @@ export const getLibraryInfo = async (address: KakaoAddress) => {
       params: {
         dtl_region: detailRegionCode,
         format: 'json',
+        pageSize: 25,
       },
     })
-    console.log(response.data)
+    return response.data.response
   } catch (error) {
     console.error(error)
   }
 }
 
-export const getLibraryPopularBooks = async (libCode: string) => {
+export const getLibraryInfoByRegion = async (regionCode: number) => {
+  try {
+    const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryDetail, {
+      params: {
+        region: regionCode,
+        format: 'json',
+      },
+    })
+    return response.data.response
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const getLibraryInfoByLibraryCode = async (libraryCode: number) => {
+  try {
+    const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryDetail, {
+      params: {
+        libCode: libraryCode,
+        format: 'json',
+      },
+    })
+    return response.data.response
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const getLibraryPopularBooks = async (libCode: number) => {
   try {
     const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryPopularBook, {
       params: {
@@ -75,13 +179,39 @@ export const getLibraryPopularBooks = async (libCode: string) => {
         format: 'json',
       },
     })
-    console.log(response.data)
+    return response.data.response
   } catch (error) {
     console.error(error)
   }
 }
 
-/// 추가 /////
+export const getDetailRegionReadAnalysis = async (detailRegion : number) => {
+  try {
+    const response = await LibraryApi.get(LIBRARY_ENDPOINT.readQuantityAnalysis, {
+      params: {
+        dtl_region: detailRegion,
+        format: 'json',
+      },
+    })
+    return response.data.response
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const getRegionReadAnalysis = async (region : number) => {
+  try {
+    const response = await LibraryApi.get(LIBRARY_ENDPOINT.readQuantityAnalysis, {
+      params: {
+        region: region,
+        format: 'json',
+      },
+    })
+    return response.data.response
+  } catch (error) {
+    console.error(error)
+  }
+}
 
 export const getBookToHome = async (query: QueryItemReader | QueryItemRankBook) => {
   try {

@@ -90,6 +90,7 @@ onMounted(async () => {
   align-items: flex-end;
   margin-top: 30px;
   width: 1150px;
+  height: 323px;
 }
 
 .button {

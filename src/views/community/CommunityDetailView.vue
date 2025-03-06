@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { fetchPosts } from '@/apis/community/post'
 import CommunityDetailComment from '@/components/CommunityDetailView/CommunityDetailComment.vue'
@@ -9,13 +9,16 @@ import type { Post } from '@/types/community/communityType'
 
 const route = useRoute()
 const post = ref<Post | null>(null)
+const posts = ref<Post[]>([]) // 전체 게시글 저장
 
 // 특정 게시글 데이터 불러오기
 const loadPostDetail = async () => {
-  const posts = await fetchPosts()
-  post.value = posts.find((p) => p.id === route.params.id) || null
-  console.log('📌 불러온 게시글:', post.value)
+  posts.value = await fetchPosts()
+  post.value = posts.value.find((p) => p.id === route.params.id) || null
 }
+
+// params.id가 변경될 때마다 다시 불러오기
+watch(() => route.params.id, loadPostDetail)
 
 onMounted(loadPostDetail)
 </script>
@@ -34,7 +37,7 @@ onMounted(loadPostDetail)
             <CommunityDetailComment :postId="post.id" />
           </div>
           <div class="sidebar">
-            <CommunityDetailNextPost :currentPostId="post.id" />
+            <CommunityDetailNextPost :posts="posts" :currentPostId="post.id" />
           </div>
         </div>
       </div>

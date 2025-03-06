@@ -8,6 +8,10 @@ import LibrarySearchView from '@/views/LibrarySearchView.vue'
 import ChallengeView from '@/views/ChallengeView.vue'
 import PerformanceSearchView from '@/views/PerformanceSearchView.vue'
 import CommunityView from '@/views/community/CommunityView.vue'
+import LibraryDetailView from '@/views/LibraryDetailView.vue'
+import CommunityDetailView from '@/views/community/CommunityDetailView.vue'
+import CommunityWriteView from '@/views/community/CommunityWriteView.vue'
+import BookDetailView from '@/views/bookDetail/BookDetailView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,9 +27,20 @@ const router = createRouter({
       component: BookView,
     },
     {
-      path: '/library-search',
+      path: '/book/detail/:id',
+      name: 'book-detail',
+      component: BookDetailView,
+      props: true,
+    },
+    {
+      path: '/library/search',
       name: 'library-search',
       component: LibrarySearchView,
+    },
+    {
+      path: '/library/detail/:id',
+      name: 'library-detail',
+      component: LibraryDetailView,
     },
     {
       path: '/performance',
@@ -37,7 +52,6 @@ const router = createRouter({
       name: 'challenge',
       component: ChallengeView,
     },
-
     // 커뮤니티 메인페이지
     { path: '/community', name: 'community', component: CommunityView },
     // 커뮤니티 상세페이지
