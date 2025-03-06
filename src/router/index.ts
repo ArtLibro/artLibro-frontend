@@ -12,6 +12,7 @@ import LibraryDetailView from '@/views/LibraryDetailView.vue'
 import CommunityDetailView from '@/views/community/CommunityDetailView.vue'
 import CommunityWriteView from '@/views/community/CommunityWriteView.vue'
 import BookDetailView from '@/views/bookDetail/BookDetailView.vue'
+import MyPageView from '@/views/mypage/MyPageView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -84,6 +85,11 @@ const router = createRouter({
       path: '/register',
       name: 'register',
       component: RegisterView,
+    },
+    {
+      path: '/mypage',
+      name: 'mypage',
+      component: MyPageView,
     },
     //화면 보려고 급하게 만들었습니다.
     {
