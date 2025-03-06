@@ -3,6 +3,7 @@ import { LIBRARY_ENDPOINT } from './endpoint'
 import type {
   BookItem,
   BookRecommendation,
+  MonthKeywordResponse,
   SearchTypeValue,
   SortOptionValue,
 } from '@/types/libraryType'
@@ -18,6 +19,7 @@ interface BookListParams {
   sort?: SortOptionValue
 }
 import type { QueryItemRankBook, QueryItemReader } from '@/types/Book'
+import dayjs from 'dayjs'
 
 export const getBookList = async (
   searchKeyword: string,
@@ -28,7 +30,7 @@ export const getBookList = async (
   try {
     const params: BookListParams = {
       pageNo,
-      pageSize: 15,
+      pageSize: 18,
       format: 'json',
       sort: sortType,
     }
@@ -127,6 +129,23 @@ export const getLibraryUsageAnalysis = async (isbn13: number) => {
   }
 }
 
+// 이달의 키워드
+export const getMonthKeyword = async (): Promise<MonthKeywordResponse> => {
+  try {
+    const lastMonth = dayjs().subtract(1, 'month').format('YYYY-MM')
+    const response = await LibraryApi.get(LIBRARY_ENDPOINT.keyword, {
+      params: {
+        month: lastMonth,
+        format: 'json',
+      },
+    })
+    return response.data.response
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
 export const getLibraryInfo = async (address: KakaoAddress) => {
   try {
     const detailRegionCode = regions[address.regionDepth2]
@@ -185,7 +204,7 @@ export const getLibraryPopularBooks = async (libCode: number) => {
   }
 }
 
-export const getDetailRegionReadAnalysis = async (detailRegion : number) => {
+export const getDetailRegionReadAnalysis = async (detailRegion: number) => {
   try {
     const response = await LibraryApi.get(LIBRARY_ENDPOINT.readQuantityAnalysis, {
       params: {
@@ -199,7 +218,7 @@ export const getDetailRegionReadAnalysis = async (detailRegion : number) => {
   }
 }
 
-export const getRegionReadAnalysis = async (region : number) => {
+export const getRegionReadAnalysis = async (region: number) => {
   try {
     const response = await LibraryApi.get(LIBRARY_ENDPOINT.readQuantityAnalysis, {
       params: {

@@ -12,6 +12,7 @@ export const LIBRARY_ENDPOINT = Object.freeze({
   bookDetail: `/srchDtlList?authKey=${LIBRARY_KEY}`, // 도서 상세
   libraryLoanPossible: `/libSrchByBook?authKey=${LIBRARY_KEY}`, // 도서관 대출 가능 여부
   libraryUsageAnalysis: `/usageAnalysisList?authKey=${LIBRARY_KEY}`, // 도서 별 이용 분석
+  keyword: `/monthlyKeywords?authKey=${LIBRARY_KEY}`, // 이달의 키워드
   libraryDetail: `/extends/libSrch?authKey=${LIBRARY_KEY}`,
   libraryPopularBook: `/extends/loanItemSrchByLib?authKey=${LIBRARY_KEY}`,
   bookwormList: `/recommandList?authKey=${LIBRARY_KEY}`,

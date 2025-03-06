@@ -3,14 +3,9 @@
     <div class="book_header"></div>
     <div class="container">
 
-      <div class="keyword_container">
-        <h2>이 달의 키워드</h2>
-        <div class="keyword_badge_container">
-          <div class="badge" v-for="badge in BOOK_BADGE_LIST" :key="badge.id">
-            <span># {{ badge.title }}</span>
-          </div>
-        </div>
-      </div>
+      <!-- 이달의 키워드 -->
+      <KeywordContainer />
+      <!-- 이달의 키워드 -->
 
       <div class="book_list_container">
         <div class="book_list_header">
@@ -86,6 +81,7 @@
 
 <script setup lang="ts">
 import { getBookList } from '@/apis/books';
+import KeywordContainer from '@/components/bookView/KeywordContainer.vue';
 import { BOOK_BADGE_LIST } from '@/constants/book-badge';
 import { searchTypeOptions, sortTypeOptions } from '@/constants/booksOption';
 import QUERY_KEY from '@/constants/queryKey';
@@ -113,7 +109,7 @@ const { data, refetch, fetchNextPage, hasNextPage } = useInfiniteQuery<BookItem[
   queryFn: ({ pageParam = 1 }) => getBookList(searchKeyword.value, pageParam, searchType.value, sortType.value),
   initialPageParam: 1,
   getNextPageParam: (lastPage, allPages) =>
-    lastPage.length === 15 ? allPages.length + 1 : undefined,
+    lastPage.length === 18 ? allPages.length + 1 : undefined,
   enabled: true,
 });
 
