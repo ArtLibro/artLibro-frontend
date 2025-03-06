@@ -85,16 +85,11 @@ const router = createRouter({
       name: 'register',
       component: RegisterView,
     },
-    {
-      path: '/book',
-      name: 'book',
-      component: BookView,
-    },
     //화면 보려고 급하게 만들었습니다.
     {
-      path: '/performancedetail',
-      name: 'performancedetail',
-      component: PerformanceDetailView,
+      path: '/performance/:id',
+      name: 'performance-detail',
+      component: () => import('@/views/PerformanceDetailView.vue'),
     },
   ],
   scrollBehavior(_, _1, savedPosition) {
