@@ -161,6 +161,22 @@ export const getLibraryInfoByRegion = async (regionCode : number, pageNo : numbe
   }
 }
 
+export const getLibraryInfoByDetailRegion = async (detailRegionCode : number, pageNo : number) => {
+  try {
+    const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryDetail, {
+      params: {
+        dtl_region: detailRegionCode,
+        format: 'json',
+        pageNo: pageNo,
+        pageSize: 11,
+      },
+    })
+    return response.data.response
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export const getLibraryInfoByLibraryCode = async (libraryCode : number) => {
   try {
     const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryDetail, {
