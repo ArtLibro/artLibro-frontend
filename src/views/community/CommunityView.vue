@@ -7,9 +7,14 @@ import CommunityReviewCard from '@/components/CommunityView/CommunityReviewCard.
 import CommunityTabs from '@/components/CommunityView/CommunityTabs.vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { Post } from '@/types/community/communityType'
+import { useAuthStore } from '@/stores/authStore'
 
 const router = useRouter()
 const route = useRoute()
+const authStore = useAuthStore()
+
+// 로그인 여부 확인
+const isLoggedIn = computed(() => !!authStore.token)
 
 // API에서 불러온 게시글 저장 (메인카드, 리뷰카드 공용으로 사용)
 const posts = ref<Post[]>([])
@@ -19,11 +24,11 @@ const latestMainPosts = computed(() =>
   posts.value.slice(0, 6).map((post) => ({
     id: post.id,
     title: post.title,
-    image: post.image || '', // 이미지가 없으면 빈 문자열
+    image: post.image || '',
     date: new Date(post.createdAt).toLocaleDateString(), // 날짜 변환
-    author: '관리자', // 기본값 설정 (추후 서버에서 받아오도록 수정 가능)
-    comment: 0, // 기본값 설정 (추후 댓글 기능 추가하면 변경)
-    likes: 0, // 기본값 설정
+    authorName: post.authorName,
+    comment: 0, // 기본값 설정 -> 수정할 예정
+    likes: 0, // 기본값 설정 -> 수정할 예정
   })),
 )
 
@@ -31,7 +36,7 @@ const latestMainPosts = computed(() =>
 const formattedReviews = computed(() =>
   filteredReviews.value.map((post) => ({
     id: post.id,
-    user: '익명',
+    authorName: post.authorName,
     title: post.title,
     content: post.content,
     likes: 0,
@@ -74,12 +79,12 @@ watch(
   async (newVal) => {
     if (newVal) {
       await loadPosts()
-      router.replace({ path: '/community' }) // URL에서 `refresh=true` 제거
+      router.replace({ path: '/community' }) // URL에서 refresh=true 제거
     }
   },
 )
 
-// 상세페이지로 이동
+// 게시글 상세페이지로 이동
 const goToDetailPage = (postId: string) => {
   router.push({
     path: `/community/${postId}`,
@@ -117,7 +122,7 @@ onMounted(loadPosts)
       <div class="review-tabs">
         <CommunityTabs v-model:activeKey="activeKey" />
       </div>
-      <button class="new-post-button" @click="goToWritePage">리뷰 작성</button>
+      <button v-if="isLoggedIn" class="new-post-button" @click="goToWritePage">리뷰 작성</button>
     </div>
 
     <div class="review-container">
@@ -209,7 +214,7 @@ onMounted(loadPosts)
 }
 
 .new-post-button {
-  width: 130px;
+  width: 100px;
   height: 45px;
   background-color: white;
   font-size: $text-size-200;

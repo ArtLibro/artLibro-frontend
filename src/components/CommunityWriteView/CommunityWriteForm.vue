@@ -3,7 +3,11 @@ import { ref, defineProps, defineEmits } from 'vue'
 import { UploadOutlined } from '@ant-design/icons-vue'
 import type { UploadProps } from 'ant-design-vue'
 import type { NewPost, Post } from '@/types/community/communityType'
-import { createPost, fetchPosts, updatePost } from '@/apis/community/post'
+import { createPost, fetchPosts } from '@/apis/community/post'
+import { useAuthStore } from '@/stores/authStore'
+
+const authStore = useAuthStore()
+const userId = authStore.userId
 
 const props = defineProps<{ existingPost?: Post }>()
 const emit = defineEmits(['postCreated', 'postUpdated'])
@@ -34,7 +38,6 @@ const handleSubmit = async () => {
   const imageFile = fileList.value?.[0]?.originFileObj ?? null
 
   if (props.existingPost) {
-    // 기존 게시글이 있으면 수정
     const updatedPost: Post = {
       id: props.existingPost.id,
       category: selectedCategory.value,
@@ -42,25 +45,30 @@ const handleSubmit = async () => {
       content: content.value,
       image: props.existingPost.image || null,
       createdAt: props.existingPost.createdAt || '',
+      userId: props.existingPost.userId,
+      authorName: props.existingPost.authorName,
     }
-
-    await updatePost(props.existingPost.id, updatedPost, imageFile)
 
     emit('postUpdated', updatedPost, imageFile)
   } else {
-    // 없으면 새로운 게시글 작성
+    if (!userId) {
+      alert('로그인이 필요합니다!')
+      return
+    }
+
     const postData: NewPost = {
       category: selectedCategory.value,
       title: title.value,
       content: content.value,
+      userId,
+      authorName: authStore.fullName ?? '익명',
     }
 
     await createPost(postData, imageFile)
-
     emit('postCreated')
   }
 
-  await fetchPosts() // 최신 데이터 반영
+  await fetchPosts()
   alert(props.existingPost ? '🎉 게시글이 수정되었습니다!' : '🎉 게시글이 등록되었습니다!')
 }
 </script>
