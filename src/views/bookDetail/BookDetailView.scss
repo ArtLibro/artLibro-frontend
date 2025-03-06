@@ -86,8 +86,8 @@
 
           .book-description {
             p {
-              font-size: 20px;
-              font-weight: 500;
+              font-size: 18px;
+              font-weight: 400;
               letter-spacing: 0.1px;
               line-height: 30px;
             }
@@ -160,10 +160,28 @@
           margin-bottom: 36px;
         }
 
-        .library-filter-container {
+        .book-library-header-conatiner {
           display: flex;
-          gap: 22px;
+          justify-content: space-between;
+          align-items: center;
           margin-bottom: 32px;
+
+          .library-filter-container {
+            display: flex;
+            gap: 22px;
+          }
+
+          .homepage-button-container {
+            p {
+              background-color: rgba(0, 0, 0, 0.7);
+              color: white;
+              font-size: 12px;
+              padding: 6px 12px;
+              border-radius: 4px;
+              display: inline-block;
+              cursor: pointer;
+            }
+          }
         }
 
         .library-table-container {
@@ -190,6 +208,9 @@
               height: 40px;
               font-size: 13px;
               cursor: pointer;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              white-space: nowrap;
             }
 
             .ant-table-tbody > tr:hover > td {

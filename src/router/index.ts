@@ -92,6 +92,13 @@ const router = createRouter({
       component: () => import('@/views/PerformanceDetailView.vue'),
     },
   ],
+  scrollBehavior(_, _1, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { top: 0, behavior: 'smooth' }
+    }
+  },
 })
 
 export default router

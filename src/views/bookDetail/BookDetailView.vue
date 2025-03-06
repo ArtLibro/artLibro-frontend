@@ -8,7 +8,8 @@
           <div class="goToBack">
             <GoToBack />
           </div>
-          <img :src="detailData?.bookImageURL" alt="book-detail-bg" class="book-img">
+          <img v-if="detailData?.bookImageURL" :src="detailData?.bookImageURL" alt="book-detail-bg" class="book-img">
+          <img v-else src="/images/no-image.png" alt="이미지 준비중입니다." class="book-img">
         </div>
         <div class="book-detail-right">
           <div class="book-detail-right-contents">
@@ -48,7 +49,7 @@
               <p class="book-loan-count">{{ loanCount }}</p>
             </div>
 
-            <div class="bookmark">
+            <div class="bookmark" @click="handleBookmarkClick">
               <BookMarkIcon strokeColor="#fff" />
               <span>북마크</span>
             </div>
@@ -66,11 +67,17 @@
         <div class="book-library-info-left">
           <h2>도서 소장 도서관</h2>
 
-          <div class="library-filter-container">
-            <a-select v-model:value="regionValue" style="width: 200px" :options="regionOptions"
-              @change="handleRegionChange"></a-select>
-            <a-select v-model:value="regionValue1" style="width: 200px" :options="regionDetailOptions"
-              @change="handleDetailRegionChange"></a-select>
+          <div class="book-library-header-conatiner">
+            <div class="library-filter-container">
+              <a-select v-model:value="regionValue" style="width: 200px" :options="regionOptions"
+                @change="handleRegionChange"></a-select>
+              <a-select v-model:value="regionValue1" style="width: 200px" :options="regionDetailOptions"
+                @change="handleDetailRegionChange"></a-select>
+            </div>
+
+            <div class="homepage-button-container">
+              <p @click="handleLibraryClick">홈페이지 이동</p>
+            </div>
           </div>
 
           <div class="library-table-container">
@@ -215,6 +222,7 @@ watchEffect(async () => {
 
 let map: any = null;
 let marker: any = null;
+let infowindow: any = null;
 
 const initMap = (lat: number = 37.566826, lng: number = 126.9786567) => {
   if ((window as any).kakao) {
@@ -226,6 +234,9 @@ const initMap = (lat: number = 37.566826, lng: number = 126.9786567) => {
       const latLng = new kakao.maps.LatLng(lat, lng)
       map.setCenter(latLng) // 지도 중심 변경
       marker.setPosition(latLng) // 마커 위치 변경
+
+      infowindow.setContent(`${selectedLibrary.value.libraryName ? `<div style="padding:5px; text-align: center; font-size: 14px;">${selectedLibrary.value.libraryName}</div>` : ''}`);
+      infowindow.setPosition(latLng);
       return
     }
 
@@ -244,8 +255,24 @@ const initMap = (lat: number = 37.566826, lng: number = 126.9786567) => {
         position: markerPosition,
       })
 
+      infowindow = new kakao.maps.InfoWindow({
+        content: `${selectedLibrary?.value?.libraryName ? `<div style="padding:5px; text-align: center;">${selectedLibrary.value.libraryName}</div>` : ''}`,
+        position: markerPosition
+      });
+
+
       marker.setMap(map)
+      infowindow.open(map, marker);
+
+      kakao.maps.event.addListener(marker, 'click', handleLibraryClick);
     })
+  }
+}
+
+const handleLibraryClick = () => {
+  const result = confirm(`${selectedLibrary.value.libraryName} 홈페이지로 이동하시겠습니까?`);
+  if (result) {
+    window.open(selectedLibrary.value.homepage, '_blank');
   }
 }
 
@@ -292,6 +319,10 @@ const libraryClickHandler = (record: any) => {
       initMap(selectedLibrary.value.latitude, selectedLibrary.value.longitude)
     }
   }
+}
+
+const handleBookmarkClick = () => {
+  alert('북마크 클릭')
 }
 </script>
 

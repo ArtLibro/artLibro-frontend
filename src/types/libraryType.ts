@@ -86,3 +86,19 @@ export interface BookRecommendation {
   readerRecBooks: ReaderRecBook[]
   coLoanBooks: CoLoanBook[]
 }
+
+// 이달의 키워드 타입
+export interface MonthKeyword {
+  keyword: {
+    word: string
+    weight: number
+  }
+}
+
+// 이달의 키워드 응답 타입
+export interface MonthKeywordResponse {
+  keywords: MonthKeyword[]
+  request: {
+    month: string
+  }
+}

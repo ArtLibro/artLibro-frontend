@@ -68,7 +68,6 @@ const handleBookClick = (isbn13: string, index: number) => {
   if (index === currentIndex.value) {
     router.push(`/book/detail/${isbn13}`);
   }
-
 }
 
 const fetchBookDetail = async () => {
@@ -79,8 +78,6 @@ const fetchBookDetail = async () => {
 
     const response = await Promise.all(bookPromiss);
     bookDetails.value = response.map(result => result.detailData);
-
-    console.log(bookDetails.value)
   } catch (error) {
     console.error('책 상세 정보 가져오기 실패', error);
     throw error;
@@ -95,7 +92,6 @@ watchEffect(() => {
 const slideIndex = ref(0);
 
 const getPositionClass = (index: number) => {
-  console.log(index)
   const positions = ['center', 'left', 'far-left', 'further-left', null, null, null, 'further-right', 'far-right', 'right'];
   return positions[index];
 }
