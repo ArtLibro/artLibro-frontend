@@ -29,8 +29,8 @@ const day = String(now.getDate()).padStart(2, '0')
 const formattedDate = `${year}-${month}-${day}`
 const filteredBooks = ref([])
 const rankBook = ref([])
-const activeTab = ref(null)
-
+const activeTab = ref('1')
+const bookwornList = ref([])
 const rankCateTab = ref({
   1: '철학',
   2: '종교',
@@ -45,20 +45,26 @@ const rankCateTab = ref({
 const query = ref<[QueryItemReader, QueryItemRankBook]>([
   {
     type: 'reader',
-    isbn13: '9788983922571;9788983921475;9788983921994 ',
+    //
+    //9788954617628;9788934972464;9788972754190;9788925554990;
+    // isbn13: '9788954617628;9788934972464;9788972754190;9788925554990;9788936433673;',
+    isbn13: '9788954617628;9788934972464;9788954617628;9788972754190;9788925554990;',
   },
   {
     startDt: formattedDate,
-    kdc: 0,
+    kdc: 1,
     pagesize: 1,
-    pageNumber: 20,
+    pageNumber: 12,
   },
 ])
 
-// 다독자 api
-const { data: data1 } = useQuery({
-  queryKey: ['avid-reader', query],
-  queryFn: () => getBookToHome(query.value[0]),
+onMounted(async () => {
+  try {
+    const data = await getBookToHome(query.value[0])
+    bookwornList.value = data
+  } catch (error) {
+    console.error('API 요청 실패:', error)
+  }
 })
 
 // 인기도서
@@ -74,11 +80,25 @@ onMounted(async () => {
 
 const bookChunk = computed(() => {
   const chunkSize = 8
-  const limitedArray = data1.value?.response?.docs?.slice(0, 24) || []
 
+  const docs = bookwornList.value?.response?.docs
+
+  let uniqueBooks = []
+  // bookname이 중복되는 경우 하나만 남기고 나머지는 제거
+  if (docs && Array.isArray(docs)) {
+    uniqueBooks = docs.filter((doc, index, self) => {
+      return index === self.findIndex((d) => d.book.bookname === doc.book.bookname)
+    })
+  } else {
+    console.log('docs 배열이 정의되지 않았거나 빈 배열입니다.')
+  }
+
+  // const limitedArray = data1.value?.response?.docs?.slice(0, 24) || []
+  const limitedArray = uniqueBooks.length
+  console.log('dd', limitedArray)
   const result = []
-  for (let i = 0; i < limitedArray.length; i += chunkSize) {
-    result.push(data1.value?.response?.docs.slice(i, i + chunkSize))
+  for (let i = 0; i < limitedArray; i += chunkSize) {
+    result.push(uniqueBooks.slice(i, i + chunkSize))
   }
   return result
 })

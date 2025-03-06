@@ -28,7 +28,7 @@ const todayDate = `${today.getFullYear()}${String(today.getMonth() + 1).padStart
 export const KOPIS_ENDPOINT = Object.freeze({
   awardList: `/prfawad?service=${KOPIS_KEY}&stdate=${firstDate}&eddate=${todayDate}&cpage=1&rows=5`,
   monthlyList: `/boxoffice?service=${KOPIS_KEY}&stdate=${firstDate}&eddate=${todayDate}&cpage=1&rows=5`,
-  prfDetailList: `/pblprfr/PF132236?service=${KOPIS_KEY}`,
-  prfDetailPlace: `/prfplc/FC001431?service=${KOPIS_KEY}`,
+  prfDetailList: `/pblprfr/ID?service=${KOPIS_KEY}`,
+  prfDetailPlace: `/prfplc/ID?service=${KOPIS_KEY}`,
   prfSearch: `/pblprfr?service=${KOPIS_KEY}&stdate=${firstDate}&eddate=${todayDate}&cpage=1&rows=8`,
 })

@@ -16,6 +16,8 @@ defineProps({
   poster: String,
   relates: Object,
 })
+
+console.log('24490234923')
 </script>
 
 <template>
@@ -186,11 +188,11 @@ defineProps({
 
 .ticket-container {
   display: flex;
-  width: 400px;
+  width: 430px;
 }
 
 .ticket-link {
-  width: 119px;
+  min-width: 119px;
   height: 32px;
   border-radius: 6px;
   border: 1px solid $text-color-100;
@@ -201,5 +203,37 @@ defineProps({
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.ticket-link:nth-child(1)::before {
+  content: '';
+  display: block;
+  width: 25px;
+  height: 25px;
+  background-image: url('/public/icons/ticket-blue.svg');
+  background-size: cover;
+  margin-right: 8px;
+}
+
+.ticket-link:nth-child(2)::before {
+  content: '';
+  display: block;
+  width: 21px;
+  height: 17px;
+  background-image: url('/public/icons/ticket-red.svg');
+  background-size: cover;
+  margin-right: 8px;
+}
+
+.ticket-link:nth-child(3)::before {
+  content: '';
+  display: block;
+  width: 21px;
+  height: 17px;
+  background-image: url('/public/icons/ticket-green.svg');
+  background-size: cover;
+  margin-right: 8px;
 }
 </style>

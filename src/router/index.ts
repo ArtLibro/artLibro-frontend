@@ -37,11 +37,7 @@ const router = createRouter({
       name: 'challenge',
       component: ChallengeView,
     },
-    {
-      path: '/community',
-      name: 'community',
-      component: CommunityView,
-    },
+
     // 커뮤니티 메인페이지
     { path: '/community', name: 'community', component: CommunityView },
     // 커뮤니티 상세페이지
@@ -75,16 +71,11 @@ const router = createRouter({
       name: 'register',
       component: RegisterView,
     },
-    {
-      path: '/book',
-      name: 'book',
-      component: BookView,
-    },
     //화면 보려고 급하게 만들었습니다.
     {
-      path: '/performancedetail',
-      name: 'performancedetail',
-      component: PerformanceDetailView,
+      path: '/performance/:id',
+      name: 'performance-detail',
+      component: () => import('@/views/PerformanceDetailView.vue'),
     },
   ],
 })
