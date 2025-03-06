@@ -4,7 +4,7 @@
     <div class="container">
 
       <!-- 이달의 키워드 -->
-      <KeywordContainer />
+      <KeywordContainer @handleKeywordClick="handleKeywordClick" />
       <!-- 이달의 키워드 -->
 
       <div class="book_list_container">
@@ -34,9 +34,7 @@
                 </select>
               </div>
             </div>
-
           </div>
-
         </div>
 
         <div v-if="data && data.pages.length > 0">
@@ -50,9 +48,6 @@
 
               <div class="book-item-info">
                 <div class="book-badge-container">
-                  <div class="book-badge">
-                    <span># 키워드</span>
-                  </div>
 
                   <div class="book-publisher">
                     <img src="/icons/book-publisher.svg" alt="book-publisher-icon">
@@ -88,10 +83,16 @@ import type { BookItem, SearchTypeValue, SortOptionValue } from '@/types/library
 import { useInfiniteQuery, type InfiniteData } from '@tanstack/vue-query';
 import { onMounted, ref } from 'vue';
 
-const searchType = ref<SearchTypeValue>('도서명');
-const searchKeyword = ref('');
-const sortType = ref<SortOptionValue>('loan');
-const loadMoreTrigger = ref<HTMLDivElement | null>(null);
+const searchType = ref<SearchTypeValue>('도서명'); // 검색 타입
+const searchKeyword = ref(''); // 도서 검색 키워드
+const sortType = ref<SortOptionValue>('loan'); // 정렬 타입
+const loadMoreTrigger = ref<HTMLDivElement | null>(null); // 무한 스크롤 트리거
+const seletedKeyword = ref<string>(''); // 이달의 키워드 클릭 시 선택된 키워드
+
+const handleKeywordClick = (keyword: string) => {
+  seletedKeyword.value = keyword;
+  refetch();
+}
 
 const handleSearch = () => {
   refetch();
@@ -104,8 +105,8 @@ const handleSortTypeChange = (value: SortOptionValue) => {
 
 //todo: 타입 수정 필요
 const { data, refetch, fetchNextPage, hasNextPage } = useInfiniteQuery<BookItem[], unknown, InfiniteData<BookItem[]>, unknown[], number>({
-  queryKey: QUERY_KEY.BOOKS.bookList(searchKeyword.value, searchType.value),
-  queryFn: ({ pageParam = 1 }) => getBookList(searchKeyword.value, pageParam, searchType.value, sortType.value),
+  queryKey: QUERY_KEY.BOOKS.bookList(searchKeyword.value, searchType.value, seletedKeyword.value),
+  queryFn: ({ pageParam = 1 }) => getBookList(searchKeyword.value, pageParam, searchType.value, sortType.value, seletedKeyword.value),
   initialPageParam: 1,
   getNextPageParam: (lastPage, allPages) =>
     lastPage.length === 18 ? allPages.length + 1 : undefined,

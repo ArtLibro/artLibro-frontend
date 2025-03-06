@@ -17,6 +17,7 @@ interface BookListParams {
   title?: string
   author?: string
   sort?: SortOptionValue
+  keyword?: string
 }
 import type { QueryItemRankBook, QueryItemReader } from '@/types/Book'
 import dayjs from 'dayjs'
@@ -26,6 +27,7 @@ export const getBookList = async (
   pageNo: number,
   searchType: SearchTypeValue,
   sortType: SortOptionValue,
+  selectedKeyword: string,
 ): Promise<BookItem[]> => {
   try {
     const params: BookListParams = {
@@ -39,6 +41,10 @@ export const getBookList = async (
       params.title = searchKeyword
     } else if (searchType === '저자') {
       params.author = searchKeyword
+    }
+
+    if (selectedKeyword) {
+      params.keyword = selectedKeyword
     }
 
     const response = await LibraryApi.get(LIBRARY_ENDPOINT.bookList, {

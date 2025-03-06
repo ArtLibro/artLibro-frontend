@@ -170,22 +170,20 @@
               align-items: center;
               margin-bottom: 8px;
 
-              .book-badge {
-                font-size: 11px;
-                display: inline-block;
-                border-radius: 3px;
-                background-color: #ede4f8;
-                border: 1px solid $secondary-color-300;
-                padding: 0.3rem 8px;
-                color: $secondary-color-purple;
-              }
-
               .book-publisher {
                 display: flex;
                 align-items: center;
                 gap: 4px;
                 font-size: 14px;
                 color: $text-color-300;
+
+                span {
+                  display: block;
+                  max-width: 85px;
+                  overflow: hidden;
+                  white-space: nowrap;
+                  text-overflow: ellipsis;
+                }
               }
             }
 

@@ -3,7 +3,9 @@
     <h2>이 달의 키워드</h2>
     <small>{{ searchedMonth }} 기준</small>
     <div class="keyword_badge_container">
-      <div class="badge" v-for="badge in monthKeywordList" :key="badge.keyword.word">
+      <div class="badge" v-for="badge in monthKeywordList" :key="badge.keyword.word"
+        :class="{ 'selected': selectedKeyword === badge.keyword.word }"
+        @click="() => handleKeywordClick(badge.keyword.word)">
         <span># {{ badge.keyword.word }}</span>
       </div>
     </div>
@@ -15,8 +17,29 @@ import { getMonthKeyword } from '@/apis/books';
 import type { MonthKeyword } from '@/types/libraryType';
 import { onMounted, ref } from 'vue';
 
-const monthKeywordList = ref<MonthKeyword[]>([]);
-const searchedMonth = ref<string>('');
+const emit = defineEmits<{
+  (e: 'handleKeywordClick', keyword: string): void;
+}>();
+
+const handleKeywordClick = (keyword: string) => {
+  if (selectedKeyword.value === keyword) {
+    selectedKeyword.value = '';
+  } else {
+    selectedKeyword.value = keyword;
+  }
+  emit('handleKeywordClick', selectedKeyword.value);
+}
+
+const selectedKeyword = ref<string>('');
+
+// const selectedKeywordStyle = computed(() => {
+//   return monthKeywordList.value.some(item =>
+//     selectedKeyword.value.includes(item.keyword.word)
+//   );
+// });
+
+const monthKeywordList = ref<MonthKeyword[]>([]); // 이달의 키워드 리스트
+const searchedMonth = ref<string>(''); // 검색 달
 
 onMounted(async () => {
   try {
@@ -60,6 +83,12 @@ onMounted(async () => {
       border: 1px solid #d3d0cb;
       padding: 0.5rem 1rem;
       color: #61605d;
+      cursor: pointer;
+
+      &.selected {
+        background-color: $primary-color-100;
+        color: #fff;
+      }
     }
   }
 }
