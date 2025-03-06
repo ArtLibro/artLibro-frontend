@@ -82,7 +82,6 @@
 <script setup lang="ts">
 import { getBookList } from '@/apis/books';
 import KeywordContainer from '@/components/bookView/KeywordContainer.vue';
-import { BOOK_BADGE_LIST } from '@/constants/book-badge';
 import { searchTypeOptions, sortTypeOptions } from '@/constants/booksOption';
 import QUERY_KEY from '@/constants/queryKey';
 import type { BookItem, SearchTypeValue, SortOptionValue } from '@/types/libraryType';
