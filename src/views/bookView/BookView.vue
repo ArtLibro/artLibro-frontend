@@ -16,7 +16,7 @@
               <form @submit.prevent="handleSearch" class="form">
                 <select v-model="searchType" class="select">
                   <option v-for="option in searchTypeOptions" :key="option.value" :value="option.value">{{ option.label
-                    }}</option>
+                  }}</option>
                 </select>
                 <div class="line"></div>
                 <div class="input_wrapper">
@@ -70,13 +70,14 @@
       </div>
     </div>
 
-    <div class="goToTop" @click="handleGoToTop">TOP</div>
+    <GoToTop />
   </div>
 </template>
 
 <script setup lang="ts">
 import { getBookList } from '@/apis/books';
 import KeywordContainer from '@/components/bookView/KeywordContainer.vue';
+import GoToTop from '@/components/common/goToTop.vue';
 import { searchTypeOptions, sortTypeOptions } from '@/constants/booksOption';
 import QUERY_KEY from '@/constants/queryKey';
 import type { BookItem, SearchTypeValue, SortOptionValue } from '@/types/libraryType';
@@ -128,13 +129,6 @@ onMounted(() => {
     observer.observe(loadMoreTrigger.value);
   }
 });
-
-const handleGoToTop = () => {
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth',
-  })
-}
 </script>
 
 <style lang="scss" scoped>
