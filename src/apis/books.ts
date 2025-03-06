@@ -1,11 +1,13 @@
 import LibraryApi from '@/config/axiosLibraryConfig'
 import { LIBRARY_ENDPOINT } from './endpoint'
 import type {
+  BookDetail,
+  BookDetailResponse,
   BookItem,
-  BookRecommendation,
+  BookRecommendation, GetBookDetailResponse,
   MonthKeywordResponse,
   SearchTypeValue,
-  SortOptionValue,
+  SortOptionValue
 } from '@/types/libraryType'
 import type { KakaoAddress } from '@/types/location.types.ts'
 import { regions } from '@/constants/detail-region-code.ts'
@@ -21,6 +23,7 @@ interface BookListParams {
 }
 import type { QueryItemRankBook, QueryItemReader } from '@/types/Book'
 import dayjs from 'dayjs'
+import type { AxiosResponse } from 'axios'
 
 export const getBookList = async (
   searchKeyword: string,
@@ -60,9 +63,9 @@ export const getBookList = async (
   }
 }
 
-export const getBookDetail = async (isbn13: number) => {
+export const getBookDetail = async (isbn13: number) : Promise<GetBookDetailResponse> => {
   try {
-    const response = await LibraryApi.get(LIBRARY_ENDPOINT.bookDetail, {
+    const response : AxiosResponse<BookDetailResponse> = await LibraryApi.get(LIBRARY_ENDPOINT.bookDetail, {
       params: {
         isbn13: isbn13,
         loaninfoYN: 'Y',

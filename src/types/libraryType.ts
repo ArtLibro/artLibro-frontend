@@ -102,3 +102,60 @@ export interface MonthKeywordResponse {
     month: string
   }
 }
+
+// 도서 상세 정보 응답 타입
+interface BookDetailData {
+  book : BookDetail;
+}
+
+// 기본 대출 상세 정보 타입
+interface LoanDetail {
+  ranking: number;
+  name: string;
+  loanCnt: number;
+}
+
+interface LoanTotalItem {
+  Total: LoanDetail;
+}
+
+interface LoanRegionItem {
+  regionResult: {
+    region: LoanDetail;
+  }[];
+}
+
+interface LoanAgeItem {
+  ageResult: {
+    age: LoanDetail;
+  }[];
+}
+
+interface LoanGenderItem {
+  genderResult: {
+    gender: LoanDetail;
+  }[];
+}
+
+export type LoanInfoItem =
+  | LoanTotalItem
+  | LoanRegionItem
+  | LoanAgeItem
+  | LoanGenderItem;
+
+export interface BookDetailResponse {
+  response : {
+    request : {
+      isbn13 : string;
+      loaninfoYN : 'Y' | 'N';
+    },
+    detail : Array<BookDetailData>;
+    loanInfo : Array<LoanInfoItem>;
+  }
+}
+
+// 도서 상세 API 요청에 대한 응답 타입
+export interface GetBookDetailResponse {
+  detailData : BookDetail;
+  loanInfoData : Array<LoanInfoItem>;
+}
