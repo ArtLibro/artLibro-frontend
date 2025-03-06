@@ -1,25 +1,31 @@
 <script lang="ts" setup>
 import PerformanceInfo from '@/components/PerformanceDetailView/PerformanceInfo.vue'
-import { computed, onMounted, ref, watchEffect } from 'vue'
+import { computed, onMounted, ref, watch, watchEffect } from 'vue'
 import { Dayjs } from 'dayjs'
 import PerformanceTab from '@/components/PerformanceDetailView/PerformanceTab.vue'
 import PerformancePlace from '@/components/PerformanceDetailView/PerformancePlace.vue'
 import { useQuery } from '@tanstack/vue-query'
-import type { PrfApi, PrfInfoDetail, PrfPlace } from '@/types/Performance'
+import type { PrfApi, PrfInfoDetail, PrfPlace, PrfPlaceInfo } from '@/types/Performance'
 import { DatePicker } from 'v-calendar'
 import 'v-calendar/style.css'
 import { getAwardPerformances, getPerformanceDetail, getPerformances } from '@/apis/kopis'
 import PerformanceRelatedDetail from '@/components/PerformanceDetailView/PerformanceAward.vue'
 import PerformanceAward from '@/components/PerformanceDetailView/PerformanceAward.vue'
 import PerformanceRecommend from '@/components/PerformanceDetailView/PerformanceRecommend.vue'
+import { useRoute } from 'vue-router'
+
+const router = useRoute()
+const route = useRoute()
+
+console.log('ㅁㄴㅇㅁㄴㅇㄴ', route.params.id)
 
 const selectedColor = ref<string>('indigo')
-
 const prfplaceId = ref<string>('')
-
+const prfPlaceArray = ref<PrfPlaceInfo>()
 const contentHeight = ref(1000) // 초기 콘텐츠 높이 (1000px)
 const isEnd = ref(false) // 더보기 버튼을 숨길지 여부
 const additionalContent = ref(3) // 더 추가할 콘텐츠의 갯수
+// const prfPlaceArray = ref<Record<string, any> | null>(null)
 
 const genres = [
   { genre: '연극', code: 'AAAA' },
@@ -32,9 +38,6 @@ const genres = [
   { genre: '서커스/마술', code: 'EEEB' },
   { genre: '뮤지컬', code: 'GGGA' },
 ]
-// const showMoreContent = () => {
-//   showMore.value = true // "더보기" 클릭 시 콘텐츠를 펼침
-// }
 
 const loadMoreContent = () => {
   if (additionalContent.value > 0) {
@@ -53,48 +56,81 @@ const query = ref<PrfApi[]>([
     path: '/pblprfr/PF132236',
   },
 
-  //지워야 할거
-  // {
-  //   shprfnmfct: prfplace.value,
-  //   path: '/prfplc',
-  //   cpage: '1',
-  //   rows: '10',
-  // },
   {
     path: '',
   },
 ])
 
+// 잘오는중....
 const { data: prfdetail } = useQuery({
-  queryKey: ['performance-detail', query],
-  queryFn: () => getPerformanceDetail('prfInfo'),
+  queryKey: ['performance-detail', route.params.id],
+  queryFn: () => getPerformanceDetail('prfInfo', route.params.id as string),
 })
-
-const { data: prfplaceData, isLoading } = useQuery({
-  queryKey: ['performance-place', query],
-  queryFn: () => getPerformanceDetail('prfPlace'),
-})
-
-// const { data: prfAward } = useQuery({
-//   queryKey: ['performance-award', query],
-//   queryFn: () => getAwardPerformances('prfAward'),
-// })
-
-const prfInfo = ref<PrfInfoDetail | null>(prfdetail.value)
-const awardPerformances = ref([])
-const recommendPerformance = ref([])
 
 onMounted(async () => {
   try {
-    const data = await getAwardPerformances(
-      genres.find((item) => item.genre === prfInfo?.value?.genrenm),
-    )
-    awardPerformances.value = data.dbs.db
+    const data = await getPerformanceDetail('prfPlace', prfdetail.value.mt10id)
+    prfPlaceArray.value = data
+    console.log('22222222222222', prfPlaceArray.value)
   } catch (error) {
     console.error('API 요청 실패:', error)
   }
 })
 
+console.log('prfdetail', prfdetail.value)
+
+// const { data: prfdetail } = useQuery({
+//   queryKey: ['performance-detail', route.params.id],
+//   queryFn: () => getPerformanceDetail('prfInfo'),
+// })
+
+// const { data: prfplaceData, isLoading } = useQuery({
+//   queryKey: ['performance-place', query],
+//   queryFn: () => getPerformanceDetail('prfPlace'),
+// })
+
+// const mt10id = computed(() => {
+//   return prfPlaceArray.value?.mt10id ||
+// })
+
+// 장소 불러왔음
+onMounted(async () => {
+  // FC001431
+  try {
+    const data = await getPerformanceDetail('prfPlace', prfdetail.value.mt10id)
+    prfPlaceArray.value = data
+    console.log('22222222222222', prfPlaceArray.value)
+  } catch (error) {
+    console.error('API 요청 실패:', error)
+  }
+})
+
+const prfInfo = ref<PrfInfoDetail | null>(prfdetail.value)
+const awardPerformances = ref([])
+const recommendPerformance = ref([])
+
+console.log('555555555', prfInfo?.value?.genrenm)
+
+//수상작
+onMounted(async () => {
+  const genre = genres.find((item) => item.genre === prfInfo?.value?.genrenm)
+  console.log('Selected genre:', genre) // genre 값 확인
+
+  try {
+    const data = await getAwardPerformances(
+      genres.find((item) => item.genre === prfInfo?.value?.genrenm),
+    )
+    console.log('66666666666', data)
+    console.log('$4444444444444444444', data.dbs.db)
+
+    awardPerformances.value = data.dbs.db
+    console.log('awardPerformances', awardPerformances)
+  } catch (error) {
+    console.error('API 요청 실패:', error)
+  }
+})
+
+//추천
 onMounted(async () => {
   try {
     const data = await getPerformances(
@@ -106,40 +142,38 @@ onMounted(async () => {
   }
 })
 
-console.log('recommendPerformance', recommendPerformance)
+// watchEffect(() => {
+//   if (prfdetail.value) {
+//     prfplaceId.value = prfdetail.value.mt10id || ''
+//   }
+// })
+// watchEffect(() => {
+//   if (prfplaceId.value) {
+//     query.value[1].path = `/prfplc/${prfplaceId.value}`
+//     console.log('UPDATE', query.value[1].path)
+//   }
+// })
 
-watchEffect(() => {
-  if (prfdetail.value) {
-    prfplaceId.value = prfdetail.value.mt10id || ''
-  }
-})
-watchEffect(() => {
-  if (prfplaceId.value) {
-    query.value[1].path = `/prfplc/${prfplaceId.value}`
-    console.log('UPDATE', query.value[1].path)
-  }
-})
+// watchEffect(() => {
+//   if (isLoading.value) {
+//     console.log('데이터 로딩 중...')
+//   } else if (prfplaceData.value) {
+//     console.log('prfplaceData:', prfplaceData.value) // 데이터 로드 후 prfplaceData 출력
+//     // prfplaceData를 사용하여 추가 작업 수행
+//   } else {
+//     console.log('prfplaceData는 아직 로드되지 않았습니다.')
+//   }
+// })
 
-watchEffect(() => {
-  if (isLoading.value) {
-    console.log('데이터 로딩 중...')
-  } else if (prfplaceData.value) {
-    console.log('prfplaceData:', prfplaceData.value) // 데이터 로드 후 prfplaceData 출력
-    // prfplaceData를 사용하여 추가 작업 수행
-  } else {
-    console.log('prfplaceData는 아직 로드되지 않았습니다.')
-  }
-})
+// console.log('발견', prfplaceData.value)
 
-console.log('발견', prfplaceData.value)
-
-console.log('나와주새ㅔ여', prfplaceData.value)
+// console.log('나와주새ㅔ여', prfplaceData.value)
 
 console.log('prfplaceId', prfplaceId.value)
 
 console.log('야호 나오니~?', prfdetail.value)
 
-console.log('이름이 뭐야~?', prfplaceData.value)
+// console.log('이름이 뭐야~?', prfplaceData.value)
 
 const startDate = ref(prfInfo.value?.prfpdfrom)
 const endtDate = ref(prfInfo.value?.prfpdto)
@@ -210,22 +244,22 @@ const onTabChange = (key) => {
       장애시설 경사로 없음
       <a-tab-pane key="2" tab="공연장 상세 정보" class="performanceTab">
         <PerformancePlace
-          :fcltynm="prfplaceData?.fcltynm"
-          :seatscale="prfplaceData?.seatscale"
-          :parkinglot="prfplaceData?.parkinglot"
-          :mt13cnt="prfplaceData?.mt13cnt"
-          :opende="prfplaceData?.opende"
-          :restaurant="prfplaceData?.restaurant"
-          :cafe="prfplaceData?.cafe"
-          :store="prfplaceData?.store"
-          :nolibang="prfplaceData?.nolibang"
-          :suyu="prfplaceData?.suyu"
-          :parkbarrier="prfplaceData?.parkbarrier"
-          :restbarrier="prfplaceData?.restbarrier"
-          :elevbarrier="prfplaceData?.elevbarrier"
-          :runwbarrier="prfplaceData?.runwbarrier"
-          :latitude="prfplaceData?.la"
-          :longitude="prfplaceData?.lo"
+          :fcltynm="prfPlaceArray?.fcltynm"
+          :seatscale="prfPlaceArray?.seatscale"
+          :parkinglot="prfPlaceArray?.parkinglot"
+          :mt13cnt="prfPlaceArray?.mt13cnt"
+          :opende="prfPlaceArray?.opende"
+          :restaurant="prfPlaceArray?.restaurant"
+          :cafe="prfPlaceArray?.cafe"
+          :store="prfPlaceArray?.store"
+          :nolibang="prfPlaceArray?.nolibang"
+          :suyu="prfPlaceArray?.suyu"
+          :parkbarrier="prfPlaceArray?.parkbarrier"
+          :restbarrier="prfPlaceArray?.restbarrier"
+          :elevbarrier="prfPlaceArray?.elevbarrier"
+          :runwbarrier="prfPlaceArray?.runwbarrier"
+          :latitude="prfPlaceArray?.la"
+          :longitude="prfPlaceArray?.lo"
         />
       </a-tab-pane>
       <a-tab-pane key="3" tab="연관 공연 정보" class="performanceTab">
@@ -233,14 +267,23 @@ const onTabChange = (key) => {
           <div class="prf-related-card" style="margin-bottom: 72px">
             <div class="prf-related-title">{{ prfInfo?.genrenm }} 수상작을 만나보세요</div>
             <div class="prf-related-layer">
-              <PerformanceAward
-                v-for="(item, index) in awardPerformances.slice(0, 4)"
-                :key="index"
-                :prfnm="item.prfnm"
-                :fcltynm="item.fcltynm"
-                :awards="item.awards"
-                :poster="item.poster"
-              />
+              <template v-if="awardPerformances && awardPerformances.length > 0">
+                <PerformanceAward
+                  v-for="(item, index) in awardPerformances.slice(0, 4)"
+                  :key="index"
+                  :prfnm="item.prfnm"
+                  :fcltynm="item.fcltynm"
+                  :awards="item.awards"
+                  :poster="item.poster"
+                />
+              </template>
+
+              <template v-else>
+                <div class="non-award">
+                  <div class="non-award-emoji">😭</div>
+                  <p class="non-award-titme">수상작이 아직 없습니다</p>
+                </div>
+              </template>
             </div>
           </div>
           <div class="prf-related-card">
@@ -273,6 +316,9 @@ const onTabChange = (key) => {
 .content {
   height: 1000px;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
 .poster-container {
@@ -309,7 +355,6 @@ const onTabChange = (key) => {
   width: 300px;
   display: flex;
   align-items: center;
-  justify-content: end;
 }
 
 .calendar {
@@ -438,5 +483,20 @@ const onTabChange = (key) => {
   box-sizing: border-box;
   margin: 0 auto;
   flex-wrap: wrap;
+}
+
+.non-award {
+  width: 100%;
+  text-align: center;
+}
+
+.non-award-emoji {
+  font-size: 85px;
+}
+.non-award-titme {
+  margin-top: 4px;
+  font-size: 29px;
+  font-weight: 600;
+  margin-bottom: 20px;
 }
 </style>

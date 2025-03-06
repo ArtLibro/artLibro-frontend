@@ -8,7 +8,8 @@
           <div class="goToBack">
             <GoToBack />
           </div>
-          <img :src="detailData?.bookImageURL" alt="book-detail-bg" class="book-img">
+          <img v-if="detailData?.bookImageURL" :src="detailData?.bookImageURL" alt="book-detail-bg" class="book-img">
+          <img v-else src="/images/no-image.png" alt="이미지 준비중입니다." class="book-img">
         </div>
         <div class="book-detail-right">
           <div class="book-detail-right-contents">
@@ -38,17 +39,17 @@
             </div>
 
             <div class="book-description">
-              <p>{{ detailData?.description }}</p>
+              <p v-html="detailData?.description"></p>
             </div>
           </div>
 
           <div class="book-detail-sub-contents">
             <div class="book-loan-count-container">
               <p class="book-loan-count-title">대출건수</p>
-              <p class="book-loan-count">{{ loanInfoData?.[0]?.Total?.loanCnt }}</p>
+              <p class="book-loan-count">{{ loanCount }}</p>
             </div>
 
-            <div class="bookmark">
+            <div class="bookmark" @click="handleBookmarkClick">
               <BookMarkIcon strokeColor="#fff" />
               <span>북마크</span>
             </div>
@@ -66,11 +67,17 @@
         <div class="book-library-info-left">
           <h2>도서 소장 도서관</h2>
 
-          <div class="library-filter-container">
-            <a-select v-model:value="regionValue" style="width: 200px" :options="regionOptions"
-              @change="handleRegionChange"></a-select>
-            <a-select v-model:value="regionValue1" style="width: 200px" :options="regionDetailOptions"
-              @change="handleDetailRegionChange"></a-select>
+          <div class="book-library-header-conatiner">
+            <div class="library-filter-container">
+              <a-select v-model:value="regionValue" style="width: 200px" :options="regionOptions"
+                @change="handleRegionChange"></a-select>
+              <a-select v-model:value="regionValue1" style="width: 200px" :options="regionDetailOptions"
+                @change="handleDetailRegionChange"></a-select>
+            </div>
+
+            <div class="homepage-button-container">
+              <p @click="handleLibraryClick">홈페이지 이동</p>
+            </div>
           </div>
 
           <div class="library-table-container">
@@ -86,6 +93,10 @@
       <!-- 함께 대출된 관련 도서 -->
       <LoanBookSlider :coLoanBooksDatas="coLoanBooksData" />
       <!-- 함께 대출된 관련 도서 -->
+
+      <!-- 다독자를 위한 추천 도서 -->
+      <ReaderRecommendSlider :readerRecBooksDatas="readerRecBooksData" />
+      <!-- 다독자를 위한 추천 도서 -->
     </div>
     <!-- 도서관 정보 -->
 
@@ -93,14 +104,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watchEffect } from 'vue';
 import BookMarkIcon from '@/components/bookDetail/BookMarkIcon.vue';
 import { getBookDetail, getLibraryLoanPossible, getLibraryUsageAnalysis } from '@/apis/books';
-import type { BookDetail, CoLoanBook } from '@/types/libraryType';
+import type { BookDetail, CoLoanBook, ReaderRecBook } from '@/types/libraryType';
 import GoToBack from '@/components/common/GoToBack.vue';
 import { REGION_CODE } from '@/constants/regionCode';
 import { REGION_DETAIL_CODE } from '@/constants/regionDetailCode';
 import LoanBookSlider from '@/components/bookDetail/LoanBookSlider.vue';
+import ReaderRecommendSlider from '@/components/bookDetail/ReaderRecommendSlider.vue';
 
 const props = defineProps({
   id: {
@@ -144,6 +156,12 @@ const selectedLibrary = ref<any>(null)
 
 const coLoanBooksData = ref<CoLoanBook[]>([])
 
+const readerRecBooksData = ref<ReaderRecBook[]>([])
+// 대출 건수
+const loanCount = computed(() => {
+  return loanInfoData.value?.[0]?.Total?.loanCnt || '정보 없음'
+})
+
 // 지역 선택 옵션
 const regionOptions = computed(() => {
   return REGION_CODE.map((region) => {
@@ -178,9 +196,11 @@ const formatLibraryLoanPossibleData = (libraryData: any) => {
   }));
 
   selectedLibrary.value = tableData.value[0]
+
+  initMap(selectedLibrary.value.latitude, selectedLibrary.value.longitude);
 }
 
-onMounted(async () => {
+watchEffect(async () => {
   isLoading.value = true
   try {
     // 도서 상세 데이터 조회
@@ -202,6 +222,7 @@ onMounted(async () => {
 
 let map: any = null;
 let marker: any = null;
+let infowindow: any = null;
 
 const initMap = (lat: number = 37.566826, lng: number = 126.9786567) => {
   if ((window as any).kakao) {
@@ -213,6 +234,9 @@ const initMap = (lat: number = 37.566826, lng: number = 126.9786567) => {
       const latLng = new kakao.maps.LatLng(lat, lng)
       map.setCenter(latLng) // 지도 중심 변경
       marker.setPosition(latLng) // 마커 위치 변경
+
+      infowindow.setContent(`${selectedLibrary.value.libraryName ? `<div style="padding:5px; text-align: center; font-size: 14px;">${selectedLibrary.value.libraryName}</div>` : ''}`);
+      infowindow.setPosition(latLng);
       return
     }
 
@@ -231,8 +255,24 @@ const initMap = (lat: number = 37.566826, lng: number = 126.9786567) => {
         position: markerPosition,
       })
 
+      infowindow = new kakao.maps.InfoWindow({
+        content: `${selectedLibrary?.value?.libraryName ? `<div style="padding:5px; text-align: center;">${selectedLibrary.value.libraryName}</div>` : ''}`,
+        position: markerPosition
+      });
+
+
       marker.setMap(map)
+      infowindow.open(map, marker);
+
+      kakao.maps.event.addListener(marker, 'click', handleLibraryClick);
     })
+  }
+}
+
+const handleLibraryClick = () => {
+  const result = confirm(`${selectedLibrary.value.libraryName} 홈페이지로 이동하시겠습니까?`);
+  if (result) {
+    window.open(selectedLibrary.value.homepage, '_blank');
   }
 }
 
@@ -240,12 +280,12 @@ onMounted(() => {
   initMap();
 })
 
-onMounted(async () => {
+watchEffect(async () => {
   try {
     const { coLoanBooksData: fetchCoLoanBooksData, readerRecBooksData: fetchReaderRecBooksData } = await getLibraryUsageAnalysis(+props.id)
 
     coLoanBooksData.value = fetchCoLoanBooksData
-    console.log(fetchReaderRecBooksData)
+    readerRecBooksData.value = fetchReaderRecBooksData
   } catch (error) {
     console.error('데이터 로딩 중 오류 발생:', error)
   }
@@ -276,11 +316,13 @@ const libraryClickHandler = (record: any) => {
   return {
     onClick: () => {
       selectedLibrary.value = record
-
-      console.log(selectedLibrary.value)
       initMap(selectedLibrary.value.latitude, selectedLibrary.value.longitude)
     }
   }
+}
+
+const handleBookmarkClick = () => {
+  alert('북마크 클릭')
 }
 </script>
 
