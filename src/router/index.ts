@@ -12,6 +12,7 @@ import LibraryDetailView from '@/views/LibraryDetailView.vue'
 import CommunityDetailView from '@/views/community/CommunityDetailView.vue'
 import CommunityWriteView from '@/views/community/CommunityWriteView.vue'
 import BookDetailView from '@/views/bookDetail/BookDetailView.vue'
+import CallbackView from '@/views/CallbackView.vue'
 import MyPageView from '@/views/mypage/MyPageView.vue'
 
 const router = createRouter({
@@ -85,6 +86,12 @@ const router = createRouter({
       path: '/register',
       name: 'register',
       component: RegisterView,
+    },
+    {
+      path: '/auth/callback/:provider', // OAuth 콜백 경로 추가
+      name: 'auth-callback',
+      component: CallbackView,
+      props: true,
     },
     {
       path: '/mypage',
