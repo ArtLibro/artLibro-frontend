@@ -6,7 +6,11 @@
 
 <script setup lang="ts">
 import UserCardSection from '@/components/myPage/UserCardSection.vue';
+import { useAuthStore } from '@/stores/authStore';
 
+const { userId } = useAuthStore()
+
+console.log(userId)
 
 </script>
 
