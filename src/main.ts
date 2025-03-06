@@ -8,6 +8,11 @@ import App from './App.vue'
 import router from './router'
 import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
 import { setupCalendar } from 'v-calendar'
+import { useKakao } from 'vue3-kakao-maps/@utils';
+
+const KAKAO_MAP_KEY = import.meta.env.VITE_KAKAOMAP_KEY
+
+useKakao(KAKAO_MAP_KEY);
 
 const app = createApp(App)
 
