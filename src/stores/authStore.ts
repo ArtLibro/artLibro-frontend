@@ -6,21 +6,23 @@ import axiosApi from '@/config/axiosConfig'
 export const useAuthStore = defineStore('auth', () => {
   const token = ref<string | null>(localStorage.getItem('accessToken')) // 새로고침해도 유지
   const userId = ref<string | null>(localStorage.getItem('userId')) // 새로고침해도 유지
+  const fullName = ref<string | null>(localStorage.getItem('fullName')) // 새로고침해도 유지
 
   // 로그인 함수
   const login = async (email: string, password: string) => {
     try {
       const response = await axiosApi.post('/login', { email, password })
 
-      if (response.data.token && response.data.user._id) {
+      if (response.data.token && response.data.user._id && response.data.user.fullName) {
         token.value = response.data.token
         userId.value = response.data.user._id
-
+        fullName.value = response.data.user.fullName
 
         localStorage.setItem('accessToken', token.value) // localStorage에 저장
         localStorage.setItem('userId', userId.value) // localStorage에 저장
+        localStorage.setItem('fullName', fullName.value) // localStorage에 저장
 
-        message.success('로그인 성공!')
+        message.success(`${fullName.value}님, 로그인 성공!`)
         return true
       } else {
         message.error('로그인 실패! 다시 시도해주세요.')
@@ -37,10 +39,12 @@ export const useAuthStore = defineStore('auth', () => {
   const logout = () => {
     token.value = null
     userId.value = null
+
+    fullName.value = null
     localStorage.removeItem('accessToken') // 토큰 삭제
     localStorage.removeItem('userId') // userId 삭제
+    localStorage.removeItem('fullName') // 사용자 이름 삭제
     message.success('로그아웃 되었습니다.')
   }
-
-  return { token, userId, login, logout }
+  return { token, userId, fullName, login, logout }
 })
