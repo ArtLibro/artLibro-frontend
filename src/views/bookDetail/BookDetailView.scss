@@ -79,14 +79,15 @@
                 border-radius: 20px;
                 color: $secondary-color-purple;
                 padding: 0.5rem 1rem;
+                white-space: nowrap;
               }
             }
           }
 
           .book-description {
             p {
-              font-size: 22px;
-              font-weight: bold;
+              font-size: 20px;
+              font-weight: 500;
               letter-spacing: 0.1px;
               line-height: 30px;
             }

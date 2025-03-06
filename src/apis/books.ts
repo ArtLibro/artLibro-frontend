@@ -39,8 +39,6 @@ export const getBookList = async (
       params.author = searchKeyword
     }
 
-    console.log(params)
-
     const response = await LibraryApi.get(LIBRARY_ENDPOINT.bookList, {
       params,
     })
@@ -145,7 +143,7 @@ export const getLibraryInfo = async (address: KakaoAddress) => {
   }
 }
 
-export const getLibraryInfoByRegion = async (regionCode : number) => {
+export const getLibraryInfoByRegion = async (regionCode: number) => {
   try {
     const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryDetail, {
       params: {
@@ -159,7 +157,7 @@ export const getLibraryInfoByRegion = async (regionCode : number) => {
   }
 }
 
-export const getLibraryInfoByLibraryCode = async (libraryCode : number) => {
+export const getLibraryInfoByLibraryCode = async (libraryCode: number) => {
   try {
     const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryDetail, {
       params: {

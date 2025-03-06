@@ -20,37 +20,39 @@
                     currentMainBook?.publication_year }}</span></div>
                 </div>
               </div>
-              <div class="slider-item-main-image">
+              <div class="slider-item-main-image" @click="bookClickHandler(currentMainBook?.isbn13)">
                 <img :src="currentMainBook?.bookImageURL" alt="dummy-book">
               </div>
 
             </div>
           </Transition>
-          <Transition name="fade" mode="out-in">
-            <div class="slider-button-container" :key="currentIndex">
-              <div class="slider-left-button button" @click="handleLeftButton">
-                <img src="/icons/arrow-left.svg" alt="arrow-left">
-              </div>
-              <div class="slide-count-container">
-                {{ currentIndex + 1 }} / {{ totalCount }}
-              </div>
-              <div class="slider-right-button button" @click="handleRightButton">
-                <img src="/icons/arrow-right.svg" alt="arrow-right">
-              </div>
+
+          <div class="slider-button-container">
+            <div class="slider-left-button button" @click="handleLeftButton">
+              <img src="/icons/arrow-left.svg" alt="arrow-left">
             </div>
-          </Transition>
+            <div class="slide-count-container">
+              {{ currentIndex + 1 }} / {{ totalCount }}
+            </div>
+            <div class="slider-right-button button" @click="handleRightButton">
+              <img src="/icons/arrow-right.svg" alt="arrow-right">
+            </div>
+          </div>
+
         </div>
       </div>
-      <div class="slide-right">
-        <div class="slide-sub-img-container">
-          <div class="slide-sub-img-item">
-            <img :src="subBooks[0]?.bookImageURL" alt="dummy-book">
-          </div>
-          <div class="slide-sub-img-item">
-            <img :src="subBooks[1]?.bookImageURL" alt="dummy-book">
+      <Transition name="fade" mode="out-in">
+        <div class="slide-right" :key="currentIndex">
+          <div class="slide-sub-img-container">
+            <div class="slide-sub-img-item" @click="subBookClickHandler(1)">
+              <img :src="subBooks[0]?.bookImageURL" alt="dummy-book">
+            </div>
+            <div class="slide-sub-img-item" @click="subBookClickHandler(2)">
+              <img :src="subBooks[1]?.bookImageURL" alt="dummy-book">
+            </div>
           </div>
         </div>
-      </div>
+      </Transition>
     </div>
   </div>
 </template>
@@ -60,6 +62,7 @@ import { getBookDetail } from '@/apis/books';
 import type { BookDetail, CoLoanBook } from '@/types/libraryType';
 import type { PropType } from 'vue';
 import { computed, ref, watchEffect } from 'vue';
+import { useRouter } from 'vue-router';
 
 const props = defineProps({
   coLoanBooksDatas: {
@@ -68,8 +71,22 @@ const props = defineProps({
   },
 })
 
+const router = useRouter();
+
+// 책 상세 정보 클릭 시 라우터 이동
+const bookClickHandler = (isbn13: string) => {
+  router.push(`/book/detail/${+isbn13}`);
+}
+
+// 서브 도서 클릭시 현재 도서 인덱스 변경
+const subBookClickHandler = (index: number) => {
+  currentIndex.value = (currentIndex.value + index) % bookDetails.value.length;
+}
+
+// 책 상세 정보 배열
 const bookDetails = ref<BookDetail[]>([]);
 
+// 책 상세 정보 가져오기
 const fetchBookDetail = async () => {
   try {
     const bookPromiss = props.coLoanBooksDatas.map(book =>
@@ -78,13 +95,13 @@ const fetchBookDetail = async () => {
 
     const response = await Promise.all(bookPromiss);
     bookDetails.value = response.map(result => result.detailData);
-
   } catch (error) {
     console.error('책 상세 정보 가져오기 실패', error);
     throw error;
   }
 }
 
+// 책 상세 정보 가져오기
 watchEffect(() => {
   fetchBookDetail();
 })
@@ -92,23 +109,27 @@ watchEffect(() => {
 // 슬라이드 관련 함수
 const currentIndex = ref(0);
 
+// 총 도서 수
 const totalCount = computed(() => {
   return bookDetails.value.length;
 })
 
+// 현재 메인 도서
 const currentMainBook = computed(() => {
   return bookDetails.value[currentIndex.value];
 })
 
+// 현재 서브 도서
 const subBooks = computed(() => {
   const nextIndex = [
     (currentIndex.value + 1) % bookDetails.value.length,
     (currentIndex.value + 2) % bookDetails.value.length,
   ]
 
-  return bookDetails.value.filter((_, index) => nextIndex.includes(index));
+  return [bookDetails.value[nextIndex[0]], bookDetails.value[nextIndex[1]]];
 })
 
+// 왼쪽 버튼 클릭 시
 const handleLeftButton = () => {
   if (currentIndex.value === 0) {
     currentIndex.value = bookDetails.value.length - 1;
@@ -117,8 +138,13 @@ const handleLeftButton = () => {
   }
 }
 
+// 오른쪽 버튼 클릭 시
 const handleRightButton = () => {
-  currentIndex.value = (currentIndex.value + 1) % bookDetails.value.length;
+  if (currentIndex.value === bookDetails.value.length - 1) {
+    currentIndex.value = 0;
+  } else {
+    currentIndex.value++;
+  }
 }
 
 </script>
@@ -126,7 +152,7 @@ const handleRightButton = () => {
 <style lang="scss" scoped>
 .loan-book-slider-container {
   width: 100%;
-  margin: 155px auto 0;
+  margin: 155px auto 60px;
 
   h1 {
     font-size: $text-title-200;
@@ -192,6 +218,7 @@ const handleRightButton = () => {
           .slider-item-main-image {
             width: 191px;
             height: 288px;
+            cursor: pointer;
 
             img {
               width: 100%;
@@ -261,7 +288,7 @@ const handleRightButton = () => {
 
 .slide-enter-active,
 .slide-leave-active {
-  transition: all 0.5s ease;
+  transition: all 0.4s ease;
 }
 
 .slide-enter-from {
@@ -276,7 +303,7 @@ const handleRightButton = () => {
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease-in-out;
 }
 
 .fade-enter-from,
