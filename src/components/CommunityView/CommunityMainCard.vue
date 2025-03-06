@@ -9,13 +9,13 @@ const props = defineProps<{
     title: string
     image: string
     date: string
-    author: string
+    authorName: string
     comment: number
     likes: number
   }
 }>()
 
-// 기본 이미지 설정
+// 기본 이미지 경로
 const defaultBookImage = '/public/images/community-no-image.png'
 
 // 책 이미지가 없으면 기본 이미지 사용
@@ -37,13 +37,13 @@ const goToDetail = () => {
       <div class="divider"></div>
       <div class="post-meta">
         <p>
-          작성자 <span>{{ post.author }}</span>
-        </p>
-        <p>
-          댓글수 <span>{{ post.comment }}</span>
+          작성자 <span>{{ post.authorName }}</span>
         </p>
         <p>
           좋아요 <span>{{ post.likes }}</span>
+        </p>
+        <p>
+          댓글수 <span>{{ post.comment }}</span>
         </p>
       </div>
     </div>
@@ -77,11 +77,10 @@ const goToDetail = () => {
   border: 3px solid #d4d8ff;
   border-radius: 10px;
   box-shadow: 0px 5px 10px #eaecff;
-
-  /* 호버했을 때 애니메이션 효과 */
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease;
+
   &:hover {
     transform: translateY(-10px);
   }
@@ -108,7 +107,7 @@ const goToDetail = () => {
   }
 
   .post-date {
-    font-size: 16px;
+    font-size: 14px;
     padding-top: 10px;
   }
 
@@ -146,7 +145,6 @@ const goToDetail = () => {
 
   // 기본 이미지일 때 크기 조절
   .default-image {
-    opacity: 0.5;
     padding: 35px 20px;
   }
 

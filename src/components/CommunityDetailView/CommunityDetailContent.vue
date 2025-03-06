@@ -1,11 +1,22 @@
 <script setup lang="ts">
 import { deletePost } from '@/apis/community/post'
 import router from '@/router'
+import { useAuthStore } from '@/stores/authStore'
 import type { Post } from '@/types/community/communityType'
 import dayjs from 'dayjs'
 import { computed } from 'vue'
 
 const props = defineProps<{ post: Post }>()
+const authStore = useAuthStore()
+
+// 현재 로그인한 사용자 ID 가져오기
+const userId = computed(() => authStore.userId)
+
+// 본인 게시글인지 확인
+const isAuthor = computed(() => {
+  console.log('🔍 작성자 ID:', props.post.userId, '| 현재 사용자 ID:', userId.value)
+  return props.post.userId === userId.value
+})
 
 // 기본 이미지 경로
 const defaultBookImage = '/images/community-no-image.png'
@@ -25,15 +36,23 @@ const formattedDate = computed(() => {
 const handleDelete = async () => {
   const confirmDelete = confirm('정말 삭제하시겠습니까?')
   if (confirmDelete) {
-    await deletePost(props.post.id)
+    await deletePost(props.post.id, props.post.userId)
     alert('게시글이 삭제되었습니다.')
-    router.push('/community') // 삭제 후 커뮤니티 메인으로 이동
+    router.push('/community')
   }
 }
 
-// 게시글 수정페이지로 이동
+// 게시글 수정 페이지로 이동
 const goToEditPage = () => {
-  router.push(`/community/edit/${props.post.id}`) // 수정페이지로 이동
+  if (!isAuthor.value) {
+    alert('본인 게시글만 수정할 수 있습니다!')
+    return
+  }
+
+  router.push({
+    path: `/community/edit/${props.post.id}`,
+    query: { post: JSON.stringify(props.post) },
+  })
 }
 </script>
 
@@ -49,7 +68,7 @@ const goToEditPage = () => {
         <div class="user-profile">
           <img src="/images/user-dummy.png" alt="유저 프로필" class="profile-image" />
           <div>
-            <h3 class="username">홍길동</h3>
+            <h3 class="username">{{ post.authorName }}</h3>
           </div>
         </div>
         <span class="post-date">{{ formattedDate }}</span>
@@ -72,7 +91,7 @@ const goToEditPage = () => {
         </div>
       </div>
 
-      <div class="button-group">
+      <div v-if="isAuthor" class="button-group">
         <button class="edit-button" @click="goToEditPage">수정</button>
         <button class="delete-button" @click="handleDelete">삭제</button>
       </div>
@@ -164,8 +183,10 @@ const goToEditPage = () => {
 }
 
 .button-group {
+  direction: flex;
+  flex-direction: column;
   position: absolute;
-  bottom: 30px;
+  bottom: 20px;
   right: 80px;
   display: flex;
   gap: 10px;
@@ -173,8 +194,8 @@ const goToEditPage = () => {
 
 .edit-button,
 .delete-button {
-  width: 90px;
-  height: 40px;
+  width: 220px;
+  height: 30px;
   padding: 8px 16px;
   border-radius: 10px;
   cursor: pointer;
@@ -185,14 +206,26 @@ const goToEditPage = () => {
 
 .edit-button {
   background-color: white;
-  color: blue;
-  border: 1px solid blue;
+  color: #0077b6;
+  border: 1px solid #0077b6;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background-color: #0077b6;
+    color: white;
+  }
 }
 
 .delete-button {
   background-color: white;
-  color: red;
-  border: 1px solid red;
+  color: #d62828;
+  border: 1px solid #d62828;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background-color: #d62828;
+    color: white;
+  }
 }
 
 .book-image {
