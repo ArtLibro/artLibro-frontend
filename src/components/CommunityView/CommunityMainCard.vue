@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -13,6 +14,15 @@ const props = defineProps<{
     likes: number
   }
 }>()
+
+// 기본 이미지 설정
+const defaultBookImage = '/public/images/community-no-image.png'
+
+// 책 이미지가 없으면 기본 이미지 사용
+const bookImage = computed(() => (props.post.image ? props.post.image : defaultBookImage))
+
+// 현재 이미지가 기본 이미지인지 체크
+const isDefaultImage = computed(() => bookImage.value === defaultBookImage)
 
 const goToDetail = () => {
   router.push(`/community/${props.post.id}`)
@@ -37,8 +47,12 @@ const goToDetail = () => {
         </p>
       </div>
     </div>
-    <img :src="post.image" alt="책표지" class="post-image" />
-    <div class="new-post-badge">최신</div>
+    <img
+      :src="bookImage"
+      :class="{ 'post-image': true, 'default-image': isDefaultImage }"
+      alt="책표지"
+    />
+    <div class="new-post-badge">New</div>
   </div>
 </template>
 
@@ -50,18 +64,19 @@ const goToDetail = () => {
     transform: scale(1.02);
   }
   width: 330px;
-  height: 217px;
+  height: 230px;
   background: white;
   color: $text-color-500;
-  padding: 30px;
+  padding: 15px;
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   margin-right: 0px;
-  border: 2px solid #d4d8ff;
+  margin-bottom: 10px;
+  border: 3px solid #d4d8ff;
   border-radius: 10px;
-  box-shadow: 0px 5px 20px #d4d8ff;
+  box-shadow: 0px 5px 10px #eaecff;
 
   /* 호버했을 때 애니메이션 효과 */
   transition:
@@ -74,30 +89,42 @@ const goToDetail = () => {
   .post-info {
     display: flex;
     flex-direction: column;
-    margin-bottom: 0;
+    justify-content: space-between;
+    height: 100%;
   }
 
   .post-title {
     font-size: 24px;
-    margin-top: 0px;
-    margin-bottom: 20px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    min-height: 56px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* 웹킷 브라우저용 (Chrome, Safari 등) */
+    line-clamp: 2; /* 표준 속성 */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
   }
 
   .post-date {
     font-size: 16px;
+    padding-top: 10px;
   }
 
   .divider {
-    width: 100%;
+    width: 70%;
     height: 1px;
     background: $text-color-200;
+    margin-top: auto;
   }
 
   .post-meta {
     font-size: 14px;
     display: flex;
     flex-direction: column;
-    margin-top: 10px;
+    margin-top: auto;
+    padding-bottom: 10px;
 
     p {
       display: flex;
@@ -109,12 +136,18 @@ const goToDetail = () => {
   }
 
   .post-image {
-    width: 110px;
-    height: 150px;
+    width: 80px;
+    height: 120px;
     position: absolute;
-    bottom: 50px;
+    bottom: 13px;
     right: 15px;
-    border-radius: 5px;
+    box-shadow: 0px 1px 4px $text-color-300;
+  }
+
+  // 기본 이미지일 때 크기 조절
+  .default-image {
+    opacity: 0.5;
+    padding: 35px 20px;
   }
 
   .new-post-badge {
@@ -123,13 +156,14 @@ const goToDetail = () => {
     position: absolute;
     top: 0;
     right: 0;
-    background: $text-color-400;
-    color: white;
+    background: $secondary-color-100;
+    color: $text-color-600;
     font-size: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-top-right-radius: 5px;
+    border-bottom-left-radius: 10px;
   }
 }
 </style>

@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import type { LibraryInfoResult } from '@/types/library/library.types.ts'
 
+type LibraryInfoProps = Pick<LibraryInfoResult, 'libName' | 'address' | 'tel' | 'operatingTime' | 'closed'>
+defineProps<LibraryInfoProps>()
 </script>
 
 <template>
@@ -8,27 +11,23 @@
     <div class="info">
       <div class="content-wrapper">
         <img src="/icons/home-library/library.svg" alt="library-icon" height="24px" width="24px" />
-        <div>이름 :</div>
+        <div>이름 : {{ libName }}</div>
       </div>
       <div class="content-wrapper">
         <img src="/icons/home-library/map.svg" alt="map-icon" height="24px" width="24px" />
-        <div>주소 :</div>
+        <div>주소 : {{ address}}</div>
       </div>
       <div class="content-wrapper">
         <img src="/icons/home-library/phone.svg" alt="phone-icon" height="24px" width="24px" />
-        <div>전화번호 :</div>
+        <div>전화번호 : {{ tel }}</div>
       </div>
       <div class="content-wrapper">
         <img src="/icons/home-library/calendar-days.svg" alt="calendar-icon" height="24px" width="24px" />
-        <div>휴관일 :</div>
+        <div>휴관일 : {{ closed }}</div>
       </div>
       <div class="content-wrapper">
         <img src="/icons/home-library/clock-4.svg" alt="clock-icon" height="24px" width="24px" />
-        <div>운영시간 :</div>
-      </div>
-      <div class="content-wrapper">
-        <img src="/icons/home-library/book.svg" alt="book-icon" height="24px" width="24px" />
-        <div>단행본수 :</div>
+        <div>운영시간 : {{ operatingTime }}</div>
       </div>
     </div>
   </div>
@@ -36,7 +35,7 @@
 
 <style scoped lang="scss">
 .library-info {
-  width : 263px;
+  width : 370px;
   height: 280px;
   background-color: #3F5892;
   border-radius: 10px;

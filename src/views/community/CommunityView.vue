@@ -1,20 +1,47 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { fetchPosts } from '@/apis/community/post'
 import Pagination from '@/components/common/Pagination.vue'
 import CommunityMainCard from '@/components/CommunityView/CommunityMainCard.vue'
 import CommunityReviewCard from '@/components/CommunityView/CommunityReviewCard.vue'
 import CommunityTabs from '@/components/CommunityView/CommunityTabs.vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import type { Post } from '@/types/community/communityType'
 
 const router = useRouter()
+const route = useRoute()
 
 // API에서 불러온 게시글 저장 (메인카드, 리뷰카드 공용으로 사용)
 const posts = ref<Post[]>([])
 
 // CommunityMainCard 최신 글 6개만 보여줌
-const latestMainPosts = computed(() => posts.value.slice(0, 6))
+const latestMainPosts = computed(() =>
+  posts.value.slice(0, 6).map((post) => ({
+    id: post.id,
+    title: post.title,
+    image: post.image || '', // 이미지가 없으면 빈 문자열
+    date: new Date(post.createdAt).toLocaleDateString(), // 날짜 변환
+    author: '관리자', // 기본값 설정 (추후 서버에서 받아오도록 수정 가능)
+    comment: 0, // 기본값 설정 (추후 댓글 기능 추가하면 변경)
+    likes: 0, // 기본값 설정
+  })),
+)
+
+// 포맷된 리뷰 리스트 (CommunityReviewCard용 데이터 변환)
+const formattedReviews = computed(() =>
+  filteredReviews.value.map((post) => ({
+    id: post.id,
+    user: '익명',
+    title: post.title,
+    content: post.content,
+    likes: 0,
+    comments: 0,
+    image: post.image || '',
+    avatar: '/images/user-dummy.png',
+    category: post.category,
+    time: new Date(post.createdAt).toLocaleString(),
+  })),
+)
 
 // 탭 필터링 (도서, 공연/행사)
 const activeKey = ref('1')
@@ -33,7 +60,7 @@ const reviewsPerPage = 5 // 페이지당 5개씩 보여줌
 // 페이지네이션을 적용한 리뷰 리스트
 const paginatedReviews = computed(() => {
   const start = (currentPage.value - 1) * reviewsPerPage
-  return filteredReviews.value.slice(start, start + reviewsPerPage)
+  return formattedReviews.value.slice(start, start + reviewsPerPage)
 })
 
 // 게시글 불러오기
@@ -41,7 +68,26 @@ const loadPosts = async () => {
   posts.value = await fetchPosts()
 }
 
-// 리뷰 작성 페이지 이동
+// 새로고침 감지 -> 게시글 새로 불러오기
+watch(
+  () => route.query.refresh,
+  async (newVal) => {
+    if (newVal) {
+      await loadPosts()
+      router.replace({ path: '/community' }) // URL에서 `refresh=true` 제거
+    }
+  },
+)
+
+// 상세페이지로 이동
+const goToDetailPage = (postId: string) => {
+  router.push({
+    path: `/community/${postId}`,
+    query: { posts: JSON.stringify(posts.value) },
+  })
+}
+
+// 게시글 작성페이지로 이동
 const goToWritePage = () => {
   router.push('/community/write').then(() => {
     window.scrollTo({ top: 0 })
@@ -59,7 +105,12 @@ onMounted(loadPosts)
     </div>
 
     <div class="post-grid">
-      <CommunityMainCard v-for="(post, index) in latestMainPosts" :key="index" :post="post" />
+      <CommunityMainCard
+        v-for="(post, index) in latestMainPosts"
+        :key="index"
+        :post="post"
+        @click="goToDetailPage(post.id)"
+      />
     </div>
 
     <div class="review-header">
@@ -72,9 +123,10 @@ onMounted(loadPosts)
     <div class="review-container">
       <div class="review-list">
         <CommunityReviewCard
-          v-for="(post, index) in paginatedReviews"
+          v-for="(review, index) in paginatedReviews"
           :key="index"
-          :review="post"
+          :review="review"
+          @click="goToDetailPage(review.id)"
         />
       </div>
     </div>
@@ -117,12 +169,11 @@ onMounted(loadPosts)
 .post-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 35px;
+  gap: 30px;
   margin-top: 60px;
   justify-content: center;
 }
 
-/* 리뷰 탭과 버튼을 한 줄로 정렬 */
 .review-header {
   display: flex;
   justify-content: space-between;

@@ -133,13 +133,11 @@ export const getLibraryInfo = async (address: KakaoAddress) => {
     const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryDetail, {
       params: {
         dtl_region: detailRegionCode,
-        params: {
-          dtl_region: detailRegionCode,
-          format: 'json',
-        },
+        format: 'json',
+        pageSize: 25,
       },
     })
-    return response.data
+    return response.data.response
   } catch (error) {
     console.error(error)
   }
@@ -178,10 +176,35 @@ export const getLibraryPopularBooks = async (libCode: number) => {
     const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryPopularBook, {
       params: {
         libCode: libCode,
-        params: {
-          libCode: libCode,
-          format: 'json',
-        },
+        format: 'json',
+      },
+    })
+    return response.data.response
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const getDetailRegionReadAnalysis = async (detailRegion : number) => {
+  try {
+    const response = await LibraryApi.get(LIBRARY_ENDPOINT.readQuantityAnalysis, {
+      params: {
+        dtl_region: detailRegion,
+        format: 'json',
+      },
+    })
+    return response.data.response
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const getRegionReadAnalysis = async (region : number) => {
+  try {
+    const response = await LibraryApi.get(LIBRARY_ENDPOINT.readQuantityAnalysis, {
+      params: {
+        region: region,
+        format: 'json',
       },
     })
     return response.data.response
