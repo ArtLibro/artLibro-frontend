@@ -145,12 +145,14 @@ export const getLibraryInfo = async (address: KakaoAddress) => {
   }
 }
 
-export const getLibraryInfoByRegion = async (regionCode : number) => {
+export const getLibraryInfoByRegion = async (regionCode : number, pageNo : number) => {
   try {
     const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryDetail, {
       params: {
         region: regionCode,
         format: 'json',
+        pageNo: pageNo,
+        pageSize: 11,
       },
     })
     return response.data.response
