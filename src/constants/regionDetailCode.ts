@@ -261,3 +261,5 @@ export const REGION_DETAIL_CODE = {
     { code: 39020, name: '서귀포시' },
   ],
 } as const
+
+export type RegionKey = keyof typeof REGION_DETAIL_CODE;

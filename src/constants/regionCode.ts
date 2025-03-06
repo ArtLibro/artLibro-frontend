@@ -17,3 +17,6 @@ export const REGION_CODE = [
   { code: 38, name: '경남' },
   { code: 39, name: '제주' },
 ] as const
+
+export type RegionCodeType = (typeof REGION_CODE[number])['code'];
+export type RegionNameType = (typeof REGION_CODE[number])['name'];
