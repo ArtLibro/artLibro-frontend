@@ -67,11 +67,17 @@
         <div class="book-library-info-left">
           <h2>도서 소장 도서관</h2>
 
-          <div class="library-filter-container">
-            <a-select v-model:value="regionValue" style="width: 200px" :options="regionOptions"
-              @change="handleRegionChange"></a-select>
-            <a-select v-model:value="regionValue1" style="width: 200px" :options="regionDetailOptions"
-              @change="handleDetailRegionChange"></a-select>
+          <div class="book-library-header-conatiner">
+            <div class="library-filter-container">
+              <a-select v-model:value="regionValue" style="width: 200px" :options="regionOptions"
+                @change="handleRegionChange"></a-select>
+              <a-select v-model:value="regionValue1" style="width: 200px" :options="regionDetailOptions"
+                @change="handleDetailRegionChange"></a-select>
+            </div>
+
+            <div class="homepage-button-container">
+              <a :href="selectedLibrary?.homepage" target="_blank">홈페이지 이동</a>
+            </div>
           </div>
 
           <div class="library-table-container">
@@ -291,6 +297,8 @@ const libraryClickHandler = (record: any) => {
     onClick: () => {
       selectedLibrary.value = record
       initMap(selectedLibrary.value.latitude, selectedLibrary.value.longitude)
+
+      console.log(record)
     }
   }
 }
