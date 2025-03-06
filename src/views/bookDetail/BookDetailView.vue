@@ -86,6 +86,10 @@
       <!-- 함께 대출된 관련 도서 -->
       <LoanBookSlider :coLoanBooksDatas="coLoanBooksData" />
       <!-- 함께 대출된 관련 도서 -->
+
+      <!-- 다독자를 위한 추천 도서 -->
+      <ReaderRecommendSlider :readerRecBooksDatas="readerRecBooksData" />
+      <!-- 다독자를 위한 추천 도서 -->
     </div>
     <!-- 도서관 정보 -->
 
@@ -96,11 +100,12 @@
 import { computed, onMounted, ref, watchEffect } from 'vue';
 import BookMarkIcon from '@/components/bookDetail/BookMarkIcon.vue';
 import { getBookDetail, getLibraryLoanPossible, getLibraryUsageAnalysis } from '@/apis/books';
-import type { BookDetail, CoLoanBook } from '@/types/libraryType';
+import type { BookDetail, CoLoanBook, ReaderRecBook } from '@/types/libraryType';
 import GoToBack from '@/components/common/GoToBack.vue';
 import { REGION_CODE } from '@/constants/regionCode';
 import { REGION_DETAIL_CODE } from '@/constants/regionDetailCode';
 import LoanBookSlider from '@/components/bookDetail/LoanBookSlider.vue';
+import ReaderRecommendSlider from '@/components/bookDetail/ReaderRecommendSlider.vue';
 
 const props = defineProps({
   id: {
@@ -144,7 +149,7 @@ const selectedLibrary = ref<any>(null)
 
 const coLoanBooksData = ref<CoLoanBook[]>([])
 
-
+const readerRecBooksData = ref<ReaderRecBook[]>([])
 // 대출 건수
 const loanCount = computed(() => {
   return loanInfoData.value?.[0]?.Total?.loanCnt || '정보 없음'
@@ -253,7 +258,7 @@ watchEffect(async () => {
     const { coLoanBooksData: fetchCoLoanBooksData, readerRecBooksData: fetchReaderRecBooksData } = await getLibraryUsageAnalysis(+props.id)
 
     coLoanBooksData.value = fetchCoLoanBooksData
-    console.log(fetchReaderRecBooksData)
+    readerRecBooksData.value = fetchReaderRecBooksData
   } catch (error) {
     console.error('데이터 로딩 중 오류 발생:', error)
   }
