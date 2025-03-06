@@ -21,7 +21,8 @@
                 </div>
               </div>
               <div class="slider-item-main-image" @click="bookClickHandler(currentMainBook?.isbn13)">
-                <img :src="currentMainBook?.bookImageURL" alt="dummy-book">
+                <img v-if="currentMainBook?.bookImageURL" :src="currentMainBook?.bookImageURL" alt="dummy-book">
+                <img v-else src="/images/no-image.png" alt="이미지 준비중입니다.">
               </div>
 
             </div>
@@ -45,10 +46,12 @@
         <div class="slide-right" :key="currentIndex">
           <div class="slide-sub-img-container">
             <div class="slide-sub-img-item" @click="subBookClickHandler(1)">
-              <img :src="subBooks[0]?.bookImageURL" alt="dummy-book">
+              <img v-if="subBooks[0]?.bookImageURL" :src="subBooks[0]?.bookImageURL" alt="dummy-book">
+              <img v-else src="/images/no-image.png" alt="이미지 준비중입니다.">
             </div>
             <div class="slide-sub-img-item" @click="subBookClickHandler(2)">
-              <img :src="subBooks[1]?.bookImageURL" alt="dummy-book">
+              <img v-if="subBooks[1]?.bookImageURL" :src="subBooks[1]?.bookImageURL" alt="dummy-book">
+              <img v-else src="/images/no-image.png" alt="이미지 준비중입니다.">
             </div>
           </div>
         </div>

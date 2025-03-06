@@ -8,7 +8,8 @@
           <div class="goToBack">
             <GoToBack />
           </div>
-          <img :src="detailData?.bookImageURL" alt="book-detail-bg" class="book-img">
+          <img v-if="detailData?.bookImageURL" :src="detailData?.bookImageURL" alt="book-detail-bg" class="book-img">
+          <img v-else src="/images/no-image.png" alt="이미지 준비중입니다." class="book-img">
         </div>
         <div class="book-detail-right">
           <div class="book-detail-right-contents">
@@ -48,7 +49,7 @@
               <p class="book-loan-count">{{ loanCount }}</p>
             </div>
 
-            <div class="bookmark">
+            <div class="bookmark" @click="handleBookmarkClick">
               <BookMarkIcon strokeColor="#fff" />
               <span>북마크</span>
             </div>
@@ -292,6 +293,10 @@ const libraryClickHandler = (record: any) => {
       initMap(selectedLibrary.value.latitude, selectedLibrary.value.longitude)
     }
   }
+}
+
+const handleBookmarkClick = () => {
+  alert('북마크 클릭')
 }
 </script>
 

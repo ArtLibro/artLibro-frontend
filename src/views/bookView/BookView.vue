@@ -16,7 +16,7 @@
               <form @submit.prevent="handleSearch" class="form">
                 <select v-model="searchType" class="select">
                   <option v-for="option in searchTypeOptions" :key="option.value" :value="option.value">{{ option.label
-                  }}</option>
+                    }}</option>
                 </select>
                 <div class="line"></div>
                 <div class="input_wrapper">
@@ -37,13 +37,13 @@
           </div>
         </div>
 
-        <div v-if="data && data.pages.length > 0">
+        <div v-if="data && data.pages[0].length > 0">
           <div class="book-list" v-for="datas in data.pages" :key="datas.length">
             <router-link class="book-item" v-for="book in datas" :key="book.doc.isbn13"
               :to="`/book/detail/${book.doc.isbn13}`">
               <div class="book-item-image">
-                <img v-if="book.doc.bookImageURL" :src="book.doc.bookImageURL" alt="book-item-image">
-                <p v-else>이미지가 없습니다</p>
+                <img v-if="book.doc.bookImageURL" :src="book.doc.bookImageURL" alt="도서 이미지">
+                <img v-else src="/images/no-image.png" alt="이미지 준비중입니다.">
               </div>
 
               <div class="book-item-info">
@@ -63,7 +63,7 @@
         </div>
 
         <div v-else>
-          <p>검색 결과가 없습니다.</p>
+          <NotFound title="검색 결과가 없습니다." />
         </div>
 
         <div ref="loadMoreTrigger" class="load-more-trigger"></div>
@@ -78,6 +78,7 @@
 import { getBookList } from '@/apis/books';
 import KeywordContainer from '@/components/bookView/KeywordContainer.vue';
 import GoToTop from '@/components/common/goToTop.vue';
+import NotFound from '@/components/common/NotFound.vue';
 import { searchTypeOptions, sortTypeOptions } from '@/constants/booksOption';
 import QUERY_KEY from '@/constants/queryKey';
 import type { BookItem, SearchTypeValue, SortOptionValue } from '@/types/libraryType';
@@ -88,7 +89,7 @@ const searchType = ref<SearchTypeValue>('도서명'); // 검색 타입
 const searchKeyword = ref(''); // 도서 검색 키워드
 const sortType = ref<SortOptionValue>('loan'); // 정렬 타입
 const loadMoreTrigger = ref<HTMLDivElement | null>(null); // 무한 스크롤 트리거
-const seletedKeyword = ref<string>(''); // 이달의 키워드 클릭 시 선택된 키워드
+const seletedKeyword = ref<string>('베스트셀러'); // 이달의 키워드 클릭 시 선택된 키워드
 
 const handleKeywordClick = (keyword: string) => {
   seletedKeyword.value = keyword;
@@ -128,6 +129,11 @@ onMounted(() => {
   if (loadMoreTrigger.value) {
     observer.observe(loadMoreTrigger.value);
   }
+
+  setTimeout(() => {
+    seletedKeyword.value = '';
+  }, 1000);
+
 });
 </script>
 

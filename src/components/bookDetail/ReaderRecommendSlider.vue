@@ -79,8 +79,6 @@ const fetchBookDetail = async () => {
 
     const response = await Promise.all(bookPromiss);
     bookDetails.value = response.map(result => result.detailData);
-
-    console.log(bookDetails.value)
   } catch (error) {
     console.error('책 상세 정보 가져오기 실패', error);
     throw error;
