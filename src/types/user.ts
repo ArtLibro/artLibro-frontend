@@ -5,10 +5,10 @@ export interface UserType {
   email: string
   fullName: string
   coverImage: string
-  image: string
+  image?: string
   role: 'user' | 'admin'
   isOnline: boolean
-  post: Post[]
+  posts: Post[]
   likes: LikesType[]
   comments: string[]
   followers: FollowersType[]

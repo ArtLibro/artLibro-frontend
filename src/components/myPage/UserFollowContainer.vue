@@ -16,7 +16,16 @@
 <script setup lang="ts">
 import FollowerContainer from '@/components/myPage/FollowerContainer.vue';
 import FollowingContainer from '@/components/myPage/FollowingContainer.vue';
+import type { FollowersType, FollowingType } from '@/types/user';
 import { ref } from 'vue';
+
+const props = defineProps<{
+  followers: FollowersType[]
+  following: FollowingType[]
+}>()
+
+//todo 팔로워 기능 구현 우선
+console.log(props)
 
 // 팔로워 팔로잉 탭 선택
 const selectedTab = ref<'follower' | 'following'>('follower');

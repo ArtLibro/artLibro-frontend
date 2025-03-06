@@ -2,25 +2,33 @@
   <div class="user-card-section">
     <div class="user-card-section-left user-card">
       <div class="user-card-container">
-        <UserInfoCardContainer />
-        <UserFollowContainer />
+        <UserInfoCardContainer v-if="userInfo" :fullName="userInfo?.fullName" :email="userInfo?.email"
+          :profileImage="userInfo?.image" :userId="userInfo?._id" />
+        <UserFollowContainer v-if="userInfo" :followers="userInfo?.followers" :following="userInfo?.following" />
       </div>
     </div>
 
     <div class="user-card-section-right user-card">
       <div class="user-card-container">
         <UserLikedContainer />
-        <UserPostsContainer />
+        <UserPostsContainer v-if="userInfo" :postData="userInfo?.posts" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import type { UserType } from '@/types/user';
 import UserFollowContainer from './UserFollowContainer.vue';
 import UserInfoCardContainer from './UserInfoCardContainer.vue';
 import UserLikedContainer from './UserLikedContainer.vue';
 import UserPostsContainer from './UserPostsContainer.vue';
+
+const { userInfo } = defineProps<{
+  userInfo: UserType | undefined
+}>()
+
+console.log(userInfo)
 
 </script>
 

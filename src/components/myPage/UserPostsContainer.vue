@@ -1,37 +1,36 @@
 <template>
   <div class="user-posts-container">
     <h3>작성한 게시글</h3>
-
     <div class="user-posts-contents">
-
-      <div class="user-posts-content">
-        <strong>히가시노 게이고 책 어떤가요</strong>
-        <p>히가시노 게이고 작가 책 읽어보신분 계신 가요? 읽을만 한지 모르겠네요가시노 게이고 작가 책 읽어보신분 계신 가요? 읽을만 한지 모르겠네요. 추리 소설을 좋아해서 한번 읽어볼까 고민중
-          입니다.</p>
+      <div class="user-posts-content" v-for="post in postList" :key="post.id">
+        <div class="posts-header">
+          <strong>{{ post.title }}</strong>
+          <span>{{ post.category }}</span>
+        </div>
+        <p>{{ post.content }}</p>
       </div>
-      <div class="user-posts-content">
-        <strong>히가시노 게이고 책 어떤가요</strong>
-        <p>히가시노 게이고 작가 책 읽어보신분 계신 가요? 읽을만 한지 모르겠네요가시노 게이고 작가 책 읽어보신분 계신 가요? 읽을만 한지 모르겠네요. 추리 소설을 좋아해서 한번 읽어볼까 고민중
-          입니다.</p>
-      </div>
-      <div class="user-posts-content">
-        <strong>히가시노 게이고 책 어떤가요</strong>
-        <p>히가시노 게이고 작가 책 읽어보신분 계신 가요? 읽을만 한지 모르겠네요가시노 게이고 작가 책 읽어보신분 계신 가요? 읽을만 한지 모르겠네요. 추리 소설을 좋아해서 한번 읽어볼까 고민중
-          입니다.</p>
-      </div>
-      <div class="user-posts-content">
-        <strong>히가시노 게이고 책 어떤가요</strong>
-        <p>히가시노 게이고 작가 책 읽어보신분 계신 가요? 읽을만 한지 모르겠네요가시노 게이고 작가 책 읽어보신분 계신 가요? 읽을만 한지 모르겠네요. 추리 소설을 좋아해서 한번 읽어볼까 고민중
-          입니다.</p>
-      </div>
-
-      <p class="user-posts-more">모든 글 보기</p>
+      <p class="user-posts-more" v-if="parsedPosts.length > 4">모든 글 보기</p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import type { Post } from '@/types/community/communityType';
+import { usePostParser } from '@/utils/usePostParser';
+import { computed } from 'vue';
 
+const props = defineProps<{
+  postData: Post[]
+}>()
+
+const { parsedPosts } = usePostParser(props.postData)
+
+const postList = computed(() => {
+  if (parsedPosts.value.length >= 4) {
+    return parsedPosts.value.slice(0, 4);
+  }
+  return parsedPosts.value;
+});
 </script>
 
 <style lang="scss" scoped>
@@ -55,10 +54,24 @@
       border: 1px solid rgba(0, 0, 0, 0.15);
       box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.1);
 
-      strong {
-        color: #413B89;
+      .posts-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         margin-bottom: 10px;
-        display: block;
+
+        strong {
+          color: #413B89;
+          display: block;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          width: 80%;
+        }
+
+        span {
+          font-size: 14px;
+        }
       }
 
       p {
