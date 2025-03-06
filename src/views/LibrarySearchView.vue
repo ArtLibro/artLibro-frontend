@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import LibrarySearchHeroImage from '@/components/LibrarySearchView/LibrarySearchHeroImage.vue'
-import LibraryFilter from '@/components/LibrarySearchView/LibraryFilter.vue'
 import LibrarySearchResult from '@/components/LibrarySearchView/LibrarySearchResult.vue'
 import { provide, ref } from 'vue'
+import MapFilter from '@/components/LibrarySearchView/MapFilter.vue'
 const regionCode = ref(11);
 
 const updateRegion = (code : number) => {
@@ -21,7 +21,7 @@ provide('region',{
 <template>
   <LibrarySearchHeroImage/>
   <div class="library-content-wrapper">
-    <LibraryFilter/>
+    <MapFilter/>
     <LibrarySearchResult/>
   </div>
 </template>

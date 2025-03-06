@@ -1,12 +1,31 @@
 <script setup lang="ts">
-import { inject, type Ref, ref } from 'vue'
+import { inject, type Ref, ref, watch } from 'vue'
 import type { RegionKey } from '@/types/library/library.types.ts'
-import { pl } from 'date-fns/locale'
 
 interface Svg {
   place : RegionKey;
   code : number;
   d : string;
+}
+
+const regionCodes = {
+  '서울' : 11,
+  '부산' : 21,
+  '대구' : 22,
+  '인천' : 23,
+  '광주' : 24,
+  '대전' : 25,
+  '울산' : 26,
+  '세종' : 29,
+  '경기' : 31,
+  '강원' : 32,
+  '충북' : 33,
+  '충남' : 34,
+  '전북' : 35,
+  '전남' : 36,
+  '경북' : 37,
+  '경남' : 38,
+  '제주' : 39,
 }
 
 const svgs = ref<Svg[]>([
@@ -92,49 +111,72 @@ const svgs = ref<Svg[]>([
   }
 ])
 
+const places = Object.keys(regionCodes);
+
 const { regionCode, updateRegion } = inject('region') as {
   regionCode: Ref<number>;
   updateRegion: (code: number) => void;
 };
 
-const placeName = ref('서울');
+const placeName = ref<RegionKey>('서울');
 
 const handleMapClick = (code : number, place : string) => {
   placeName.value = place;
   updateRegion(code);
 }
+
+watch(placeName, () => {
+  console.log(placeName);
+  regionCode.value = regionCodes[placeName.value]
+  updateRegion(regionCodes[placeName.value]);
+})
 </script>
 
 <template>
-<!--  <div>-->
-<!--    지역별 도서관-->
-<!--  </div>-->
-<!--  <div>-->
-<!--    {{ placeName}}-->
-<!--  </div>-->
-  <div class="map-layout">
-    <svg width="258" height="474" viewBox="0 0 258 474" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path
-        v-for="item in svgs"
-        :key="item.code"
-        :d="item.d"
-        :class="{'map-active' : regionCode === item.code, 'map-hover' : true}"
-        @click="handleMapClick(item.code,item.place)"
-        fill="#C6C9FE" stroke="#ABA9A5" stroke-linecap="round" stroke-linejoin="round"
-      />
-    </svg>
-  </div>
-  <div class="checkbox-wrapper">
-    <a-checkbox v-model:checked="checked">Checkbox</a-checkbox>
+  <div class="filter-layout">
+    <div class="map-wrapper">
+      <div class="subtitle">지역별 도서관 필터링</div>
+      <div class="map-layout">
+        <svg width="258" height="474" viewBox="0 0 258 474" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            v-for="item in svgs"
+            :key="item.code"
+            :d="item.d"
+            :class="{'map-active' : regionCode === item.code, 'map-hover' : true}"
+            @click="handleMapClick(item.code,item.place)"
+            fill="#C6C9FE" stroke="#ABA9A5" stroke-linecap="round" stroke-linejoin="round"
+          />
+        </svg>
+      </div>
+    </div>
+    <div class="radio-box-wrapper">
+      <div class="radio-box">
+        <a-radio-group v-model:value="placeName" :options="places" />
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped lang="scss">
+.filter-layout {
+  justify-items: center;
+  height : 1120px;
+  width: 291px;
+  border-radius: 10px;
+  gap : 10px;
+  background-color: $text-color-100;
+}
+
+.map-wrapper {
+  margin-top: 40px;
+  height: 520px;
+}
+
 .map-layout {
+  margin-top: 15px;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 40px;
   background-color: #FFFFFF;
   padding: 10px;
   height: 510px;
@@ -153,13 +195,23 @@ const handleMapClick = (code : number, place : string) => {
   stroke: #ABA9A5;
 }
 
-.checkbox-wrapper {
+.radio-box-wrapper {
   display: grid;
   align-items: center;
   justify-content: center;
+  margin-top: 50px;
   width: 260px;
   height: 180px;
   background-color: #FFFFFF;
   border-radius: 10px;
+}
+
+.subtitle {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.radio-box {
+  width: 200px;
 }
 </style>
