@@ -113,8 +113,6 @@ onMounted(() => {
   dayjs.locale('ko')
   comments.value = getStoredComments()
 })
-
-console.log(dayjs().locale('ko').fromNow())
 </script>
 
 <template>
