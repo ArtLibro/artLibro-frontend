@@ -14,7 +14,7 @@ import CommunityWriteView from '@/views/community/CommunityWriteView.vue'
 import BookDetailView from '@/views/bookDetail/BookDetailView.vue'
 import CallbackView from '@/views/CallbackView.vue'
 import MyPageView from '@/views/mypage/MyPageView.vue'
-import { useAuthStore } from '@/stores/auth'
+import { useAuthTokenStore } from '@/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -117,10 +117,10 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const authStore = useAuthStore()
+  const authStore = useAuthTokenStore()
 
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-    next({ name: 'home' })
+    next({ name: 'login' })
   } else {
     next()
   }
