@@ -41,8 +41,6 @@ export const fetchPosts = async (): Promise<Post[]> => {
       let category: '도서' | '공연/행사' = '도서'
       let title = post.title
       let content = ''
-      let userId = post.author?._id || '익명'
-      let authorName = post.author?.fullName || '익명' // -> 닉네임
 
       try {
         if (title.startsWith('{') && title.endsWith('}')) {
@@ -62,8 +60,8 @@ export const fetchPosts = async (): Promise<Post[]> => {
         content,
         image: post.image || null,
         createdAt: post.createdAt || '',
-        userId,
-        authorName,
+        userId: post.author?._id ?? '익명 아이디',
+        authorName: post.author?.fullName ?? '익명 사용자',
       }
     })
   } catch (error) {
@@ -200,3 +198,39 @@ export const deleteComment = async (commentId: string, token: string) => {
     throw error
   }
 }
+
+// // 게시글 좋아요
+// export const likePost = async (postId: string) => {
+//   try {
+//     const authStore = useAuthStore()
+//     const token = authStore.token
+//     if (!token) throw new Error('로그인이 필요합니다.')
+
+//     const response = await axiosApi.post(
+//       '/likes/create',
+//       { postId },
+//       { headers: { Authorization: `Bearer ${token}` } },
+//     )
+//     return response.data // 서버에서 받은 좋아요 ID 반환
+//   } catch (error) {
+//     console.error('❌ 좋아요 추가 실패:', error)
+//     throw error
+//   }
+// }
+
+// // 게시글 좋아요 취소
+// export const unlikePost = async (likeId: string) => {
+//   try {
+//     const authStore = useAuthStore()
+//     const token = authStore.token
+//     if (!token) throw new Error('로그인이 필요합니다.')
+
+//     await axiosApi.delete('/likes/delete', {
+//       headers: { Authorization: `Bearer ${token}` },
+//       data: { id: likeId }, // 좋아요 ID 전달
+//     })
+//   } catch (error) {
+//     console.error('❌ 좋아요 취소 실패:', error)
+//     throw error
+//   }
+// }
