@@ -35,7 +35,7 @@ export const KOPIS_ENDPOINT = Object.freeze({
   monthlyList: `/boxoffice?service=${KOPIS_KEY}&stdate=${firstDate}&eddate=${todayDate}&cpage=1&rows=5`,
   prfDetailList: `/pblprfr/ID?service=${KOPIS_KEY}`,
   prfDetailPlace: `/prfplc/ID?service=${KOPIS_KEY}`,
-  prfSearch: `/pblprfr?service=${KOPIS_KEY}&stdate=${firstDate}&eddate=${todayDate}&cpage=1&rows=8`,
+  prfSearch: `/pblprfr?service=${KOPIS_KEY}`,
 })
 
 /**
