@@ -13,6 +13,8 @@ import CommunityDetailView from '@/views/community/CommunityDetailView.vue'
 import CommunityWriteView from '@/views/community/CommunityWriteView.vue'
 import BookDetailView from '@/views/bookDetail/BookDetailView.vue'
 import CallbackView from '@/views/CallbackView.vue'
+import MyPageView from '@/views/mypage/MyPageView.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -92,6 +94,12 @@ const router = createRouter({
       component: CallbackView,
       props: true,
     },
+    {
+      path: '/mypage',
+      name: 'mypage',
+      component: MyPageView,
+      meta: { requiresAuth: true },
+    },
     //화면 보려고 급하게 만들었습니다.
     {
       path: '/performance/:id',
@@ -106,6 +114,16 @@ const router = createRouter({
       return { top: 0, behavior: 'smooth' }
     }
   },
+})
+
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore()
+
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+    next({ name: 'home' })
+  } else {
+    next()
+  }
 })
 
 export default router
