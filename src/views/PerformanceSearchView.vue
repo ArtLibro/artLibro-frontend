@@ -1,46 +1,59 @@
 <script setup lang="ts">
-import { onMounted, ref, watch, watchEffect } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import GenreContainer, { type GenreEmit } from '@/components/PerformanceSearch/GenreContainer.vue'
-import { getLibraryUsageAnalysis } from '@/apis/books.ts'
 import { getPerformances, type PerformanceInfoType } from '@/apis/kopis.ts'
 import PerformanceCard from '@/components/common/PerformanceCard.vue'
+import SearchBox from '@/components/common/SearchBox.vue'
+import { type InfiniteData, useInfiniteQuery } from '@tanstack/vue-query'
+import NotFound from '@/components/common/NotFound.vue'
 
 const genreCurrentName = ref("전체");
 const genreCode = ref('');
-const currentPage = ref(1);
-const performanceResults = ref<PerformanceInfoType[]>([]);
+const searchText = ref('');
+const loadMoreTrigger = ref<HTMLDivElement | null>(null); // 무한 스크롤 트리거
 
 const handleGenreClick = (genre : GenreEmit) => {
   genreCode.value = genre.genreCode;
   genreCurrentName.value = genre.genreName;
 };
 
-watch(genreCode, async (newVal, oldVal) => {
-  performanceResults.value = [];
-  const data = await getPerformances({
-    shcate : genreCode.value,
-    cpage : currentPage.value,
-    rows : 9
-  });
+const handleSearch = (value: string) => {
+  searchText.value = value;
+};
 
-  if (data !== undefined) {
-    for (const item of data.dbs.db) {
-      performanceResults.value.push(item);
+const queryKey = computed(() => ['performances', genreCode.value, searchText.value]);
+
+const { data, fetchNextPage, hasNextPage, isPending, isFetching } = useInfiniteQuery({
+  queryKey: queryKey,
+  queryFn: ({ pageParam = 1 }) => getPerformances({
+    shcate : genreCode.value,
+    cpage : pageParam,
+    rows : 9,
+    shprfnm : searchText.value,
+  }),
+  initialPageParam: 1,
+  getNextPageParam: (lastPage, allPages) => {
+    if (lastPage.dbs.db.length < 9) {
+      return undefined;
     }
-  }
+    return allPages.length + 1;
+  },
+  maxPages : 10,
 });
 
-onMounted(async () => {
-  const data = await getPerformances({
-    shcate : genreCode.value,
-    cpage : currentPage.value,
-    rows : 9
-  });
+let observer: IntersectionObserver | null = null;
 
-  if (data !== undefined) {
-    for (const item of data.dbs.db) {
-      performanceResults.value.push(item);
+onMounted(async () => {
+  observer = new IntersectionObserver((entries) => {
+    const target = entries[0];
+    if (target.isIntersecting && hasNextPage.value) {
+      fetchNextPage();
     }
+
+  }, { rootMargin: '400px' });
+
+  if (loadMoreTrigger.value) {
+    observer.observe(loadMoreTrigger.value);
   }
 })
 </script>
@@ -58,18 +71,52 @@ onMounted(async () => {
     <div style="margin-top: 21px;">
       <GenreContainer @handle-genre-click="handleGenreClick"/>
     </div>
-    <div class="performance-grid">
-      <div v-for="item in performanceResults" :key="item.mt20id">
-        <PerformanceCard
-          :key="item.mt20id"
-          :cate="item.genrenm"
-          :mt20id="item.mt20id"
-          :poster="item.poster"
-          :prfnm="item.prfnm"
-          :prfpd="item.prfpdfrom + '~' + item.prfpdto"
+    <div class="search-row">
+      <div style="font-size: 24px; font-weight: 600;">공연 검색 결과</div>
+      <div style="width: 579px; height: 51px;">
+        <SearchBox
+          @submit="handleSearch"
+          :search-type-options="[
+            {
+              value : 'performance',
+              label : '공연명'
+            },
+            {
+              value : 'facility',
+              label : '공연시설명'
+            }
+          ]"
         />
       </div>
     </div>
+    <div v-if="isPending" class="performance-grid">
+      <a-skeleton active :paragraph="{ rows: 9 }" />
+      <a-skeleton active :paragraph="{ rows: 9 }" />
+      <a-skeleton active :paragraph="{ rows: 9 }" />
+      <a-skeleton active :paragraph="{ rows: 9 }" />
+      <a-skeleton active :paragraph="{ rows: 9 }" />
+      <a-skeleton active :paragraph="{ rows: 9 }" />
+      <a-skeleton active :paragraph="{ rows: 9 }" />
+      <a-skeleton active :paragraph="{ rows: 9 }" />
+      <a-skeleton active :paragraph="{ rows: 9 }" />
+    </div>
+    <div v-else-if="data && data.pages.length > 0">
+      <div v-for="(page, pageIndex) in data.pages" :key="pageIndex" class="performance-grid">
+        <div v-for="item in page.dbs.db" :key="item.mt20id">
+          <PerformanceCard
+            :cate="item.genrenm"
+            :mt20id="item.mt20id"
+            :poster="item.poster"
+            :prfnm="item.prfnm"
+            :prfpd="item.prfpdfrom + '~' + item.prfpdto"
+          />
+        </div>
+      </div>
+    </div>
+    <div v-else style="margin-top: 20px">
+      <NotFound title="검색 결과가 없습니다." />
+    </div>
+    <div ref="loadMoreTrigger" class="load-more-trigger"></div>
   </div>
 </template>
 
@@ -81,19 +128,6 @@ onMounted(async () => {
 .banner {
   margin-top: 57px;
   height: 284px;
-  /* margin-left: -85px; */
-  /* width: 1426px; */
-
-  /* position: absolute;
-      position: relative;
-    top: 50%;
-    left: 50%;
-    width: 1920px;
-    height: 560px;
-    -webkit-transform: translate(-50%, -50%);
-    -ms-transform: translate(-50%, -50%);
-    -o-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%); */
 }
 
 .banner-text {
@@ -125,6 +159,14 @@ onMounted(async () => {
   grid-template-columns: repeat(3,1fr);
   gap : 30px;
   width: 1246px;
-  min-height: 1410px;
+  max-height: 1410px;
+  margin-top: 30px;
+}
+
+.search-row {
+  display: flex;
+  width: 1246px;
+  align-items: center;
+  justify-content: space-between;
 }
 </style>
