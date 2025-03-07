@@ -54,7 +54,8 @@ const handleSignUp = async () => {
   if (!validateForm()) return;
 
   try {
-    const response = await axiosApi.post("http://13.125.143.126:5005/signup", {
+      const response = await axiosApi.post("/signup", {
+
       email: address.value + domain.value,
       password: password1.value,
       fullName: fullName.value,
@@ -95,10 +96,11 @@ const handleSocialLogin = (provider: "NAVER" | "GOOGLE") => {
       <img src="/icons/SignUp/logo.svg" />
     </div>
 
-    <div class="input-group">
-      <div>
+    <div style="display: flex; margin-top: 43px; margin-left: 212px;">
+      <div class="input-group">
         <div>이메일 입력</div>
-        <a-input-group compact>
+
+        <a-input-group compact style="width: 332px;">
           <a-auto-complete class="input" v-model:value="address" placeholder="Email" />
           <a-select class="input-mail" v-model:value="domain">
             <a-select-option value="naver">@naver.com</a-select-option>
@@ -106,39 +108,26 @@ const handleSocialLogin = (provider: "NAVER" | "GOOGLE") => {
           </a-select>
         </a-input-group>
 
-
-
         <div class="input-text">닉네임 입력</div>
-
-        <div class="components-input-demo-presuffix">
-          <a-input class="input-group1" v-model:value="fullName" placeholder="닉네임을 입력해주세요">
-            <template #prefix>
-              <user-outlined />
-            </template>
-
-            <template #suffix>
-              <a-tooltip title="Extra information">
-                <info-circle-outlined style="color: rgba(0, 0, 0, 0.45)" />
-              </a-tooltip>
-            </template>
+        <div class="">
+          <a-input class="input-name" v-model:value="fullName" placeholder="닉네임을 입력해주세요">
           </a-input>
         </div>
 
         <div class="input-text">비밀번호 입력</div>
-        <a-input-password v-model:value="password1" placeholder="비밀번호를 입력해주세요" />
+        <a-input-password class="input-pass" v-model:value="password1" placeholder="비밀번호를 입력해주세요" />
         <div class="small-text"> 영문 대·소문자/숫자.특수문자 중 2가지 이상 조합, 8~16글자 </div>
 
         <div class="input-text">비밀번호 확인</div>
-        <a-input-password v-model:value="password2" placeholder="비밀번호를 다시 입력해주세요" />
-
-
+        <a-input-password class="input-pass" v-model:value="password2" placeholder="비밀번호를 다시 입력해주세요" />
 
         <div>
           <a-button type="primary" class="button" @click="handleSignUp">회원가입</a-button>
         </div>
       </div>
 
-      <div style="margin-left: 91.19px; margin-top: 43px;">
+
+      <div style="margin-top: 55px; margin-left: 75px; ">
         <svg xmlns="http://www.w3.org/2000/svg" width="2" height="96" viewBox="0 0 2 96" fill="none">
           <path d="M1.0957 0L1.0957 96" stroke="#595959" stroke-opacity="0.5" />
         </svg>
@@ -150,13 +139,18 @@ const handleSocialLogin = (provider: "NAVER" | "GOOGLE") => {
         </svg>
       </div>
 
-      <div class="social-signup">
-        <img src="/icons/SignUp/kakao.svg" @click="() => handleKakaoLogin('KAKAO')" /> <br>
-        <img style="margin-top: 11px;" src=" /icons/SignUp/naver.svg" @click="() => handleSocialLogin('NAVER')" /> <br>
-        <img style="margin-top: 11px;" src="/icons/SignUp/google.svg" @click="() => handleSocialLogin('GOOGLE')" />
+      <div>
+        <div class="social-signup">
+          <img src="/icons/SignUp/kakao.svg" @click="() => handleKakaoLogin('KAKAO')" /> <br>
+          <img style="margin-top: 11px;" src=" /icons/SignUp/naver.svg" @click="() => handleSocialLogin('NAVER')" />
+          <br>
+          <img style="margin-top: 11px;" src="/icons/SignUp/google.svg" @click="() => handleSocialLogin('GOOGLE')" />
+        </div>
       </div>
-
     </div>
+
+
+
   </div>
 </template>
 
@@ -171,9 +165,8 @@ const handleSocialLogin = (provider: "NAVER" | "GOOGLE") => {
 }
 
 .input-group {
-  margin-left: 213px;
-  margin-top: 54px;
-  display: flex;
+  width: 339px;
+  margin-top: 15px;
 
   .input-text {
     margin-top: 13px
@@ -181,12 +174,20 @@ const handleSocialLogin = (provider: "NAVER" | "GOOGLE") => {
 
   .input {
     width: 191px;
-    height: 36px;
   }
 
   .input-mail {
-    width: 132px;
-    height: 36px;
+    width: 142px;
+  }
+
+  .input-name {
+    width: 332px;
+    padding: 4px 11px;
+  }
+
+  .input-pass {
+    width: 332px;
+    padding: 4px 11px;
   }
 }
 
@@ -210,7 +211,7 @@ const handleSocialLogin = (provider: "NAVER" | "GOOGLE") => {
 }
 
 .social-signup {
-  margin-top: 60px;
+  margin-top: 85px;
   margin-left: 87.9px;
 }
 
