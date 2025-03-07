@@ -2,35 +2,49 @@
 import { deletePost } from '@/apis/community/post'
 import router from '@/router'
 import { useAuthStore } from '@/stores/authStore'
+import { useLikesStore } from '@/stores/likesStore'
 import type { Post } from '@/types/community/communityType'
 import dayjs from 'dayjs'
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 
 const props = defineProps<{ post: Post }>()
 const authStore = useAuthStore()
+const likesStore = useLikesStore() // 좋아요 스토어
 
 // 현재 로그인한 사용자 ID 가져오기
 const userId = computed(() => authStore.userId)
 
 // 본인 게시글인지 확인
-const isAuthor = computed(() => {
-  console.log('🔍 작성자 ID:', props.post.userId, '| 현재 사용자 ID:', userId.value)
-  return props.post.userId === userId.value
-})
+const isAuthor = computed(() => props.post.userId === userId.value)
 
 // 기본 이미지 경로
 const defaultBookImage = '/images/community-no-image.png'
-
-// 책 이미지가 없을 경우 기본 이미지 사용
-const bookImage = computed(() => (props.post.image ? props.post.image : defaultBookImage))
-
-// 현재 이미지가 기본 이미지인지 체크
+const bookImage = computed(() => props.post.image || defaultBookImage)
 const isDefaultImage = computed(() => bookImage.value === defaultBookImage)
 
 // createdAt을 YYYY-MM-DD 형식으로 변환
-const formattedDate = computed(() => {
-  return props.post.createdAt ? dayjs(props.post.createdAt).format('YYYY-MM-DD') : ''
+const formattedDate = computed(() =>
+  props.post.createdAt ? dayjs(props.post.createdAt).format('YYYY-MM-DD') : '',
+)
+
+// 로그인한 사용자에 맞는 좋아요 리스트 불러오기
+onMounted(() => {
+  likesStore.setUser(userId.value) // 로그인한 사용자 설정해서 userId별 좋아요 목록 불러오기
 })
+
+const isLiked = computed(() => likesStore.likedPosts.includes(props.post.id))
+
+// 좋아요버튼 이벤트
+const toggleLike = () => {
+  if (!userId.value) {
+    alert('로그인이 필요합니다!')
+    router.push('/login')
+    return
+  }
+
+  likesStore.toggleLike(props.post.id)
+  console.log('테스트)))))))))) 좋아요 변경됨 →', likesStore.likedPosts)
+}
 
 // 게시글 삭제
 const handleDelete = async () => {
@@ -59,6 +73,11 @@ const goToEditPage = () => {
 <template>
   <section class="content-container">
     <div class="content-box">
+      <div class="like-button" @click="toggleLike">
+        <img v-if="isLiked" src="/icons/heart-purple-fill.svg" alt="좋아요" />
+        <img v-else src="/icons/heart-purple.svg" alt="좋아요" />
+      </div>
+
       <div class="title-category-wrapper">
         <span class="category">{{ post.category }}</span>
         <h2 class="content-title">{{ post.title }}</h2>
@@ -85,9 +104,7 @@ const goToEditPage = () => {
 
       <div class="review-container">
         <div class="review-text">
-          <p>
-            {{ post.content }}
-          </p>
+          <p>{{ post.content }}</p>
         </div>
       </div>
 
@@ -117,6 +134,23 @@ const goToEditPage = () => {
   justify-content: space-between;
   position: relative;
   text-align: center;
+}
+
+.like-button {
+  position: absolute;
+  top: 80px;
+  right: 340px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  background-color: white;
+  border: 2px solid $text-color-100;
+  border-radius: 50%;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s ease-in-out;
 }
 
 .title-category-wrapper {
@@ -228,6 +262,7 @@ const goToEditPage = () => {
   }
 }
 
+/* 기존 책 이미지 스타일 */
 .book-image {
   position: absolute;
   top: 60px;
