@@ -71,8 +71,8 @@ onMounted(async () => {
       // 장르에 맞는 data3 가져오기
       const genreForPerformance = genres.find((item) => item.genre === prfdetail.value?.genrenm)
       if (genreForPerformance) {
-        const data3 = await getPerformances(genreForPerformance)
-        recommendPerformance.value = data3.dbs.db
+        const data3 = await getPerformances({ shcate : genreForPerformance.code, cpage : 1, rows : 8})
+        recommendPerformance.value = data3?.dbs.db
       } else {
         console.error('장르에 맞는 추천 공연을 찾을 수 없습니다.')
       }
