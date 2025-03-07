@@ -54,9 +54,6 @@ const rankCateTab = ref({
 const query = ref<[QueryItemReader, QueryItemRankBook]>([
   {
     type: 'reader',
-    //
-    //9788954617628;9788934972464;9788972754190;9788925554990;
-    // isbn13: '9788954617628;9788934972464;9788972754190;9788925554990;9788936433673;',
     isbn13: '9788954617628;9788934972464;9788954617628;9788972754190;9788925554990;',
   },
   {
@@ -70,43 +67,41 @@ const query = ref<[QueryItemReader, QueryItemRankBook]>([
 onMounted(async () => {
   try {
     const data1 = await getBookToHome(query.value[0])
-    console.log('데이터 입니다', data1)
-    // bookwornList.value = data1[0].response.docs
-    // console.log('뭐야!!!!!', bookwornList.value)
-
     data1.forEach((item) => {
       bookwornList.value = bookwornList.value.concat(item.response.docs)
     })
 
-    console.log('다시재배열했습니다', bookwornList.value)
+    for (let kdcValue = 1; kdcValue <= 9; kdcValue++) {
+      const queryData = {
+        ...query.value[1],
+        kdc: kdcValue,
+      }
 
-    const data2 = await getBookToHome(query.value[1])
-    rankBook.value = data2.response.docs // 응답된 책 데이터를 저장
-    filteredBooks.value = rankBook.value // 초기 필터링, 12개만 표시
+      const data2 = await getBookToHome(queryData)
+      rankBook.value = rankBook.value.concat(data2.response.docs)
+    }
+
+    // 초기 세팅
+    // const filtered = rankBook.value.filter((book) => {
+    //   const class_nm = book.doc.class_nm.split(' > ')[0] // "철학 > 서양철학"에서 "철학"만 추출
+    //   // console.log(class_nm === rankCateTab.value[1])
+    //   return class_nm === rankCateTab.value[1] // rankCateTab의 1번은 "철학"이므로 필터링
+    // })
+
+    // // filteredBooks.value = filtered
+
+    filterTab('철학', '1')
   } catch (error) {
     console.error('API 요청 실패:', error)
   }
 })
 
-// 인기도서
-// onMounted(async () => {
-//   try {
-//     const data = await getBookToHome(query.value[1])
-//     rankBook.value = data.response.docs // 응답된 책 데이터를 저장
-//     filteredBooks.value = rankBook.value.slice(0, 12) // 초기 필터링, 12개만 표시
-//   } catch (error) {
-//     console.error('API 요청 실패:', error)
-//   }
-// })
-
 const bookChunk = computed(() => {
   const chunkSize = 8
 
   const docs = bookwornList.value
-  console.log('닥스 배열크기', docs.length)
 
   let uniqueBooks = []
-  // bookname이 중복되는 경우 하나만 남기고 나머지는 제거
   if (docs && Array.isArray(docs)) {
     uniqueBooks = docs.filter((doc, index, self) => {
       return index === self.findIndex((d) => d.book.bookname === doc.book.bookname)
@@ -114,8 +109,6 @@ const bookChunk = computed(() => {
   } else {
     console.log('docs 배열이 정의되지 않았거나 빈 배열입니다.')
   }
-
-  // const limitedArray = data1.value?.response?.docs?.slice(0, 24) || []
   const limitedArray = uniqueBooks.slice(0, 32)
   console.log('dd', limitedArray)
   const result = []
@@ -146,13 +139,13 @@ const filterTab = async (categoryName, key) => {
 
     query.value[1].kdc = categoryId
 
-    const data = await getBookToHome(query.value[1])
+    const filterlist = rankBook.value.filter((book) => {
+      const class_nm = book.doc.class_nm
+      const mainCategory = class_nm.split(' > ')[0] // "철학 > 서양철학 > 독일, 오스트리아철학"에서 "철학"만 추출
+      return mainCategory === rankCateTab.value[categoryId]
+    })
 
-    const books = data.response.docs
-
-    // 필터된 데이터로 갱신하고, 12개만 추출
-    rankBook.value = books
-    filteredBooks.value = books
+    filteredBooks.value = filterlist
     activeTab.value = key
   } catch (error) {
     console.error('필터링 실패:', error)
@@ -284,6 +277,7 @@ onMounted(() => {
               :title="item.book.bookname"
               :authors="item.book.authors"
               :bookimage="item.book.bookImageURL"
+              :isbn13="item.book.isbn13"
             />
           </div>
         </swiper-slide>
@@ -300,7 +294,7 @@ onMounted(() => {
         :class="['categorybtn', { active: activeTab === key }]"
       />
     </div>
-    <div style="display: flex">
+    <div style="display: flex" v-if="filteredBooks.length > 0">
       <div
         v-for="(column, colIndex) in getColumns(filteredBooks)"
         :key="colIndex"
@@ -312,9 +306,15 @@ onMounted(() => {
             :ranking="item.doc.ranking"
             :authors="item.doc.authors"
             :bookImageURL="item.doc.bookImageURL"
+            :isbn="item.doc.isbn13"
           />
-          <!-- {{ item }} -->
         </div>
+      </div>
+    </div>
+    <div v-else class="popular-loading">
+      <div class="loading-position">
+        <img src="/public/images/loading.gif" />
+        <div class="text">로딩중입니다</div>
       </div>
     </div>
     <div class="library-wrapper">
@@ -429,5 +429,27 @@ onMounted(() => {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease;
   padding: 20px;
+}
+
+.popular-loading {
+  width: 100%;
+  height: 345px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.popular-loading img {
+  width: 70px;
+  height: 70px;
+}
+
+.popular-loading .text {
+  text-align: center;
+  color: rgb(114, 114, 114);
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: 600;
 }
 </style>
