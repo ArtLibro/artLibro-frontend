@@ -1,50 +1,81 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { BOOK_BADGE_LIST } from '@/constants/book-badge';
+import { onMounted, ref, watch, watchEffect } from 'vue'
+import GenreContainer, { type GenreEmit } from '@/components/PerformanceSearch/GenreContainer.vue'
+import { getLibraryUsageAnalysis } from '@/apis/books.ts'
+import { getPerformances, type PerformanceInfoType } from '@/apis/kopis.ts'
+import PerformanceCard from '@/components/common/PerformanceCard.vue'
 
+const genreCurrentName = ref("전체");
+const genreCode = ref('');
+const currentPage = ref(1);
+const performanceResults = ref<PerformanceInfoType[]>([]);
 
+const handleGenreClick = (genre : GenreEmit) => {
+  genreCode.value = genre.genreCode;
+  genreCurrentName.value = genre.genreName;
+};
 
+watch(genreCode, async (newVal, oldVal) => {
+  performanceResults.value = [];
+  const data = await getPerformances({
+    shcate : genreCode.value,
+    cpage : currentPage.value,
+    rows : 9
+  });
 
-const value = ref("전체");
+  if (data !== undefined) {
+    for (const item of data.dbs.db) {
+      performanceResults.value.push(item);
+    }
+  }
+});
 
+onMounted(async () => {
+  const data = await getPerformances({
+    shcate : genreCode.value,
+    cpage : currentPage.value,
+    rows : 9
+  });
+
+  if (data !== undefined) {
+    for (const item of data.dbs.db) {
+      performanceResults.value.push(item);
+    }
+  }
+})
 </script>
 
 <template>
 
   <div class="layout">
     <div class="banner">
-      <img src="/public/icons/Performance/PerformanceBanner_2.svg">
+      <img src="/public/icons/Performance/search-hero.svg" width="1246" height="284">
       <div class="banner-text">
-        <div style="color: var(--Secondary-Orange, #EA5313);">'{{ value }}' </div>
+        <div style="color: var(--Secondary-Orange, #EA5313);">'{{ genreCurrentName}}' </div>
         <div>&nbsp;에 대한 검색 결과 입니다</div>
       </div>
     </div>
-
-    <div style="">
-      <h2>공연 장르</h2>
-      <div style="margin-top: 21px;">
-
-        <div class="keyword_badge_container">
-          <div class="badge" v-for="badge in BOOK_BADGE_LIST" :key="badge.id">
-            <span># {{ badge.title }}</span>
-          </div>
-            <a-button class="badge" >Primary Button</a-button>
-        </div>
+    <div style="margin-top: 21px;">
+      <GenreContainer @handle-genre-click="handleGenreClick"/>
+    </div>
+    <div class="performance-grid">
+      <div v-for="item in performanceResults" :key="item.mt20id">
+        <PerformanceCard
+          :key="item.mt20id"
+          :cate="item.genrenm"
+          :mt20id="item.mt20id"
+          :poster="item.poster"
+          :prfnm="item.prfnm"
+          :prfpd="item.prfpdfrom + '~' + item.prfpdto"
+        />
       </div>
-
-
     </div>
   </div>
-
-
-
-
 </template>
 
 <style lang="scss" scoped>
 .layout {
   width: 1246px;
-  height: 903px;
 }
 
 .banner {
@@ -86,5 +117,14 @@ const value = ref("전체");
     padding: .5rem 1rem;
     color: #61605D;
   }
+}
+
+.performance-grid {
+  display: grid;
+  place-items: center;
+  grid-template-columns: repeat(3,1fr);
+  gap : 30px;
+  width: 1246px;
+  min-height: 1410px;
 }
 </style>
