@@ -172,3 +172,31 @@ export const deletePost = async (postId: string, author: string) => {
     console.error('❌ 게시글 삭제 실패:', error)
   }
 }
+
+// 댓글 작성
+export const createComment = async (postId: string, comment: string, token: string) => {
+  try {
+    const response = await axiosApi.post(
+      '/comments/create',
+      { postId, comment },
+      { headers: { Authorization: `Bearer ${token}` } },
+    )
+    return response.data
+  } catch (error) {
+    console.error('❌ 댓글 작성 실패:', error)
+    throw error
+  }
+}
+
+// 댓글 삭제
+export const deleteComment = async (commentId: string, token: string) => {
+  try {
+    await axiosApi.delete('/comments/delete', {
+      headers: { Authorization: `Bearer ${token}` },
+      data: { id: commentId },
+    })
+  } catch (error) {
+    console.error('❌ 댓글 삭제 실패:', error)
+    throw error
+  }
+}

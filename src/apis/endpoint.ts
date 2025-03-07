@@ -37,3 +37,15 @@ export const KOPIS_ENDPOINT = Object.freeze({
   prfDetailPlace: `/prfplc/ID?service=${KOPIS_KEY}`,
   prfSearch: `/pblprfr?service=${KOPIS_KEY}&stdate=${firstDate}&eddate=${todayDate}&cpage=1&rows=8`,
 })
+
+/**
+# ======================#
+|       USER    |
+# ======================#
+*/
+
+export const USER_ENDPOINT = Object.freeze({
+  userInfo: `/users`, // 유저 정보 조회
+  userInfoEdit: `/settings/update-user`, // 유저 정보 수정
+  userImageUpload: `/users/upload-photo`, // 유저 이미지 업로드
+})
