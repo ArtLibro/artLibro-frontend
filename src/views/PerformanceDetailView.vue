@@ -1,31 +1,23 @@
 <script lang="ts" setup>
 import PerformanceInfo from '@/components/PerformanceDetailView/PerformanceInfo.vue'
-import { computed, onMounted, ref, toRaw, watch, watchEffect } from 'vue'
-import { Dayjs } from 'dayjs'
-import PerformanceTab from '@/components/PerformanceDetailView/PerformanceTab.vue'
+import { computed, onMounted, ref, watchEffect } from 'vue'
 import PerformancePlace from '@/components/PerformanceDetailView/PerformancePlace.vue'
-import { useQuery } from '@tanstack/vue-query'
-import type { PrfApi, PrfInfoDetail, PrfPlace, PrfPlaceInfo } from '@/types/Performance'
+import type { PrfPlaceInfo } from '@/types/Performance'
 import { DatePicker } from 'v-calendar'
 import 'v-calendar/style.css'
 import { getAwardPerformances, getPerformanceDetail, getPerformances } from '@/apis/kopis'
-import PerformanceRelatedDetail from '@/components/PerformanceDetailView/PerformanceAward.vue'
 import PerformanceAward from '@/components/PerformanceDetailView/PerformanceAward.vue'
 import PerformanceRecommend from '@/components/PerformanceDetailView/PerformanceRecommend.vue'
 import { useRoute } from 'vue-router'
 
-const router = useRoute()
 const route = useRoute()
-
-console.log('ㅁㄴㅇㅁㄴㅇㄴ', route.params.id)
 
 const selectedColor = ref<string>('indigo')
 const prfplaceId = ref<string>('')
 const prfPlaceArray = ref<PrfPlaceInfo>()
-const contentHeight = ref(1000) // 초기 콘텐츠 높이 (1000px)
-const isEnd = ref(false) // 더보기 버튼을 숨길지 여부
-const additionalContent = ref(3) // 더 추가할 콘텐츠의 갯수
-// const prfPlaceArray = ref<Record<string, any> | null>(null)
+const contentHeight = ref(1000)
+const isEnd = ref(false)
+const additionalContent = ref(3)
 const startDate = ref(null)
 const endtDate = ref(null)
 
@@ -47,40 +39,31 @@ const genres = [
 
 const loadMoreContent = () => {
   if (additionalContent.value > 0) {
-    contentHeight.value += 1000 // 1000px씩 늘려준다.
-    additionalContent.value-- // 추가 콘텐츠 갯수를 하나 줄인다.
+    contentHeight.value += 1000
+    additionalContent.value--
   } else {
-    // 추가 콘텐츠가 없으면 콘텐츠 끝까지 표시
-    contentHeight.value += 1000 // 기본 높이를 추가하고
-    isEnd.value = true // 끝에 도달했으므로 버튼 숨김
+    contentHeight.value += 1000
+    isEnd.value = true
   }
 }
-
-// PF220430,PF132236 =>공연상세
 
 onMounted(async () => {
   try {
     const data = await getPerformanceDetail('prfInfo', route.params.id as string)
     prfdetail.value = data
-    console.log('eeeeeeeeeeeeee', prfdetail.value)
 
     if (prfdetail.value && prfdetail.value.mt10id) {
       const placeData = await getPerformanceDetail('prfPlace', prfdetail.value.mt10id)
       prfPlaceArray.value = placeData
-      console.log('prfPlaceArray:', prfPlaceArray.value)
     } else {
       console.error('mt10id 값이 없습니다.')
     }
 
-    // 수상작
-
     if (prfdetail.value?.genrenm) {
-      // 장르에 맞는 data2 가져오기
       const genre = genres.find((item) => item.genre === prfdetail.value?.genrenm)
       if (genre) {
         const data2 = await getAwardPerformances(genre)
         awardPerformances.value = data2.dbs.db
-        console.log('awardPerformances', awardPerformances.value)
       } else {
         console.error('해당 장르를 찾을 수 없습니다.')
       }
@@ -90,7 +73,6 @@ onMounted(async () => {
       if (genreForPerformance) {
         const data3 = await getPerformances({ shcate : genreForPerformance.code, cpage : 1, rows : 8})
         recommendPerformance.value = data3?.dbs.db
-        console.log('recommendPerformance', recommendPerformance.value)
       } else {
         console.error('장르에 맞는 추천 공연을 찾을 수 없습니다.')
       }
@@ -101,12 +83,6 @@ onMounted(async () => {
     console.error('API 요청 실패:', error)
   }
 })
-
-console.log('prfdetail', prfdetail.value)
-
-console.log('prfplaceId', prfplaceId.value)
-
-console.log('야호 나오니~?', prfdetail.value)
 
 const dateRange = computed(() => {
   return {
@@ -119,12 +95,10 @@ const activeKey = ref<string>('1')
 
 watchEffect(() => {
   if (prfdetail.value?.prfpdfrom) {
-    // YYYY.MM.DD 형식을 YYYY-MM-DD로 변환
     startDate.value = prfdetail.value.prfpdfrom.replace(/\./g, '-')
   }
 
   if (prfdetail.value?.prfpdto) {
-    // YYYY.MM.DD 형식을 YYYY-MM-DD로 변환
     endtDate.value = prfdetail.value.prfpdto.replace(/\./g, '-')
   }
 })
@@ -168,7 +142,6 @@ const onTabChange = (key) => {
         <div class="poster-detail-container">
           <div :style="{ height: contentHeight + 'px' }" class="content" ref="content">
             <div v-if="Array.isArray(prfdetail?.styurls?.styurl)" class="poster-description">
-              <!-- prfInfo.styurls.styurl이 배열일 때 -->
               <div v-for="(item, index) in prfdetail?.styurls?.styurl" :key="index">
                 <img :src="item" alt="포스터 설명" />
               </div>
@@ -336,16 +309,6 @@ const onTabChange = (key) => {
 
 .calendar :deep(.vc-weekday-1) {
   color: #f73f3f;
-}
-
-// tab style
-::v-deep .performanceTab-container {
-  // width: 100%;
-  // height: 56px;
-  // // height: 70px;
-  // border: 1px solid $text-color-100;
-  // border-radius: 12px;
-  // margin-top: 54px;
 }
 
 ::v-deep .ant-tabs-nav {

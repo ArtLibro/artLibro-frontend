@@ -2,14 +2,24 @@
   <div class="user-posts-container">
     <h3>작성한 게시글</h3>
     <div class="user-posts-contents">
-      <div class="user-posts-content" v-for="post in postList" :key="post.id">
-        <div class="posts-header">
-          <strong>{{ post.title }}</strong>
-          <span>{{ post.category }}</span>
+      <div class="wrap">
+        <div class="user-posts-content" v-for="post in parsedPosts" :key="post.id">
+          <div class="posts-header">
+            <strong>{{ post.title }}</strong>
+            <span>{{ post.category }}</span>
+          </div>
+          <p>{{ post.content }}</p>
         </div>
-        <p>{{ post.content }}</p>
       </div>
-      <p class="user-posts-more" v-if="parsedPosts.length > 4">모든 글 보기</p>
+      <div class="user-posts-more" v-if="postCount > 4">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M18 9C18 5.68629 15.3137 3 12 3C8.68629 3 6 5.68629 6 9V15C6 18.3137 8.68629 21 12 21C15.3137 21 18 18.3137 18 15V9Z"
+            stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M12 7V11" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+
+      </div>
     </div>
   </div>
 </template>
@@ -25,11 +35,8 @@ const props = defineProps<{
 
 const { parsedPosts } = usePostParser(props.postData)
 
-const postList = computed(() => {
-  if (parsedPosts.value.length >= 4) {
-    return parsedPosts.value.slice(0, 4);
-  }
-  return parsedPosts.value;
+const postCount = computed(() => {
+  return parsedPosts.value.length
 });
 </script>
 
@@ -45,55 +52,71 @@ const postList = computed(() => {
   .user-posts-contents {
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 1rem;
 
-    .user-posts-content {
+    .wrap {
       width: 100%;
-      padding: 10px 13px;
-      border-radius: 10px;
-      border: 1px solid rgba(0, 0, 0, 0.15);
-      box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.1);
+      height: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      overflow-y: scroll;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
 
-      .posts-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
+      .user-posts-content {
+        width: 100%;
+        padding: 10px 13px;
+        border-radius: 10px;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.1);
 
-        strong {
-          color: #413B89;
-          display: block;
+        .posts-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 10px;
+
+          strong {
+            color: #413B89;
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 80%;
+          }
+
+          span {
+            font-size: 14px;
+          }
+        }
+
+        p {
+          font-size: 14px;
+          color: #49454F;
+          line-height: 18px;
+          letter-spacing: 0.1px;
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
           overflow: hidden;
           text-overflow: ellipsis;
-          white-space: nowrap;
-          width: 80%;
         }
 
-        span {
-          font-size: 14px;
-        }
       }
+    }
 
-      p {
-        font-size: 14px;
-        color: #49454F;
-        line-height: 18px;
-        letter-spacing: 0.1px;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
+    .user-posts-more {
+      width: 26px;
+      height: 26px;
+
+      svg {
+        width: 100%;
+        height: 100%;
       }
-
     }
   }
 
-  .user-posts-more {
-    font-size: 12px;
-    color: rgba(193, 11, 14, .8);
-    text-align: left;
-    cursor: pointer;
-  }
 }
 </style>

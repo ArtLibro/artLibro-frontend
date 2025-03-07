@@ -1,23 +1,28 @@
 <script setup lang="ts">
+import { RouterLink } from 'vue-router'
+
 defineProps({
   bookname: String,
   ranking: String,
   authors: String,
   bookImageURL: String,
+  isbn13: String,
 })
 </script>
 
 <template>
-  <div class="rankbookItem">
-    <div class="rankbook"></div>
-    <img :src="bookImageURL" alt="책사진" class="rankbook-img" />
-    <div class="rankbook-text">
-      <div class="title">{{ bookname }}</div>
-      <div class="subtitle">{{ authors }}</div>
+  <RouterLink :to="`/book/detail/${isbn13}`">
+    <div class="rankbookItem">
+      <div class="rankbook"></div>
+      <img :src="bookImageURL" alt="책사진" class="rankbook-img" />
+      <div class="rankbook-text">
+        <div class="title">{{ bookname }}</div>
+        <div class="subtitle">{{ authors }}</div>
+      </div>
+      <div class="rank-num">{{ ranking }}</div>
+      <div class="rank-shadow">{{ ranking }}</div>
     </div>
-    <div class="rank-num">{{ ranking }}</div>
-    <div class="rank-shadow">{{ ranking }}</div>
-  </div>
+  </RouterLink>
 </template>
 
 <style lang="scss" scoped>
@@ -56,10 +61,10 @@ defineProps({
 }
 
 .rank-num {
-  font-size: 50px;
-  font-weight: 500;
+  font-size: 63px;
+  font-weight: 700;
   position: absolute;
-  bottom: 3px;
+  bottom: -2px;
   left: -17px;
   color: white;
   z-index: 9;

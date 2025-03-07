@@ -1,15 +1,14 @@
-
 <script lang="ts" setup>
 
 import { onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getSocialToken } from "@/services/authService";
-import { useAuthStore } from "@/stores/auth";
+import { useAuthTokenStore } from "@/stores/auth";
 import { message } from "ant-design-vue";
 
 const route = useRoute();
 const router = useRouter();
-const authStore = useAuthStore()
+const authStore = useAuthTokenStore()
 
 onMounted(async () => {
   const provider = route.params.provider as string;

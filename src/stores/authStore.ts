@@ -45,6 +45,9 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('userId') // userId 삭제
     localStorage.removeItem('fullName') // 사용자 이름 삭제
     message.success('로그아웃 되었습니다.')
+
+    // 로그아웃 후 새로고침 -> 좋아요 상태 초기화
+    window.location.reload()
   }
   return { token, userId, fullName, login, logout }
 })

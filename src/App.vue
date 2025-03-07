@@ -7,19 +7,21 @@ import Footer from '@/components/common/Footer.vue'
 <template>
   <div class="body-layout">
     <Header />
-    <RouterView />
+    <div class="content-wrapper">
+      <RouterView />
+    </div>
     <Footer />
   </div>
 </template>
 
 <style lang="scss" scoped>
 .body-layout {
-  display: grid;
-  justify-content: center;
-  // width: 100vw;
+  width: 100%;
 }
 
 .content-wrapper {
   max-width: 1246px;
+  display: grid;
+  margin: 0 auto;
 }
 </style>
