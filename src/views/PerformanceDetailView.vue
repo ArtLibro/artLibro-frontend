@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import PerformanceInfo from '@/components/PerformanceDetailView/PerformanceInfo.vue'
-import { computed, onMounted, ref, watch, watchEffect } from 'vue'
+import { computed, onMounted, ref, toRaw, watch, watchEffect } from 'vue'
 import { Dayjs } from 'dayjs'
 import PerformanceTab from '@/components/PerformanceDetailView/PerformanceTab.vue'
 import PerformancePlace from '@/components/PerformanceDetailView/PerformancePlace.vue'
@@ -26,6 +26,12 @@ const contentHeight = ref(1000) // 초기 콘텐츠 높이 (1000px)
 const isEnd = ref(false) // 더보기 버튼을 숨길지 여부
 const additionalContent = ref(3) // 더 추가할 콘텐츠의 갯수
 // const prfPlaceArray = ref<Record<string, any> | null>(null)
+const startDate = ref(null)
+const endtDate = ref(null)
+
+const prfdetail = ref()
+const awardPerformances = ref([])
+const recommendPerformance = ref([])
 
 const genres = [
   { genre: '연극', code: 'AAAA' },
@@ -51,27 +57,46 @@ const loadMoreContent = () => {
 }
 
 // PF220430,PF132236 =>공연상세
-const query = ref<PrfApi[]>([
-  {
-    path: '/pblprfr/PF132236',
-  },
-
-  {
-    path: '',
-  },
-])
-
-// 잘오는중....
-const { data: prfdetail } = useQuery({
-  queryKey: ['performance-detail', route.params.id],
-  queryFn: () => getPerformanceDetail('prfInfo', route.params.id as string),
-})
 
 onMounted(async () => {
   try {
-    const data = await getPerformanceDetail('prfPlace', prfdetail.value.mt10id)
-    prfPlaceArray.value = data
-    console.log('22222222222222', prfPlaceArray.value)
+    const data = await getPerformanceDetail('prfInfo', route.params.id as string)
+    prfdetail.value = data
+    console.log('eeeeeeeeeeeeee', prfdetail.value)
+
+    if (prfdetail.value && prfdetail.value.mt10id) {
+      const placeData = await getPerformanceDetail('prfPlace', prfdetail.value.mt10id)
+      prfPlaceArray.value = placeData
+      console.log('prfPlaceArray:', prfPlaceArray.value)
+    } else {
+      console.error('mt10id 값이 없습니다.')
+    }
+
+    // 수상작
+
+    if (prfdetail.value?.genrenm) {
+      // 장르에 맞는 data2 가져오기
+      const genre = genres.find((item) => item.genre === prfdetail.value?.genrenm)
+      if (genre) {
+        const data2 = await getAwardPerformances(genre)
+        awardPerformances.value = data2.dbs.db
+        console.log('awardPerformances', awardPerformances.value)
+      } else {
+        console.error('해당 장르를 찾을 수 없습니다.')
+      }
+
+      // 장르에 맞는 data3 가져오기
+      const genreForPerformance = genres.find((item) => item.genre === prfdetail.value?.genrenm)
+      if (genreForPerformance) {
+        const data3 = await getPerformances(genreForPerformance)
+        recommendPerformance.value = data3.dbs.db
+        console.log('recommendPerformance', recommendPerformance.value)
+      } else {
+        console.error('장르에 맞는 추천 공연을 찾을 수 없습니다.')
+      }
+    } else {
+      console.error('prfdetail에서 genrenm을 찾을 수 없습니다.')
+    }
   } catch (error) {
     console.error('API 요청 실패:', error)
   }
@@ -79,114 +104,30 @@ onMounted(async () => {
 
 console.log('prfdetail', prfdetail.value)
 
-// const { data: prfdetail } = useQuery({
-//   queryKey: ['performance-detail', route.params.id],
-//   queryFn: () => getPerformanceDetail('prfInfo'),
-// })
-
-// const { data: prfplaceData, isLoading } = useQuery({
-//   queryKey: ['performance-place', query],
-//   queryFn: () => getPerformanceDetail('prfPlace'),
-// })
-
-// const mt10id = computed(() => {
-//   return prfPlaceArray.value?.mt10id ||
-// })
-
-// 장소 불러왔음
-onMounted(async () => {
-  // FC001431
-  try {
-    const data = await getPerformanceDetail('prfPlace', prfdetail.value.mt10id)
-    prfPlaceArray.value = data
-    console.log('22222222222222', prfPlaceArray.value)
-  } catch (error) {
-    console.error('API 요청 실패:', error)
-  }
-})
-
-const prfInfo = ref<PrfInfoDetail | null>(prfdetail.value)
-const awardPerformances = ref([])
-const recommendPerformance = ref([])
-
-console.log('555555555', prfInfo?.value?.genrenm)
-
-//수상작
-onMounted(async () => {
-  const genre = genres.find((item) => item.genre === prfInfo?.value?.genrenm)
-  console.log('Selected genre:', genre) // genre 값 확인
-
-  try {
-    const data = await getAwardPerformances(
-      genres.find((item) => item.genre === prfInfo?.value?.genrenm),
-    )
-    console.log('66666666666', data)
-    console.log('$4444444444444444444', data.dbs.db)
-
-    awardPerformances.value = data.dbs.db
-    console.log('awardPerformances', awardPerformances)
-  } catch (error) {
-    console.error('API 요청 실패:', error)
-  }
-})
-
-//추천
-onMounted(async () => {
-  try {
-    const data = await getPerformances(
-      genres.find((item) => item.genre === prfInfo?.value?.genrenm),
-    )
-    recommendPerformance.value = data.dbs.db
-  } catch (error) {
-    console.error('API 요청 실패:', error)
-  }
-})
-
-// watchEffect(() => {
-//   if (prfdetail.value) {
-//     prfplaceId.value = prfdetail.value.mt10id || ''
-//   }
-// })
-// watchEffect(() => {
-//   if (prfplaceId.value) {
-//     query.value[1].path = `/prfplc/${prfplaceId.value}`
-//     console.log('UPDATE', query.value[1].path)
-//   }
-// })
-
-// watchEffect(() => {
-//   if (isLoading.value) {
-//     console.log('데이터 로딩 중...')
-//   } else if (prfplaceData.value) {
-//     console.log('prfplaceData:', prfplaceData.value) // 데이터 로드 후 prfplaceData 출력
-//     // prfplaceData를 사용하여 추가 작업 수행
-//   } else {
-//     console.log('prfplaceData는 아직 로드되지 않았습니다.')
-//   }
-// })
-
-// console.log('발견', prfplaceData.value)
-
-// console.log('나와주새ㅔ여', prfplaceData.value)
-
 console.log('prfplaceId', prfplaceId.value)
 
 console.log('야호 나오니~?', prfdetail.value)
 
-// console.log('이름이 뭐야~?', prfplaceData.value)
-
-const startDate = ref(prfInfo.value?.prfpdfrom)
-const endtDate = ref(prfInfo.value?.prfpdto)
-
-const formattedStd = startDate.value?.split('.').join('-')
-const formattedEnd = endtDate.value?.split('.').join('-')
-
-const dateRange = ref<object>({
-  start: new Date('' + formattedStd),
-  end: new Date('' + formattedEnd),
+const dateRange = computed(() => {
+  return {
+    start: new Date(startDate.value),
+    end: new Date(endtDate.value),
+  }
 })
 
 const activeKey = ref<string>('1')
+
+watchEffect(() => {
+  if (prfdetail.value?.prfpdfrom) {
+    // YYYY.MM.DD 형식을 YYYY-MM-DD로 변환
+    startDate.value = prfdetail.value.prfpdfrom.replace(/\./g, '-')
+  }
+
+  if (prfdetail.value?.prfpdto) {
+    // YYYY.MM.DD 형식을 YYYY-MM-DD로 변환
+    endtDate.value = prfdetail.value.prfpdto.replace(/\./g, '-')
+  }
+})
 
 const onTabChange = (key) => {
   activeKey.value = key
@@ -197,18 +138,18 @@ const onTabChange = (key) => {
   <div class="layout">
     <div class="poster-container">
       <PerformanceInfo
-        :prfnm="prfInfo?.prfnm"
-        :prfSchedule="[prfInfo?.prfpdfrom, prfInfo?.prfpdto]"
-        :prfruntime="prfInfo?.prfruntime"
-        :fcltynm="prfInfo?.fcltynm"
-        :prfcast="prfInfo?.prfcast"
-        :pcseguidance="prfInfo?.pcseguidance"
-        :prfage="prfInfo?.prfage"
-        :genrenm="prfInfo?.genrenm"
-        :poster="prfInfo?.poster"
-        :relates="prfInfo?.relates"
+        :prfnm="prfdetail?.prfnm"
+        :prfSchedule="[prfdetail?.prfpdfrom, prfdetail?.prfpdto]"
+        :prfruntime="prfdetail?.prfruntime"
+        :fcltynm="prfdetail?.fcltynm"
+        :prfcast="prfdetail?.prfcast"
+        :pcseguidance="prfdetail?.pcseguidance"
+        :prfage="prfdetail?.prfage"
+        :genrenm="prfdetail?.genrenm"
+        :poster="prfdetail?.poster"
+        :relates="prfdetail?.relates"
       />
-      <div class="calendar-container">
+      <div class="calendar-container" @click="abc">
         <div class="calendar">
           <DatePicker
             v-model="dateRange"
@@ -216,6 +157,8 @@ const onTabChange = (key) => {
             :disabled="true"
             :masks="{ title: 'YYYY년 MMM ' }"
             :color="selectedColor"
+            :min-date="startDate"
+            :max-date="endtDate"
           />
         </div>
       </div>
@@ -224,15 +167,19 @@ const onTabChange = (key) => {
       <a-tab-pane key="1" tab="공연 상세 정보" class="performanceTab">
         <div class="poster-detail-container">
           <div :style="{ height: contentHeight + 'px' }" class="content" ref="content">
-            <div v-if="Array.isArray(prfInfo?.styurls?.styurl)" class="poster-description">
+            <div v-if="Array.isArray(prfdetail?.styurls?.styurl)" class="poster-description">
               <!-- prfInfo.styurls.styurl이 배열일 때 -->
-              <div v-for="(item, index) in prfInfo?.styurls?.styurl" :key="index">
+              <div v-for="(item, index) in prfdetail?.styurls?.styurl" :key="index">
                 <img :src="item" alt="포스터 설명" />
               </div>
             </div>
             <div v-else>
               <div>
-                <img :src="prfInfo?.styurls?.styurl" alt="포스터 설명" class="poster-description" />
+                <img
+                  :src="prfdetail?.styurls?.styurl"
+                  alt="포스터 설명"
+                  class="poster-description"
+                />
               </div>
             </div>
           </div>
@@ -240,8 +187,6 @@ const onTabChange = (key) => {
           <button class="show-more" v-if="!isEnd" @click="loadMoreContent">펼쳐보기</button>
         </div>
       </a-tab-pane>
-
-      장애시설 경사로 없음
       <a-tab-pane key="2" tab="공연장 상세 정보" class="performanceTab">
         <PerformancePlace
           :fcltynm="prfPlaceArray?.fcltynm"
@@ -265,7 +210,7 @@ const onTabChange = (key) => {
       <a-tab-pane key="3" tab="연관 공연 정보" class="performanceTab">
         <div class="prf-related-container">
           <div class="prf-related-card" style="margin-bottom: 72px">
-            <div class="prf-related-title">{{ prfInfo?.genrenm }} 수상작을 만나보세요</div>
+            <div class="prf-related-title">{{ prfdetail?.genrenm }} 수상작을 만나보세요</div>
             <div class="prf-related-layer">
               <template v-if="awardPerformances && awardPerformances.length > 0">
                 <PerformanceAward
@@ -287,7 +232,7 @@ const onTabChange = (key) => {
             </div>
           </div>
           <div class="prf-related-card">
-            <div class="prf-related-title">추천하는 다른 {{ prfInfo?.genrenm }}</div>
+            <div class="prf-related-title">추천하는 다른 {{ prfdetail?.genrenm }}</div>
             <div class="prf-recommend-case">
               <PerformanceRecommend
                 v-for="(item, index) in recommendPerformance"

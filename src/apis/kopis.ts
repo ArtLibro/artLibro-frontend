@@ -17,6 +17,7 @@ export const getAwardPerformances = async (genre: object) => {
     // 추가
     const queryParam = genre ? `&shcate=${genre?.code}` : ''
     const response = await KopisApi.get(KOPIS_ENDPOINT.awardList + queryParam)
+
     const data = await response.data
     return data
   } catch (error) {
@@ -27,7 +28,7 @@ export const getAwardPerformances = async (genre: object) => {
 export const getPerformances = async (genre: object) => {
   try {
     // 추가
-    const queryParam = genre ? `&shcate=${genre.code}` : ''
+    const queryParam = genre ? `&shcate=${genre?.code}` : ''
     const response = await KopisApi.get(KOPIS_ENDPOINT.prfSearch + queryParam)
     const data = await response.data
     return data

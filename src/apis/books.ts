@@ -257,12 +257,24 @@ export const getBookToHome = async (query: QueryItemReader | QueryItemRankBook) 
         ...params,
         startDt: query.startDt,
         kdc: query.kdc,
-        pagesize: query.pagesize,
+        pageSize: query.pagesize,
         pageNumber: query.pageNumber,
       }
     }
 
-    console.log()
+    if (query.isbn13) {
+      const isbnList = query.isbn13.split(';').filter((isbn) => isbn) // ';'로 나누고 빈 값을 제거
+      const promises = isbnList.map((isbn) => {
+        return LibraryApi.get(bookType, { params: { ...params, isbn13: isbn } }) // 각 isbn에 대해 요청을 보냄
+      })
+
+      // 모든 API 요청을 병렬로 처리
+      const responses = await Promise.all(promises)
+      const responseData = responses.map((response) => response.data) // 응답 데이터 처리
+
+      console.log('responseData', responseData)
+      return responseData
+    }
 
     const response = await LibraryApi.get(bookType, { params })
 
