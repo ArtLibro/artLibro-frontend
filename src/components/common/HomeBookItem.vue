@@ -3,21 +3,17 @@ defineProps({
   title: String,
   authors: String,
   bookimage: String,
+  isbn13: String,
 })
-// <img
-//       :src="bookimage"
-//       alt="ddd"
-//       style="width: 195px; height: 260px; background: gray; border-radius: 12px"
-//     />
 </script>
 
 <template>
-  <div class="bookItem">
+  <router-link :to="`book/detail/${isbn13}`" class="bookItem">
     <img :src="bookimage" alt="책사진" class="bookItem-img" />
     <!-- <div style="width: 195px; height: 260px; background: gray; border-radius: 12px"></div> -->
     <div class="bookItem-title">{{ title }}</div>
     <div class="bookItem-subtitle">{{ authors }}</div>
-  </div>
+  </router-link>
 </template>
 
 <style lang="scss" scoped>

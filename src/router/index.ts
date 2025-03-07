@@ -98,6 +98,7 @@ const router = createRouter({
       name: 'performance-detail',
       component: () => import('@/views/PerformanceDetailView.vue'),
     },
+    { path: '/:paths(.*)*', name: 'notfound', component: () => import('@/views/404View.vue') },
   ],
   scrollBehavior(_, _1, savedPosition) {
     if (savedPosition) {
