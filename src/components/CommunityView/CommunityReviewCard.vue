@@ -6,7 +6,7 @@ const router = useRouter()
 const props = defineProps<{
   review: {
     id: string
-    user: string
+    authorName: string
     title: string
     content: string
     likes: number
@@ -38,7 +38,7 @@ const goToDetail = () => {
       <div class="user-info">
         <img src="/images/user-dummy.png" alt="유저 프로필" class="review-avatar" />
         <div class="user-details">
-          <span class="user-name">홍길동</span>
+          <span class="user-name">{{ review.authorName }}</span>
           <span class="time">{{ review.time }}</span>
         </div>
       </div>
@@ -131,7 +131,6 @@ const goToDetail = () => {
 }
 
 .default-image {
-  opacity: 0.5;
   padding: 50px 30px;
   object-fit: fill;
 }

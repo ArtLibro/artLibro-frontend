@@ -81,7 +81,7 @@ const options = {
 }
 
 .chart-title {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: bold;
 }
 </style>

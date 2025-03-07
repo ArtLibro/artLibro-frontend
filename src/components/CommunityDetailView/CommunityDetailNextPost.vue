@@ -9,6 +9,9 @@ const props = defineProps<{
   currentPostId: string // 현재 게시글 ID
 }>()
 
+// 기본 이미지 경로
+const defaultImage = '/images/community-no-image.png'
+
 // 현재 게시글의 인덱스 찾기
 const currentIndex = computed(() => props.posts.findIndex((p) => p.id === props.currentPostId))
 
@@ -28,11 +31,17 @@ const nextPosts = computed(() => {
     ]
   }
 
-  return nextPosts
+  // 기본 이미지 적용
+  return nextPosts.map((post) => ({
+    ...post,
+    computedImage: post.image || defaultImage,
+    isDefault: !post.image,
+  }))
 })
 
 // 게시글 상세페이지로 이동
 const goToDetail = (postId: string) => {
+  window.scrollTo(0, 0)
   router.push(`/community/${postId}`)
 }
 </script>
@@ -42,7 +51,11 @@ const goToDetail = (postId: string) => {
     <div class="sidebar-title">다음 게시글</div>
     <div class="next-posts">
       <div class="post-item" v-for="post in nextPosts" :key="post.id" @click="goToDetail(post.id)">
-        <img :src="post.image || '/images/default-book.jpg'" alt="다음 게시글" />
+        <img
+          :src="post.computedImage"
+          :class="{ 'post-image': true, 'default-image': post.isDefault }"
+          alt="다음 게시글"
+        />
       </div>
     </div>
   </aside>
@@ -93,5 +106,26 @@ const goToDetail = (postId: string) => {
   &:hover {
     transform: scale(1.05);
   }
+}
+
+.post-image {
+  width: 135px;
+  height: 200px;
+  object-fit: cover;
+  margin: 20px;
+  transition: transform 0.2s ease-in-out;
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.default-image {
+  width: 135px;
+  height: 200px;
+  padding: 50px 20px;
+  background-color: white;
+  border: 1px solid #d1d1d1;
+  object-fit: contain;
+  box-shadow: none;
 }
 </style>

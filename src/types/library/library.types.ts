@@ -51,11 +51,11 @@ export interface LibraryInfoResult {
   tel : string;
 }
 
-type PopularBookResponse = {
+export type PopularBookResponse = {
   book : Book;
 }
 export interface LibraryPopularBooksType {
-  age0Books : PopularBookResponse[]
+  age0Books : PopularBookResponse[];
   age6Books : PopularBookResponse[];
   age8Books : PopularBookResponse[];
   age14Books : PopularBookResponse[];
