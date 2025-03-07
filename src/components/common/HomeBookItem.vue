@@ -33,6 +33,12 @@ defineProps({
   width: 145px;
   height: 200px;
   border-radius: 8px;
+  box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.5);
+  transition: transform 0.5s;
+}
+
+.bookItem-img:hover {
+  transform: translateY(-10px);
 }
 .bookItem-title {
   font-size: 20px;

@@ -17,7 +17,8 @@ import {
   getBookToHome,
   getDetailRegionReadAnalysis,
   getLibraryInfo,
-  getLibraryPopularBooks, getRegionReadAnalysis
+  getLibraryPopularBooks,
+  getRegionReadAnalysis,
 } from '@/apis/books.ts'
 import LibraryInfo from '@/components/HomeView/LibraryInfo.vue'
 import LibraryPopularBooks from '@/components/HomeView/LibraryPopularBooks.vue'
@@ -61,35 +62,48 @@ const query = ref<[QueryItemReader, QueryItemRankBook]>([
   {
     startDt: formattedDate,
     kdc: 1,
-    pagesize: 1,
-    pageNumber: 12,
+    pagesize: 12,
+    pageNumber: 1,
   },
 ])
 
 onMounted(async () => {
   try {
-    const data = await getBookToHome(query.value[0])
-    bookwornList.value = data
+    const data1 = await getBookToHome(query.value[0])
+    console.log('데이터 입니다', data1)
+    // bookwornList.value = data1[0].response.docs
+    // console.log('뭐야!!!!!', bookwornList.value)
+
+    data1.forEach((item) => {
+      bookwornList.value = bookwornList.value.concat(item.response.docs)
+    })
+
+    console.log('다시재배열했습니다', bookwornList.value)
+
+    const data2 = await getBookToHome(query.value[1])
+    rankBook.value = data2.response.docs // 응답된 책 데이터를 저장
+    filteredBooks.value = rankBook.value // 초기 필터링, 12개만 표시
   } catch (error) {
     console.error('API 요청 실패:', error)
   }
 })
 
 // 인기도서
-onMounted(async () => {
-  try {
-    const data = await getBookToHome(query.value[1])
-    rankBook.value = data.response.docs // 응답된 책 데이터를 저장
-    filteredBooks.value = rankBook.value.slice(0, 12) // 초기 필터링, 12개만 표시
-  } catch (error) {
-    console.error('API 요청 실패:', error)
-  }
-})
+// onMounted(async () => {
+//   try {
+//     const data = await getBookToHome(query.value[1])
+//     rankBook.value = data.response.docs // 응답된 책 데이터를 저장
+//     filteredBooks.value = rankBook.value.slice(0, 12) // 초기 필터링, 12개만 표시
+//   } catch (error) {
+//     console.error('API 요청 실패:', error)
+//   }
+// })
 
 const bookChunk = computed(() => {
   const chunkSize = 8
 
-  const docs = bookwornList.value?.response?.docs
+  const docs = bookwornList.value
+  console.log('닥스 배열크기', docs.length)
 
   let uniqueBooks = []
   // bookname이 중복되는 경우 하나만 남기고 나머지는 제거
@@ -102,10 +116,10 @@ const bookChunk = computed(() => {
   }
 
   // const limitedArray = data1.value?.response?.docs?.slice(0, 24) || []
-  const limitedArray = uniqueBooks.length
+  const limitedArray = uniqueBooks.slice(0, 32)
   console.log('dd', limitedArray)
   const result = []
-  for (let i = 0; i < limitedArray; i += chunkSize) {
+  for (let i = 0; i < limitedArray.length; i += chunkSize) {
     result.push(uniqueBooks.slice(i, i + chunkSize))
   }
   return result
@@ -138,7 +152,7 @@ const filterTab = async (categoryName, key) => {
 
     // 필터된 데이터로 갱신하고, 12개만 추출
     rankBook.value = books
-    filteredBooks.value = books.slice(0, 12)
+    filteredBooks.value = books
     activeTab.value = key
   } catch (error) {
     console.error('필터링 실패:', error)
@@ -157,51 +171,59 @@ const getColumns = (filteredBooks) => {
   return columns
 }
 
-const closestLibrary = ref<LibraryInfoResult>();
+const closestLibrary = ref<LibraryInfoResult>()
 const closestLibraryBooks = ref([])
-const locationStore = useLocationStore();
-const regionData = ref();
-const detailRegionData = ref();
+const locationStore = useLocationStore()
+const regionData = ref()
+const detailRegionData = ref()
 
-let max = 999999;
+let max = 999999
 
-function getDistanceFromLatLonInKm(lat1,lng1,lat2,lng2) {//lat1:위도1, lng1:경도1, lat2:위도2, lat2:경도2
+function getDistanceFromLatLonInKm(lat1, lng1, lat2, lng2) {
+  //lat1:위도1, lng1:경도1, lat2:위도2, lat2:경도2
   function deg2rad(deg) {
-    return deg * (Math.PI/180)
+    return deg * (Math.PI / 180)
   }
-  let R = 6371; // Radius of the earth in km
-  let dLat = deg2rad(lat2-lat1);  // deg2rad below
-  let dLon = deg2rad(lng2-lng1);
-  let a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon/2) * Math.sin(dLon/2);
-  let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  let d = R * c; // Distance in km
-  return d;
+  let R = 6371 // Radius of the earth in km
+  let dLat = deg2rad(lat2 - lat1) // deg2rad below
+  let dLon = deg2rad(lng2 - lng1)
+  let a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2)
+  let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  let d = R * c // Distance in km
+  return d
 }
 
 const getAddress = async () => {
   const data = await getAddressByLocation(locationStore.userLocation)
   console.log(data)
-  const library = await getLibraryInfo(data);
+  const library = await getLibraryInfo(data)
   console.log(library)
 
   for (const item of library.libs) {
-    const latitude = Number(item.lib.libInfo.latitude);
-    const longtitude = Number(item.lib.libInfo.longitude);
-    const d = getDistanceFromLatLonInKm(locationStore.userLocation.latitude,locationStore.userLocation.longitude,latitude,longtitude);
+    const latitude = Number(item.lib.libInfo.latitude)
+    const longtitude = Number(item.lib.libInfo.longitude)
+    const d = getDistanceFromLatLonInKm(
+      locationStore.userLocation.latitude,
+      locationStore.userLocation.longitude,
+      latitude,
+      longtitude,
+    )
 
     if (d < max) {
-      max = d;
+      max = d
       closestLibrary.value = item.lib.libInfo
     }
   }
   const libraryPopularBooks = await getLibraryPopularBooks(Number(closestLibrary?.value.libCode))
-  const arr = [];
+  const arr = []
   for (let i = 0; i < 10; i++) {
     arr.push(libraryPopularBooks.loanBooks[i].book)
   }
-  closestLibraryBooks.value = arr;
+  closestLibraryBooks.value = arr
 
-  let code = 11;
+  let code = 11
   for (const item of REGION_CODE) {
     if (item.name === data.regionDepth1) {
       code = item.code
@@ -214,7 +236,7 @@ const getAddress = async () => {
 
   regionData.value = regionAnalysis
   detailRegionData.value = detailRegionAnalysis
-  console.log(detailRegionData.value,regionData.value)
+  console.log(detailRegionData.value, regionData.value)
 }
 
 onMounted(() => {
@@ -255,7 +277,7 @@ onMounted(() => {
         class="mySwiper"
       >
         <swiper-slide v-for="(chunk, index) in bookChunk.slice(0, 24)" :key="index">
-          <div style="display: flex">
+          <div style="display: flex; padding-top: 10px">
             <HomeBookItem
               v-for="item in chunk"
               :key="item"
@@ -303,9 +325,7 @@ onMounted(() => {
         :address="closestLibrary?.address"
         :lib-name="closestLibrary?.libName"
       />
-      <LibraryPopularBooks
-        :books="closestLibraryBooks"
-      />
+      <LibraryPopularBooks :books="closestLibraryBooks" />
       <LibraryChart
         v-if="regionData && detailRegionData"
         :region-name="regionData?.request.region"
@@ -342,7 +362,7 @@ onMounted(() => {
   display: flex;
   height: 340px;
   justify-content: space-between;
-  margin-top : 40px
+  margin-top: 40px;
 }
 
 .title {
