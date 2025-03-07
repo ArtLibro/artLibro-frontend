@@ -54,8 +54,8 @@ const filteredReviews = computed(() =>
   activeKey.value === '1'
     ? posts.value
     : posts.value.filter(
-        (post) => post.category === (activeKey.value === '2' ? '도서' : '공연/행사'),
-      ),
+      (post) => post.category === (activeKey.value === '2' ? '도서' : '공연/행사'),
+    ),
 )
 
 // 페이지네이션 관련 설정
@@ -110,12 +110,8 @@ onMounted(loadPosts)
     </div>
 
     <div class="post-grid">
-      <CommunityMainCard
-        v-for="(post, index) in latestMainPosts"
-        :key="index"
-        :post="post"
-        @click="goToDetailPage(post.id)"
-      />
+      <CommunityMainCard v-for="(post, index) in latestMainPosts" :key="index" :post="post"
+        @click="goToDetailPage(post.id)" />
     </div>
 
     <div class="review-header">
@@ -127,21 +123,13 @@ onMounted(loadPosts)
 
     <div class="review-container">
       <div class="review-list">
-        <CommunityReviewCard
-          v-for="(review, index) in paginatedReviews"
-          :key="index"
-          :review="review"
-          @click="goToDetailPage(review.id)"
-        />
+        <CommunityReviewCard v-for="(review, index) in paginatedReviews" :key="index" :review="review"
+          @click="goToDetailPage(review.id)" />
       </div>
     </div>
 
     <div class="pagination-wrapper">
-      <Pagination
-        v-model:current="currentPage"
-        :total="filteredReviews.length"
-        :page-size="reviewsPerPage"
-      />
+      <Pagination v-model:current="currentPage" :total="filteredReviews.length" :page-size="reviewsPerPage" />
     </div>
   </div>
 </template>
