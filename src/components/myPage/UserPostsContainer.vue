@@ -57,7 +57,7 @@ const postCount = computed(() => {
 
     .wrap {
       width: 100%;
-      height: 490px;
+      height: 480px;
       display: flex;
       flex-direction: column;
       gap: 1rem;
