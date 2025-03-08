@@ -6,6 +6,7 @@ import { useLikesStore } from '@/stores/likesStore'
 import type { Post } from '@/types/community/communityType'
 import dayjs from 'dayjs'
 import { computed, onMounted } from 'vue'
+import CommunityUserDropdown from '../CommunityView/CommunityUserDropdown.vue'
 
 const props = defineProps<{ post: Post }>()
 const authStore = useAuthStore()
@@ -34,7 +35,7 @@ onMounted(() => {
 
 const isLiked = computed(() => likesStore.likedPosts.includes(props.post.id))
 
-// 좋아요버튼 이벤트
+// 좋아요 버튼
 const toggleLike = () => {
   if (!userId.value) {
     alert('로그인이 필요합니다!')
@@ -87,7 +88,9 @@ const goToEditPage = () => {
         <div class="user-profile">
           <img src="/images/user-dummy.png" alt="유저 프로필" class="profile-image" />
           <div>
-            <h3 class="username">{{ post.authorName }}</h3>
+            <div class="username">
+              <CommunityUserDropdown :authorName="post.authorName" />
+            </div>
           </div>
         </div>
         <span class="post-date">{{ formattedDate }}</span>

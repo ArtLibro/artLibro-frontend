@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -24,6 +24,20 @@ const bookImage = computed(() => (props.post.image ? props.post.image : defaultB
 // 현재 이미지가 기본 이미지인지 체크
 const isDefaultImage = computed(() => bookImage.value === defaultBookImage)
 
+// 댓글 개수 상태
+const commentCount = ref(0)
+
+// 로컬 스토리지에서 댓글 개수 가져오는 함수
+const getCommentCount = (postId: string): number => {
+  const savedComments = localStorage.getItem(`comments_${postId}`)
+  return savedComments ? JSON.parse(savedComments).length : 0
+}
+
+// 페이지 로드될 때 댓글 개수 불러오기
+onMounted(() => {
+  commentCount.value = getCommentCount(props.post.id)
+})
+
 const goToDetail = () => {
   router.push(`/community/${props.post.id}`)
 }
@@ -33,18 +47,20 @@ const goToDetail = () => {
   <div class="post-card" @click="goToDetail">
     <div class="post-info">
       <h3 class="post-title">{{ post.title }}</h3>
-      <p class="post-date">{{ post.date }}</p>
       <div class="divider"></div>
+      <p class="post-date">{{ post.date }}</p>
       <div class="post-meta">
         <p>
           작성자 <span>{{ post.authorName }}</span>
         </p>
-        <p>
-          좋아요 <span>{{ post.likes }}</span>
-        </p>
-        <p>
-          댓글수 <span>{{ post.comment }}</span>
-        </p>
+        <div class="post-meta-detail">
+          <p>
+            좋아요 <span>{{ post.likes }}</span>
+          </p>
+          <p>
+            댓글수 <span>{{ commentCount }}</span>
+          </p>
+        </div>
       </div>
     </div>
     <img
@@ -94,8 +110,7 @@ const goToDetail = () => {
 
   .post-title {
     font-size: 24px;
-    margin-top: 15px;
-    margin-bottom: 10px;
+    margin-top: 10px;
     min-height: 56px;
     display: -webkit-box;
     -webkit-line-clamp: 2; /* 웹킷 브라우저용 (Chrome, Safari 등) */
@@ -108,14 +123,15 @@ const goToDetail = () => {
 
   .post-date {
     font-size: 14px;
-    padding-top: 10px;
+    color: $text-color-300;
   }
 
   .divider {
     width: 70%;
     height: 1px;
     background: $text-color-200;
-    margin-top: auto;
+    margin-top: 40px;
+    margin-bottom: 10px;
   }
 
   .post-meta {
@@ -124,6 +140,7 @@ const goToDetail = () => {
     flex-direction: column;
     margin-top: auto;
     padding-bottom: 10px;
+    color: $text-color-300;
 
     p {
       display: flex;
@@ -131,6 +148,25 @@ const goToDetail = () => {
       gap: 10px;
 
       margin-bottom: 0;
+    }
+  }
+
+  .post-meta-detail {
+    font-size: 14px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: auto;
+    padding-bottom: 10px;
+    color: $text-color-300;
+
+    p {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 0;
+      white-space: nowrap;
     }
   }
 
