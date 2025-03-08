@@ -9,49 +9,103 @@ const props = defineProps<{
   currentPostId: string // 현재 게시글 ID
 }>()
 
+// 기존 Post 타입 확장 (다음 게시글을 위한)
+interface ExtendedPost extends Post {
+  computedImage: string
+  isEmpty?: boolean
+  backgroundColor?: string
+  isDefault?: boolean
+}
+
 // 기본 이미지 경로
 const defaultImage = '/images/community-no-image.png'
+const emptyPostBackground = '#F5F5F5'
 
 // 현재 게시글의 인덱스 찾기
 const currentIndex = computed(() => props.posts.findIndex((p) => p.id === props.currentPostId))
 
-// 다음 게시글 찾기 (최대 3개)
-const nextPosts = computed(() => {
-  if (currentIndex.value === -1) return [] // 현재 게시글 없으면 빈 배열 반환
+// 다음 게시글 찾기 (최대 3개, 부족하면 이전 게시글로 채우기)
+const nextPosts = computed<ExtendedPost[]>(() => {
+  if (currentIndex.value === -1) return []
 
-  const start = currentIndex.value + 1
-  let nextPosts = props.posts.slice(start, start + 3)
+  let nextPosts: ExtendedPost[] = props.posts
+    .slice(currentIndex.value + 1, currentIndex.value + 4)
+    .map((post) => ({
+      ...post,
+      computedImage: post.image || defaultImage,
+      isDefault: !post.image,
+    }))
 
-  // 만약 다음 게시글이 3개보다 적으면 이전 게시글에서 채우기
-  if (nextPosts.length < 3) {
-    const remaining = 3 - nextPosts.length
+  // 가장 최신 게시글이면 -> 이전 게시글 3개 보여줌
+  if (nextPosts.length === 0) {
+    nextPosts = props.posts
+      .slice(Math.max(0, currentIndex.value - 3), currentIndex.value)
+      .map((post) => ({
+        ...post,
+        computedImage: post.image || defaultImage,
+        isDefault: !post.image,
+      }))
+  }
+
+  // 게시글이 3개일 때 2번째 게시글이라면 -> 이전 1개 + 다음 1개 보여줌
+  if (props.posts.length === 3 && currentIndex.value === 1) {
     nextPosts = [
-      ...nextPosts,
-      ...props.posts.slice(Math.max(0, currentIndex.value - remaining), currentIndex.value),
+      {
+        ...props.posts[currentIndex.value - 1],
+        computedImage: props.posts[currentIndex.value - 1].image || defaultImage,
+        isDefault: !props.posts[currentIndex.value - 1].image,
+      },
+      {
+        ...props.posts[currentIndex.value + 1],
+        computedImage: props.posts[currentIndex.value + 1].image || defaultImage,
+        isDefault: !props.posts[currentIndex.value + 1].image,
+      },
     ]
   }
 
-  // 기본 이미지 적용
-  return nextPosts.map((post) => ({
-    ...post,
-    computedImage: post.image || defaultImage,
-    isDefault: !post.image,
-  }))
+  // 부족한 게시글 빈 슬롯으로 채우기
+  while (nextPosts.length < 3) {
+    nextPosts.push({
+      id: '',
+      title: '게시글 없음',
+      image: '',
+      computedImage: defaultImage,
+      isDefault: true,
+      isEmpty: true,
+      backgroundColor: emptyPostBackground,
+      category: '도서', // 기본 카테고리로 설정
+      content: '',
+      createdAt: '',
+      userId: '',
+      authorName: '',
+    })
+  }
+
+  return nextPosts
 })
 
-// 게시글 상세페이지로 이동
-const goToDetail = (postId: string) => {
+// 게시글 상세페이지로 이동 (빈 슬롯 클릭 방지)
+const goToDetail = (postId: string, isEmpty?: boolean) => {
+  if (!postId || isEmpty) return
   window.scrollTo(0, 0)
   router.push(`/community/${postId}`)
 }
 </script>
 
 <template>
-  <aside class="sidebar" v-if="nextPosts.length">
+  <aside class="sidebar">
     <div class="sidebar-title">다음 게시글</div>
     <div class="next-posts">
-      <div class="post-item" v-for="post in nextPosts" :key="post.id" @click="goToDetail(post.id)">
+      <div
+        class="post-item"
+        v-for="post in nextPosts"
+        :key="post.id"
+        @click="goToDetail(post.id, post.isEmpty)"
+        :class="{ 'no-click': post.isEmpty }"
+        :style="{ backgroundColor: post.backgroundColor }"
+      >
         <img
+          v-if="!post.isEmpty"
           :src="post.computedImage"
           :class="{ 'post-image': true, 'default-image': post.isDefault }"
           alt="다음 게시글"
@@ -90,22 +144,26 @@ const goToDetail = (postId: string) => {
 
 .post-item {
   width: 200px;
+  height: 230px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: $text-color-100;
+  justify-content: center;
   cursor: pointer;
-}
-
-.post-item img {
-  width: 135px;
-  height: 200px;
-  object-fit: cover;
-  margin: 20px;
   transition: transform 0.2s ease-in-out;
+
   &:hover {
     transform: scale(1.05);
   }
+}
+
+.post-item.no-click {
+  pointer-events: none;
+  cursor: default;
+  transform: none !important;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
 }
 
 .post-image {
@@ -114,6 +172,7 @@ const goToDetail = (postId: string) => {
   object-fit: cover;
   margin: 20px;
   transition: transform 0.2s ease-in-out;
+
   &:hover {
     transform: scale(1.05);
   }
