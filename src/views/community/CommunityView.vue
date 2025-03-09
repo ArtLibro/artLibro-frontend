@@ -123,6 +123,9 @@ onMounted(loadPosts)
     </div>
     <div class="divider"></div>
 
+    <!-- 페이지네이션 스크롤 이동을 위한 컨테이너 -->
+    <div class="pagination-scroll"></div>
+
     <div class="review-header">
       <div class="review-tabs">
         <CommunityTabs v-model:activeKey="activeKey" />
@@ -202,6 +205,10 @@ onMounted(loadPosts)
   background-color: #d9d9d9;
   margin-top: 50px;
   margin-bottom: 50px;
+}
+
+.pagination-scroll {
+  height: 10px;
 }
 
 .review-header {

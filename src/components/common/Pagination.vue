@@ -7,10 +7,10 @@ const emit = defineEmits(['update:current'])
 const handlePageChange = (page: number) => {
   emit('update:current', page)
 
-  // CommunityTabs쪽으로 스크롤 이동
-  const communityTabs = document.querySelector('#community-tabs')
-  if (communityTabs) {
-    communityTabs.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  // 페이지 변경하면 pagination-scroll 컨테이너 위치로 스크롤 이동
+  const paginationScroll = document.querySelector('.pagination-scroll')
+  if (paginationScroll) {
+    paginationScroll.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
   }
 }
 </script>
