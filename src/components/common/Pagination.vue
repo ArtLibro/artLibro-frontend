@@ -6,6 +6,12 @@ const emit = defineEmits(['update:current'])
 
 const handlePageChange = (page: number) => {
   emit('update:current', page)
+
+  // CommunityTabs쪽으로 스크롤 이동
+  const communityTabs = document.querySelector('#community-tabs')
+  if (communityTabs) {
+    communityTabs.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
 }
 </script>
 
