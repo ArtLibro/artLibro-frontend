@@ -5,72 +5,18 @@
     </div>
 
     <div class="message-item-list">
-      <div class="message-item">
-        <img src="/images/user-dummy.png" alt="user-dummy" class="message-item-image">
+      <span v-if="isPending">Loading...</span>
+      <span v-else-if="isError">Error: {{ error?.message }}</span>
+      <div v-else-if="messageList">
+        <div v-for="(item,index) in messageList" class="message-item" :key="index" @click="handleReadMessage(item.sender._id)">
+          <img src="/images/user-dummy.png" alt="user-dummy" class="message-item-image">
 
-        <div class="message-item-content">
-          <div class="message-item-content-header">
-            <p class="message-item-name">김철수</p>
-            <p class="message-item-date">2025-02-01</p>
+          <div class="message-item-content">
+            <div class="message-item-content-header">
+              <p class="message-item-name">{{ item.message }}</p>
+            </div>
+            <p class="message-item-description">{{ item.sender.fullName }}</p>
           </div>
-          <p class="message-item-description">안녕하세요</p>
-        </div>
-      </div>
-
-      <div class="message-item">
-        <img src="/images/user-dummy.png" alt="user-dummy" class="message-item-image">
-
-        <div class="message-item-content">
-          <div class="message-item-content-header">
-            <p class="message-item-name">김철수</p>
-            <p class="message-item-date">2025-02-01</p>
-          </div>
-          <p class="message-item-description">안녕하세요</p>
-        </div>
-      </div>
-
-      <div class="message-item">
-        <img src="/images/user-dummy.png" alt="user-dummy" class="message-item-image">
-
-        <div class="message-item-content">
-          <div class="message-item-content-header">
-            <p class="message-item-name">김철수</p>
-            <p class="message-item-date">2025-02-01</p>
-          </div>
-          <p class="message-item-description">안녕하세요</p>
-        </div>
-      </div>
-      <div class="message-item">
-        <img src="/images/user-dummy.png" alt="user-dummy" class="message-item-image">
-
-        <div class="message-item-content">
-          <div class="message-item-content-header">
-            <p class="message-item-name">김철수</p>
-            <p class="message-item-date">2025-02-01</p>
-          </div>
-          <p class="message-item-description">안녕하세요</p>
-        </div>
-      </div>
-      <div class="message-item">
-        <img src="/images/user-dummy.png" alt="user-dummy" class="message-item-image">
-
-        <div class="message-item-content">
-          <div class="message-item-content-header">
-            <p class="message-item-name">김철수</p>
-            <p class="message-item-date">2025-02-01</p>
-          </div>
-          <p class="message-item-description">안녕하세요</p>
-        </div>
-      </div>
-      <div class="message-item">
-        <img src="/images/user-dummy.png" alt="user-dummy" class="message-item-image">
-
-        <div class="message-item-content">
-          <div class="message-item-content-header">
-            <p class="message-item-name">김철수</p>
-            <p class="message-item-date">2025-02-01</p>
-          </div>
-          <p class="message-item-description">안녕하세요</p>
         </div>
       </div>
     </div>
@@ -78,9 +24,25 @@
 </template>
 
 <script setup lang="ts">
+import { useQuery } from '@tanstack/vue-query'
+import { getUserMessage, updateUserMessage } from '@/apis/user.ts'
+import { useAuthStore } from '@/stores/authStore'
+
+const authStore = useAuthStore();
+
 const { isOpen } = defineProps<{
   isOpen: boolean;
 }>();
+
+// 유저 메세지 조회
+const { data: messageList, isPending, isError, error} = useQuery({
+  queryKey: ['userMessageList', authStore.userId],
+  queryFn: () => getUserMessage(),
+})
+
+const handleReadMessage = async (id) => {
+  const result = await updateUserMessage(id);
+}
 </script>
 
 <style lang="scss" scoped>
