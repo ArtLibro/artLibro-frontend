@@ -7,6 +7,7 @@ import type { Post } from '@/types/community/communityType'
 import dayjs from 'dayjs'
 import { computed, onMounted } from 'vue'
 import CommunityUserDropdown from '../CommunityView/CommunityUserDropdown.vue'
+import { message, Modal } from 'ant-design-vue'
 
 const props = defineProps<{ post: Post }>()
 const authStore = useAuthStore()
@@ -38,8 +39,23 @@ const isLiked = computed(() => likesStore.likedPosts.includes(props.post.id))
 // 좋아요 버튼
 const toggleLike = () => {
   if (!userId.value) {
-    alert('로그인이 필요합니다!')
-    router.push('/login')
+    Modal.warning({
+      title: '로그인 필요',
+      content: '좋아요 기능을 이용하려면 로그인이 필요합니다.',
+      okText: '로그인하기',
+      okButtonProps: {
+        // style 타입 에러 -> SCSS에서 따로 스타일 줘도 에러남...
+        style: {
+          backgroundColor: '#6472fc', // 버튼 색깔
+          color: '#fff',
+          fontWeight: 'bold',
+          borderRadius: '8px',
+        },
+      },
+      onOk() {
+        router.push('/login')
+      },
+    })
     return
   }
 
@@ -48,13 +64,28 @@ const toggleLike = () => {
 }
 
 // 게시글 삭제
-const handleDelete = async () => {
-  const confirmDelete = confirm('정말 삭제하시겠습니까?')
-  if (confirmDelete) {
-    await deletePost(props.post.id, props.post.userId)
-    alert('게시글이 삭제되었습니다.')
-    router.push('/community')
-  }
+const handleDelete = () => {
+  Modal.confirm({
+    title: '게시글 삭제',
+    content: '정말 삭제하시겠습니까?',
+    okText: '삭제',
+    cancelText: '취소',
+    okType: 'danger',
+    async onOk() {
+      await deletePost(props.post.id, props.post.userId)
+
+      message.success({
+        content: '게시글이 삭제되었습니다!',
+        duration: 4, // 4초 동안 표시
+        style: {
+          fontSize: '15px',
+          fontWeight: 'bold',
+        },
+      })
+
+      router.push('/community')
+    },
+  })
 }
 
 // 게시글 수정 페이지로 이동
@@ -69,10 +100,18 @@ const goToEditPage = () => {
     query: { post: JSON.stringify(props.post) },
   })
 }
+
+// 게시글 목록으로 가기
+const goBack = () => {
+  router.push('/community')
+}
 </script>
 
 <template>
   <section class="content-container">
+    <button class="back-button" @click="goBack">
+      <img src="/icons/go-back.svg" alt="뒤로가기 버튼" />
+    </button>
     <div class="content-box">
       <div class="like-button" @click="toggleLike">
         <img v-if="isLiked" src="/icons/heart-purple-fill.svg" alt="좋아요" />
@@ -123,7 +162,7 @@ const goToEditPage = () => {
 .content-container {
   position: relative;
   height: auto;
-  height: 600px;
+  height: 630px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -137,6 +176,22 @@ const goToEditPage = () => {
   justify-content: space-between;
   position: relative;
   text-align: center;
+}
+
+.back-button {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 1000;
+  margin-bottom: 30px;
+
+  img {
+    width: 20px;
+    height: 20px;
+  }
 }
 
 .like-button {

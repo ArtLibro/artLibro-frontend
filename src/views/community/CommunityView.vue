@@ -25,7 +25,7 @@ const latestMainPosts = computed(() =>
     id: post.id,
     title: post.title,
     image: post.image || '',
-    date: new Date(post.createdAt).toLocaleDateString(), // 날짜 변환
+    date: new Date(post.createdAt).toLocaleString(), // 날짜 변환
     authorName: post.authorName,
     comment: 0, // 기본값 설정 -> 수정할 예정
     likes: 0, // 기본값 설정 -> 수정할 예정
@@ -103,9 +103,7 @@ onMounted(loadPosts)
 </script>
 
 <template>
-  <!-- ✅ .body-layout 내부에서 직접 적용 -->
   <div class="community-page">
-    <!-- ✅ 타이틀과 아이콘은 항상 유지 -->
     <div class="title-wrapper">
       <img class="title-icon" src="/icons/title-point.svg" />
       <h2 class="title">커뮤니티</h2>
@@ -125,7 +123,9 @@ onMounted(loadPosts)
     </div>
     <div class="divider"></div>
 
-    <!-- ✅ 탭과 "리뷰 작성" 버튼은 항상 유지 -->
+    <!-- 페이지네이션 스크롤 이동을 위한 컨테이너 -->
+    <div class="pagination-scroll"></div>
+
     <div class="review-header">
       <div class="review-tabs">
         <CommunityTabs v-model:activeKey="activeKey" />
@@ -133,7 +133,6 @@ onMounted(loadPosts)
       <button v-if="isLoggedIn" class="new-post-button" @click="goToWritePage">리뷰 작성</button>
     </div>
 
-    <!-- ✅ 리뷰 리스트 -->
     <div v-if="paginatedReviews.length > 0" class="review-container">
       <div class="review-list">
         <CommunityReviewCard
@@ -148,7 +147,6 @@ onMounted(loadPosts)
       <p>🔎 첫 리뷰를 남겨보세요!</p>
     </div>
 
-    <!-- ✅ 페이지네이션 -->
     <div class="pagination-wrapper">
       <Pagination
         v-model:current="currentPage"
@@ -160,17 +158,15 @@ onMounted(loadPosts)
 </template>
 
 <style lang="scss" scoped>
-/* ✅ .body-layout 내부에서 직접 스타일 적용 */
 .community-page {
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* ✅ 왼쪽 정렬 */
+  align-items: flex-start;
   width: 100%;
   max-width: 1246px;
-  min-height: 80vh; /* ✅ 최소 높이 설정 */
+  min-height: 80vh;
 }
 
-/* ✅ 타이틀(제목)과 아이콘 */
 .title-wrapper {
   display: flex;
   align-items: center;
@@ -190,44 +186,44 @@ onMounted(loadPosts)
   margin-top: 30px;
 }
 
-/* ✅ 게시글 목록 */
 .post-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* ✅ 유동적인 카드 배치 */
+  grid-template-columns: repeat(3, 1fr);
   gap: 30px;
   margin-top: 40px;
-  justify-content: center; /* ✅ 가운데 정렬 */
-  align-items: start; /* ✅ 상단 정렬 */
+  justify-content: center;
+  align-items: start;
   width: 100%;
-  max-width: 1050px; /* ✅ 카드 전체 너비 설정 */
+  max-width: 1050px;
   margin-left: auto;
   margin-right: auto;
 }
 
-/* ✅ 구분선 스타일 */
 .divider {
   width: 100%;
   height: 0.7px;
-  background-color: #d9d9d9; /* ✅ 구분선 색상 */
-  margin-top: 50px; /* ✅ 구분선과 탭 사이 간격 */
+  background-color: #d9d9d9;
+  margin-top: 50px;
   margin-bottom: 50px;
 }
 
-/* ✅ 탭과 "리뷰 작성" 버튼 */
+.pagination-scroll {
+  height: 10px;
+}
+
 .review-header {
   display: flex;
-  justify-content: space-between; /* ✅ 왼쪽 정렬 */
+  justify-content: space-between;
   align-items: center;
   width: 100%;
 }
 
-/* ✅ 리뷰 목록 */
 .review-container {
   width: 100%;
-  display: flex; /* ✅ flex 적용 */
-  justify-content: center; /* ✅ 가로 중앙 정렬 */
-  align-items: center; /* ✅ 세로 중앙 정렬 */
-  min-height: 240px; /* ✅ 최소 높이 설정 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 240px;
 }
 
 .review-tabs {
@@ -241,7 +237,6 @@ onMounted(loadPosts)
   align-items: center;
 }
 
-/* ✅ 페이지네이션 */
 .pagination-wrapper {
   display: flex;
   justify-content: center;
@@ -249,10 +244,9 @@ onMounted(loadPosts)
   margin-top: 30px;
   margin-bottom: 50px;
   width: 100%;
-  min-height: 50px; /* ✅ 최소 높이 설정 */
+  min-height: 50px;
 }
 
-/* ✅ "리뷰 작성" 버튼 */
 .new-post-button {
   width: 100px;
   height: 45px;
@@ -276,19 +270,18 @@ onMounted(loadPosts)
   }
 }
 
-/* ✅ 게시글이 없을 때 메시지 */
 .empty-message-main {
   text-align: center;
   color: $text-color-500;
   font-size: 21px;
   font-weight: bold;
   margin: 100px 0;
-  align-self: center; /* ✅ 부모가 flex일 때 가운데 정렬 */
+  align-self: center;
 
   img {
     display: block;
     margin: 0 auto;
-    transform: translateX(-20px); /* ✅ 왼쪽으로 20px 이동 */
+    transform: translateX(-20px);
     margin-bottom: 10px;
   }
 }
@@ -299,11 +292,11 @@ onMounted(loadPosts)
   color: $text-color-500;
   font-size: 21px;
   font-weight: bold;
-  margin: auto; /* ✅ 자동으로 가운데 정렬 */
-  align-self: center; /* ✅ 부모가 flex일 때 가운데 정렬 */
+  margin: auto;
+  align-self: center;
 
   p {
-    margin-top: 180px; /* ✅ 메시지를 더 아래로 이동 */
+    margin-top: 180px;
   }
 }
 </style>

@@ -6,6 +6,12 @@ const emit = defineEmits(['update:current'])
 
 const handlePageChange = (page: number) => {
   emit('update:current', page)
+
+  // 페이지 변경하면 pagination-scroll 컨테이너 위치로 스크롤 이동
+  const paginationScroll = document.querySelector('.pagination-scroll')
+  if (paginationScroll) {
+    paginationScroll.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+  }
 }
 </script>
 
