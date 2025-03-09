@@ -100,10 +100,18 @@ const goToEditPage = () => {
     query: { post: JSON.stringify(props.post) },
   })
 }
+
+// 게시글 목록으로 가기
+const goBack = () => {
+  router.push('/community')
+}
 </script>
 
 <template>
   <section class="content-container">
+    <button class="back-button" @click="goBack">
+      <img src="/icons/go-back.svg" alt="뒤로가기 버튼" />
+    </button>
     <div class="content-box">
       <div class="like-button" @click="toggleLike">
         <img v-if="isLiked" src="/icons/heart-purple-fill.svg" alt="좋아요" />
@@ -154,7 +162,7 @@ const goToEditPage = () => {
 .content-container {
   position: relative;
   height: auto;
-  height: 600px;
+  height: 630px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -168,6 +176,22 @@ const goToEditPage = () => {
   justify-content: space-between;
   position: relative;
   text-align: center;
+}
+
+.back-button {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 1000;
+  margin-bottom: 30px;
+
+  img {
+    width: 20px;
+    height: 20px;
+  }
 }
 
 .like-button {

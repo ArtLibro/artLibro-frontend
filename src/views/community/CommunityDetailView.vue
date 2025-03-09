@@ -6,7 +6,6 @@ import CommunityDetailComment from '@/components/CommunityDetailView/CommunityDe
 import CommunityDetailContent from '@/components/CommunityDetailView/CommunityDetailContent.vue'
 import CommunityDetailNextPost from '@/components/CommunityDetailView/CommunityDetailNextPost.vue'
 import type { Post } from '@/types/community/communityType'
-import router from '@/router'
 
 const route = useRoute()
 const post = ref<Post | null>(null)
@@ -22,20 +21,12 @@ const loadPostDetail = async () => {
 watch(() => route.params.id, loadPostDetail)
 
 onMounted(loadPostDetail)
-
-// 게시글 목록으로 가기
-const goBack = () => {
-  router.push('/community')
-}
 </script>
 
 <template>
   <div v-if="post" class="page-container">
     <section class="background">
       <img src="/images/community-background.png" alt="배경이미지" />
-      <button class="back-button" @click="goBack">
-        <img src="/icons/go-back.svg" alt="뒤로가기 버튼" />
-      </button>
     </section>
 
     <div class="content-wrapper">
@@ -79,22 +70,6 @@ const goBack = () => {
   height: 100%;
   object-fit: cover;
   display: block;
-}
-
-.back-button {
-  position: absolute;
-  top: 70px;
-  left: 180px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  z-index: 10;
-
-  img {
-    width: 20px;
-    height: 20px;
-    color: white;
-  }
 }
 
 .content-wrapper {
