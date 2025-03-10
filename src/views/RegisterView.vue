@@ -93,7 +93,7 @@ const handleSocialLogin = (provider: "NAVER" | "GOOGLE") => {
 <template>
   <div class="layout">
     <div class="logo">
-      <img src="/icons/SignUp/logo.svg" />
+      <img src="/icons/SignUp/logo.svg" style="width: 300px; height: 80px" />
     </div>
 
     <div style="display: flex; margin-top: 43px; margin-left: 212px;">
@@ -127,7 +127,7 @@ const handleSocialLogin = (provider: "NAVER" | "GOOGLE") => {
       </div>
 
 
-      <div style="margin-top: 55px; margin-left: 75px; ">
+      <div style="margin-top: 23px; margin-left: 75px; ">
         <svg xmlns="http://www.w3.org/2000/svg" width="2" height="96" viewBox="0 0 2 96" fill="none">
           <path d="M1.0957 0L1.0957 96" stroke="#595959" stroke-opacity="0.5" />
         </svg>
@@ -141,10 +141,12 @@ const handleSocialLogin = (provider: "NAVER" | "GOOGLE") => {
 
       <div>
         <div class="social-signup">
-          <img src="/icons/SignUp/kakao.svg" @click="() => handleKakaoLogin('KAKAO')" /> <br>
-          <img style="margin-top: 11px;" src=" /icons/SignUp/naver.svg" @click="() => handleSocialLogin('NAVER')" />
+          <img style="width: 110%;" src="/icons/SignUp/kakao.svg" @click="() => handleKakaoLogin('KAKAO')" /> <br>
+          <img class="social-btn" style="margin-top: 11px; width: 110%" src=" /icons/SignUp/naver.svg"
+            @click="() => handleSocialLogin('NAVER')" />
           <br>
-          <img style="margin-top: 11px;" src="/icons/SignUp/google.svg" @click="() => handleSocialLogin('GOOGLE')" />
+          <img class="social-btn" style="margin-top: 11px; width: 110%" src="/icons/SignUp/google.svg"
+            @click="() => handleSocialLogin('GOOGLE')" />
         </div>
       </div>
     </div>
@@ -161,12 +163,12 @@ const handleSocialLogin = (provider: "NAVER" | "GOOGLE") => {
 
 .logo {
   margin-top: 48px;
-  margin-left: 512px;
+  margin-left: 470px;
 }
 
 .input-group {
   width: 339px;
-  margin-top: 15px;
+  margin-top: -20px;
 
   .input-text {
     margin-top: 13px
@@ -183,12 +185,28 @@ const handleSocialLogin = (provider: "NAVER" | "GOOGLE") => {
   .input-name {
     width: 332px;
     padding: 4px 11px;
+    height: 38px;
+    font-size: 19px;
   }
 
   .input-pass {
     width: 332px;
     padding: 4px 11px;
+    margin-bottom: 5px;
+    height: 38px;
+    font-size: 15px;
   }
+}
+
+::v-deep .ant-input-group .ant-select-selector {
+  height: 38px;
+  font-size: 15px;
+  padding: 4px 11px;
+}
+
+::v-deep .ant-select-selector .ant-select-selection-search-input {
+  padding: 11px 1px 4px 1px ;
+  padding: 11px;
 }
 
 .small-text {
@@ -211,7 +229,7 @@ const handleSocialLogin = (provider: "NAVER" | "GOOGLE") => {
 }
 
 .social-signup {
-  margin-top: 85px;
+  margin-top: 50px;
   margin-left: 87.9px;
 }
 
