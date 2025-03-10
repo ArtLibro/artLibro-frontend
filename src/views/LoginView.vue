@@ -7,7 +7,6 @@ import { ref } from "vue";
 
 const authStore = useAuthStore();
 
-
 const address = ref<string>("");
 const domain = ref<string>("@naver.com");
 const password = ref<string>("");
@@ -23,7 +22,6 @@ const validateForm = () => {
   }
   return true;
 };
-
 
 const handleLogin = async () => {
   if (!validateForm()) return;
@@ -51,10 +49,10 @@ const handleSocialLogin = (provider: "NAVER" | "GOOGLE") => {
 <template>
   <div class="layout">
     <div class="logo">
-      <img src="/icons/SignUp/logo.svg" />
+      <img src="/icons/SignUp/logo.svg" style="width: 300px; height: 80px" />
     </div>
 
-    <div style="display: flex; margin-top: 43px; margin-left: 212px;">
+    <div style="display: flex; margin-top: 10px; margin-left: 212px;">
       <div class="input-group">
         <div>이메일 입력</div>
 
@@ -66,20 +64,16 @@ const handleSocialLogin = (provider: "NAVER" | "GOOGLE") => {
           </a-select>
         </a-input-group>
 
-
-
         <div class="input-text">비밀번호 입력</div>
         <a-input-password class="input-pass" v-model:value="password" placeholder="비밀번호를 입력해주세요" />
         <div class="small-text"> 영문 대·소문자/숫자.특수문자 중 2가지 이상 조합, 8~16글자 </div>
-
 
         <div>
           <a-button type="primary" class="button" @click="handleLogin">로그인</a-button>
         </div>
       </div>
 
-
-      <div style="margin-top: 55px; margin-left: 75px; ">
+      <div style="margin-top: 55px; margin-left: 75px;">
         <svg xmlns="http://www.w3.org/2000/svg" width="2" height="96" viewBox="0 0 2 96" fill="none">
           <path d="M1.0957 0L1.0957 96" stroke="#595959" stroke-opacity="0.5" />
         </svg>
@@ -93,16 +87,15 @@ const handleSocialLogin = (provider: "NAVER" | "GOOGLE") => {
 
       <div>
         <div class="social-signup">
-          <img src="/icons/SignUp/kakao.svg" @click="() => handleKakaoLogin('KAKAO')" /> <br>
-          <img style="margin-top: 11px;" src=" /icons/SignUp/naver.svg" @click="() => handleSocialLogin('NAVER')" />
+          <img style="width: 110%;" src="/icons/SignUp/kakao.svg" @click="() => handleKakaoLogin('KAKAO')" /> <br>
+          <img class="social-btn" style="margin-top: 11px; width: 110%" src=" /icons/SignUp/naver.svg"
+            @click="() => handleSocialLogin('NAVER')" />
           <br>
-          <img style="margin-top: 11px;" src="/icons/SignUp/google.svg" @click="() => handleSocialLogin('GOOGLE')" />
+          <img class="social-btn" style="margin-top: 11px; width: 110%" src="/icons/SignUp/google.svg"
+            @click="() => handleSocialLogin('GOOGLE')" />
         </div>
       </div>
     </div>
-
-
-
   </div>
 </template>
 
@@ -113,7 +106,7 @@ const handleSocialLogin = (provider: "NAVER" | "GOOGLE") => {
 
 .logo {
   margin-top: 48px;
-  margin-left: 512px;
+  margin-left: 470px;
 }
 
 .input-group {
@@ -121,11 +114,12 @@ const handleSocialLogin = (provider: "NAVER" | "GOOGLE") => {
   margin-top: 90px;
 
   .input-text {
-    margin-top: 13px
+    margin-top: 13px;
   }
 
-  .input {
-    width: 191px;
+  ::v-deep .input  {
+    width: 191px !important;
+    height: 38px !important;
   }
 
   .input-mail {
@@ -134,13 +128,27 @@ const handleSocialLogin = (provider: "NAVER" | "GOOGLE") => {
 
   .input-pass {
     width: 332px;
+    height: 38px;
     padding: 4px 11px;
+    margin-bottom: 5px;
+            font-size: 15px;
   }
 }
 
+::v-deep .ant-input-group .ant-select-selector {
+  height: 38px;
+  font-size: 15px;
+  padding: 4px 11px;
+}
+
+/* ::v-deep .ant-select-selector{
+  height: 38px;
+  padding: auto;
+} */
+
 .small-text {
   color: var(--gray-6, #bfbfbf);
-  font-size: 10px
+  font-size: 10px;
 }
 
 .button {
