@@ -6,7 +6,9 @@ import Footer from '@/components/common/FooterSection.vue'
 
 <template>
   <div class="body-layout">
-    <Header />
+    <div class="header-wrapper">
+      <Header />
+    </div>
     <div class="content-wrapper">
       <RouterView />
     </div>
@@ -15,6 +17,11 @@ import Footer from '@/components/common/FooterSection.vue'
 </template>
 
 <style lang="scss" scoped>
+.header-wrapper {
+  border-bottom: #eaeaea solid 1px;
+  width: 100%;
+}
+
 .body-layout {
   width: 100%;
 }
