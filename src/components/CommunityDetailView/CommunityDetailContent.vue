@@ -294,6 +294,9 @@ const goBack = () => {
   font-size: 14px;
   font-weight: bold;
   border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .edit-button {
