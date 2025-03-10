@@ -4,10 +4,11 @@ import type {
   BookDetail,
   BookDetailResponse,
   BookItem,
-  BookRecommendation, GetBookDetailResponse,
+  BookRecommendation,
+  GetBookDetailResponse,
   MonthKeywordResponse,
   SearchTypeValue,
-  SortOptionValue
+  SortOptionValue,
 } from '@/types/libraryType'
 import type { KakaoAddress } from '@/types/location.types.ts'
 import { regions } from '@/constants/detail-region-code.ts'
@@ -63,15 +64,18 @@ export const getBookList = async (
   }
 }
 
-export const getBookDetail = async (isbn13: number) : Promise<GetBookDetailResponse> => {
+export const getBookDetail = async (isbn13: number): Promise<GetBookDetailResponse> => {
   try {
-    const response : AxiosResponse<BookDetailResponse> = await LibraryApi.get(LIBRARY_ENDPOINT.bookDetail, {
-      params: {
-        isbn13: isbn13,
-        loaninfoYN: 'Y',
-        format: 'json',
+    const response: AxiosResponse<BookDetailResponse> = await LibraryApi.get(
+      LIBRARY_ENDPOINT.bookDetail,
+      {
+        params: {
+          isbn13: isbn13,
+          loaninfoYN: 'Y',
+          format: 'json',
+        },
       },
-    })
+    )
 
     const detailData = response.data.response.detail[0].book
     const loanInfoData = response.data.response.loanInfo
@@ -171,7 +175,7 @@ export const getLibraryInfo = async (address: KakaoAddress) => {
   }
 }
 
-export const getLibraryInfoByRegion = async (regionCode : number, pageNo : number) => {
+export const getLibraryInfoByRegion = async (regionCode: number, pageNo: number) => {
   try {
     const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryDetail, {
       params: {
@@ -187,7 +191,7 @@ export const getLibraryInfoByRegion = async (regionCode : number, pageNo : numbe
   }
 }
 
-export const getLibraryInfoByDetailRegion = async (detailRegionCode : number, pageNo : number) => {
+export const getLibraryInfoByDetailRegion = async (detailRegionCode: number, pageNo: number) => {
   try {
     const response = await LibraryApi.get(LIBRARY_ENDPOINT.libraryDetail, {
       params: {
