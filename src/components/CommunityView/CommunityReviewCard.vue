@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import CommunityUserDropdown from './CommunityUserDropdown.vue'
 
 const router = useRouter()
 const props = defineProps<{
@@ -27,6 +28,51 @@ const reviewImage = computed(() => props.review.image || defaultBookImage)
 // 기본 이미지인지 확인
 const isDefaultImage = computed(() => reviewImage.value === defaultBookImage)
 
+// 댓글 개수 상태
+const commentCount = ref(0)
+
+// 좋아요 개수 상태
+const likeCount = ref(0)
+
+// 로컬 스토리지에서 댓글 개수 가져오는 함수
+const getCommentCount = (postId: string): number => {
+  const savedComments = localStorage.getItem(`comments_${postId}`)
+  return savedComments ? JSON.parse(savedComments).length : 0
+}
+
+// 로컬 스토리지에서 특정 게시물의 좋아요한 사용자 수 가져오는 함수
+const getLikeCount = (postId: string): number => {
+  let count = 0
+
+  // 로컬 스토리지 전체 키 확인
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i)
+
+    // 로컬 스토리지에서 likedPosts_로 시작하는 키만 찾기 -> 사용자별 좋아요 데이터
+    if (key && key.startsWith('likedPosts_')) {
+      const savedLikes = localStorage.getItem(key)
+
+      try {
+        const parsedLikes = savedLikes ? JSON.parse(savedLikes) : []
+        if (Array.isArray(parsedLikes) && parsedLikes.includes(postId)) {
+          count++
+        }
+      } catch (error) {
+        console.error(`❌ JSON 파싱 오류:`, error)
+      }
+    }
+  }
+
+  console.log(`${postId} 좋아요 개수:`, count)
+  return count
+}
+
+// 댓글 개수 불러오기
+onMounted(() => {
+  commentCount.value = getCommentCount(props.review.id)
+  likeCount.value = getLikeCount(props.review.id)
+})
+
 const goToDetail = () => {
   router.push(`/community/${props.review.id}`)
 }
@@ -38,15 +84,16 @@ const goToDetail = () => {
       <div class="user-info">
         <img src="/images/user-dummy.png" alt="유저 프로필" class="review-avatar" />
         <div class="user-details">
-          <span class="user-name">{{ review.authorName }}</span>
+          <!-- 작성자 클릭했을 때는 이벤트 전파 막기 -->
+          <CommunityUserDropdown :authorName="review.authorName" @click.stop class="user-name" />
           <span class="time">{{ review.time }}</span>
         </div>
       </div>
       <h3 class="review-title">{{ review.title }}</h3>
       <p class="review-text">{{ review.content }}</p>
       <div class="review-meta">
-        <span>좋아요 {{ review.likes }}</span>
-        <span>댓글 {{ review.comments }}</span>
+        <span>좋아요 {{ likeCount }}</span>
+        <span>댓글 {{ commentCount }}</span>
       </div>
     </div>
     <img
@@ -60,13 +107,12 @@ const goToDetail = () => {
 <style lang="scss" scoped>
 .review-card {
   cursor: pointer;
-  width: 1130px;
+  width: 1200px;
   height: 240px;
-
   border-bottom: 1px solid $text-color-100;
   display: flex;
   align-items: center;
-  padding: 20px;
+  margin: 0 auto;
 }
 
 .review-content {
@@ -95,12 +141,11 @@ const goToDetail = () => {
 }
 
 .user-name {
-  font-size: $text-size-200;
   color: $text-color-400;
 }
 
 .time {
-  color: $text-color-200;
+  color: $text-color-300;
 }
 
 .review-title {
@@ -113,6 +158,13 @@ const goToDetail = () => {
   color: #666;
   line-height: 1.5;
   margin-top: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* 웹킷 브라우저용 (Chrome, Safari 등) */
+  line-clamp: 2; /* 표준 속성 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
 }
 
 .review-meta {

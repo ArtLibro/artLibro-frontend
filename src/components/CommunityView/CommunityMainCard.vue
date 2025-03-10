@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -24,6 +24,51 @@ const bookImage = computed(() => (props.post.image ? props.post.image : defaultB
 // 현재 이미지가 기본 이미지인지 체크
 const isDefaultImage = computed(() => bookImage.value === defaultBookImage)
 
+// 댓글 개수 상태
+const commentCount = ref(0)
+
+// 좋아요 개수 상태
+const likeCount = ref(0)
+
+// 로컬 스토리지에서 댓글 개수 가져오는 함수
+const getCommentCount = (postId: string): number => {
+  const savedComments = localStorage.getItem(`comments_${postId}`)
+  return savedComments ? JSON.parse(savedComments).length : 0
+}
+
+// 로컬 스토리지에서 특정 게시물의 좋아요한 사용자 수 가져오는 함수
+const getLikeCount = (postId: string): number => {
+  let likeCount = 0
+
+  // 로컬 스토리지 전체 키 확인
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i)
+
+    // 로컬 스토리지에서 likedPosts_로 시작하는 키만 찾기 -> 사용자별 좋아요 데이터
+    if (key && key.startsWith('likedPosts_')) {
+      const savedLikes = localStorage.getItem(key)
+
+      try {
+        const parsedLikes = savedLikes ? JSON.parse(savedLikes) : []
+        if (Array.isArray(parsedLikes) && parsedLikes.includes(postId)) {
+          likeCount++
+        }
+      } catch (error) {
+        console.error(`❌ JSON 파싱 오류:`, error)
+      }
+    }
+  }
+
+  console.log(`${postId} 좋아요 개수:`, likeCount)
+  return likeCount
+}
+
+// 페이지 로드될 때 댓글 및 좋아요 개수 불러오기
+onMounted(() => {
+  commentCount.value = getCommentCount(props.post.id)
+  likeCount.value = getLikeCount(props.post.id)
+})
+
 const goToDetail = () => {
   router.push(`/community/${props.post.id}`)
 }
@@ -33,18 +78,27 @@ const goToDetail = () => {
   <div class="post-card" @click="goToDetail">
     <div class="post-info">
       <h3 class="post-title">{{ post.title }}</h3>
-      <p class="post-date">{{ post.date }}</p>
+      <div class="user-info">
+        <img src="/images/user-dummy.png" alt="유저 프로필" class="review-avatar" />
+        <div>
+          <span>{{ post.authorName }}</span>
+        </div>
+      </div>
+
       <div class="divider"></div>
       <div class="post-meta">
-        <p>
-          작성자 <span>{{ post.authorName }}</span>
-        </p>
-        <p>
-          좋아요 <span>{{ post.likes }}</span>
-        </p>
-        <p>
-          댓글수 <span>{{ post.comment }}</span>
-        </p>
+        <p>{{ post.date }}</p>
+        <div class="post-meta-detail">
+          <div class="icons-heart">
+            <img src="/images/community-heart.png" alt="좋아요 아이콘" />
+            <span>{{ likeCount }}</span>
+          </div>
+
+          <div class="icons-comment">
+            <img src="/images/community-comment.png" alt="댓글 아이콘" />
+            <span>{{ commentCount }}</span>
+          </div>
+        </div>
       </div>
     </div>
     <img
@@ -94,8 +148,7 @@ const goToDetail = () => {
 
   .post-title {
     font-size: 24px;
-    margin-top: 15px;
-    margin-bottom: 10px;
+    margin-top: 10px;
     min-height: 56px;
     display: -webkit-box;
     -webkit-line-clamp: 2; /* 웹킷 브라우저용 (Chrome, Safari 등) */
@@ -106,31 +159,80 @@ const goToDetail = () => {
     word-wrap: break-word;
   }
 
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: $text-size-200;
+    color: $text-color-400;
+    margin-top: 12px;
+  }
+
+  .review-avatar {
+    width: 28px;
+    height: 28px;
+  }
   .post-date {
     font-size: 14px;
-    padding-top: 10px;
+    color: $text-color-300;
   }
 
   .divider {
     width: 70%;
     height: 1px;
     background: $text-color-200;
-    margin-top: auto;
+    margin-top: 5px;
+    margin-bottom: 10px;
   }
 
   .post-meta {
     font-size: 14px;
     display: flex;
     flex-direction: column;
-    margin-top: auto;
-    padding-bottom: 10px;
+    margin-top: 20px;
+    color: $text-color-300;
 
     p {
       display: flex;
       align-items: center;
       gap: 10px;
+      margin-bottom: 5px;
+    }
+  }
 
-      margin-bottom: 0;
+  .post-meta-detail {
+    display: flex;
+    flex-direction: row;
+    gap: 25px;
+    color: $text-color-300;
+    align-items: center;
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .icons-heart {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    img {
+      width: 18px;
+      height: 18px;
+    }
+  }
+  .icons-comment {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    img {
+      width: 22px;
+      height: 22px;
     }
   }
 

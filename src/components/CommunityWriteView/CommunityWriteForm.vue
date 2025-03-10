@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, defineProps, defineEmits } from 'vue'
 import { UploadOutlined } from '@ant-design/icons-vue'
-import type { UploadProps } from 'ant-design-vue'
+import { message, type UploadProps } from 'ant-design-vue'
 import type { NewPost, Post } from '@/types/community/communityType'
 import { createPost, fetchPosts } from '@/apis/community/post'
 import { useAuthStore } from '@/stores/authStore'
@@ -18,6 +18,10 @@ const title = ref(props.existingPost?.title || '')
 const content = ref(props.existingPost?.content || '')
 const fileList = ref<UploadProps['fileList']>([])
 
+// 제목과 내용 글자수 제한
+const TITLE_MAX_LENGTH = 45
+const CONTENT_MAX_LENGTH = 650
+
 // 기존 이미지가 있다면 표시
 if (props.existingPost?.image) {
   fileList.value = [
@@ -28,6 +32,32 @@ if (props.existingPost?.image) {
       url: props.existingPost.image,
     },
   ]
+}
+
+// 제목 입력할 때 글자수 제한
+const handleTitleInput = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  title.value = target.value.slice(0, TITLE_MAX_LENGTH)
+}
+
+// 제목 복붙할 때 글자수 제한
+const handleTitlePaste = (event: ClipboardEvent) => {
+  event.preventDefault()
+  const pastedText = event.clipboardData?.getData('text') || ''
+  title.value = (title.value + pastedText).slice(0, TITLE_MAX_LENGTH)
+}
+
+// 내용 입력할 때 글자수 제한
+const handleContentInput = (event: Event) => {
+  const target = event.target as HTMLTextAreaElement
+  content.value = target.value.slice(0, CONTENT_MAX_LENGTH)
+}
+
+// 내용 복붙할 때 글자수 제한
+const handleContentPaste = (event: ClipboardEvent) => {
+  event.preventDefault()
+  const pastedText = event.clipboardData?.getData('text') || ''
+  content.value = (content.value + pastedText).slice(0, CONTENT_MAX_LENGTH)
 }
 
 const handleFileChange: UploadProps['onChange'] = (info) => {
@@ -69,7 +99,15 @@ const handleSubmit = async () => {
   }
 
   await fetchPosts()
-  alert(props.existingPost ? '🎉 게시글이 수정되었습니다!' : '🎉 게시글이 등록되었습니다!')
+
+  message.success({
+    content: props.existingPost ? '게시글이 수정되었습니다!' : '게시글이 등록되었습니다!',
+    duration: 4, // 4초 동안 표시
+    style: {
+      fontSize: '15px',
+      fontWeight: 'bold',
+    },
+  })
 }
 </script>
 
@@ -88,11 +126,24 @@ const handleSubmit = async () => {
         </a-form-item>
 
         <a-form-item label="제목">
-          <a-input v-model:value="title" placeholder="제목을 입력해 주세요" />
+          <a-input
+            v-model:value="title"
+            placeholder="제목을 입력해 주세요"
+            @input="handleTitleInput"
+            @paste="handleTitlePaste"
+          />
+          <div class="char-count">{{ title.length }} / {{ TITLE_MAX_LENGTH }}</div>
         </a-form-item>
 
         <a-form-item label="내용">
-          <a-textarea v-model:value="content" placeholder="내용을 입력해 주세요" :rows="10" />
+          <a-textarea
+            v-model:value="content"
+            placeholder="내용을 입력해 주세요"
+            :rows="10"
+            @input="handleContentInput"
+            @paste="handleContentPaste"
+          />
+          <div class="char-count">{{ content.length }} / {{ CONTENT_MAX_LENGTH }}</div>
         </a-form-item>
 
         <a-form-item label="사진 업로드 (선택)">
@@ -145,13 +196,28 @@ const handleSubmit = async () => {
     :deep(.ant-form) {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 20px;
+    }
+
+    /* 카테고리 셀렉트 높이 조정 */
+    :deep(.ant-select-selector) {
+      height: 43px !important;
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
     }
 
     /* 마지막 버튼과 마지막 폼 요소 간 간격 */
     :deep(.ant-form-item:last-child) {
       margin-top: 24px;
     }
+  }
+
+  .char-count {
+    font-size: 14px;
+    text-align: right;
+    margin-top: 5px;
+    color: $text-color-300;
   }
 
   /* 업로드한 파일 간격 */
@@ -165,9 +231,7 @@ const handleSubmit = async () => {
   /* 작성완료 버튼 스타일 */
   :deep(.ant-btn-primary) {
     background-color: $secondary-color-300 !important;
-    border-radius: 8px;
-    height: 45px;
-    font-size: 16px;
+    height: 55px !important;
     font-weight: bold;
   }
 

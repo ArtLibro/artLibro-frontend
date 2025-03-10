@@ -34,6 +34,10 @@ defineProps<PerformanceCardProps>()
   color: $text-color-500;
   font-weight: bold;
   font-size: 20px;
+  width: 300px; /* 컨테이너 너비 지정 */
+  white-space: nowrap; /* 텍스트를 한 줄로 유지 */
+  overflow: hidden; /* 넘치는 부분 숨김 */
+  text-overflow: ellipsis; /* 초과된 부분을 "..." 처리 */
 }
 
 .date {

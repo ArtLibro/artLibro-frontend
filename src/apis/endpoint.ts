@@ -35,7 +35,7 @@ export const KOPIS_ENDPOINT = Object.freeze({
   monthlyList: `/boxoffice?service=${KOPIS_KEY}&stdate=${firstDate}&eddate=${todayDate}&cpage=1&rows=5`,
   prfDetailList: `/pblprfr/ID?service=${KOPIS_KEY}`,
   prfDetailPlace: `/prfplc/ID?service=${KOPIS_KEY}`,
-  prfSearch: `/pblprfr?service=${KOPIS_KEY}&stdate=${firstDate}&eddate=${todayDate}&cpage=1&rows=8`,
+  prfSearch: `/pblprfr?service=${KOPIS_KEY}`,
 })
 
 /**
@@ -48,4 +48,8 @@ export const USER_ENDPOINT = Object.freeze({
   userInfo: `/users`, // 유저 정보 조회
   userInfoEdit: `/settings/update-user`, // 유저 정보 수정
   userImageUpload: `/users/upload-photo`, // 유저 이미지 업로드
+  userGetMessage: `/messages/conversations`, // 유저 메세지 조회
+  userUpdateMessage: `/messages/update-seen`, // 유저 메세지 읽음 처리
+  userNotification: `/notifications`, // 유저 알림 조회
+  userUpdateNotification: `/notifications/seen`, // 유저 알림 읽음 처리
 })
