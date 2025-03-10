@@ -68,7 +68,7 @@ const authStore = useAuthStore()
 const router = useRouter();
 
 const goToMyPage = () => {
-  router.push('/mypage')
+  router.push('/myPage')
 }
 
 const isOpen = ref<'notification' | 'message' | null>(null);
