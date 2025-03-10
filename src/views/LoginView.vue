@@ -1,47 +1,47 @@
 <script lang="ts" setup>
-import { AUTH_CONFIG } from "@/config/authConfig";
-import router from "@/router";
-import { useAuthStore } from "@/stores/authStore";
-import { message } from "ant-design-vue";
-import { ref } from "vue";
+import { AUTH_CONFIG } from '@/config/authConfig'
+import router from '@/router'
+import { useAuthStore } from '@/stores/authStore'
+import { message } from 'ant-design-vue'
+import { ref } from 'vue'
 
-const authStore = useAuthStore();
+const authStore = useAuthStore()
 
-const address = ref<string>("");
-const domain = ref<string>("@naver.com");
-const password = ref<string>("");
+const address = ref<string>('');
+const domain = ref<string>('@naver.com');
+const password = ref<string>('');
 
 const validateForm = () => {
   if (!address.value) {
-    message.error("이메일을 입력해주세요.");
-    return false;
+    message.error('이메일을 입력해주세요.')
+    return false
   }
   if (!password.value) {
-    message.error("비밀번호를 입력해주세요.");
-    return false;
+    message.error('비밀번호를 입력해주세요.')
+    return false
   }
   return true;
 };
 
 const handleLogin = async () => {
-  if (!validateForm()) return;
+  if (!validateForm()) return
 
   const success = await authStore.login(address.value + domain.value, password.value);
 
   if (success) {
-    router.push("/"); // 로그인 성공 시 이동
+    router.push('/') // 로그인 성공 시 이동
   }
-};
+}
 
-const handleKakaoLogin = (provider: "KAKAO" | "NAVER" | "GOOGLE") => {
+const handleKakaoLogin = (provider: 'KAKAO' | 'NAVER' | 'GOOGLE') => {
   const config = AUTH_CONFIG[provider];
-  const authUrl = `${config.AUTH_URL}?client_id=${config.CLIENT_ID}&redirect_uri=${config.REDIRECT_URI}&response_type=code`;
+  const authUrl = `${config.AUTH_URL}?client_id=${config.CLIENT_ID}&redirect_uri=${config.REDIRECT_URI}&response_type=code`
   window.location.href = authUrl;
 };
 
-const handleSocialLogin = (provider: "NAVER" | "GOOGLE") => {
+const handleSocialLogin = (provider: 'NAVER' | 'GOOGLE') => {
   const config = AUTH_CONFIG[provider];
-  const authUrl = `${config.AUTH_URL}?client_id=${config.CLIENT_ID}&redirect_uri=${config.REDIRECT_URI}&response_type=code&scope=${encodeURIComponent(config.SCOPE)}`;
+  const authUrl = `${config.AUTH_URL}?client_id=${config.CLIENT_ID}&redirect_uri=${config.REDIRECT_URI}&response_type=code&scope=${encodeURIComponent(config.SCOPE)}`
   window.location.href = authUrl;
 };
 </script>
@@ -80,7 +80,13 @@ const handleSocialLogin = (provider: "NAVER" | "GOOGLE") => {
 
         <div class="text">또는</div>
 
-        <svg xmlns="http://www.w3.org/2000/svg" width="2" height="96" viewBox="0 0 2 96" fill="none">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="2"
+          height="96"
+          viewBox="0 0 2 96"
+          fill="none"
+        >
           <path d="M1.0957 0L1.0957 96" stroke="#595959" stroke-opacity="0.5" />
         </svg>
       </div>
