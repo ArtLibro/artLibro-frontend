@@ -25,7 +25,7 @@ const latestMainPosts = computed(() =>
     id: post.id,
     title: post.title,
     image: post.image || '',
-    date: new Date(post.createdAt).toLocaleDateString(), // 날짜 변환
+    date: new Date(post.createdAt).toLocaleString(), // 날짜 변환
     authorName: post.authorName,
     comment: 0, // 기본값 설정 -> 수정할 예정
     likes: 0, // 기본값 설정 -> 수정할 예정
@@ -54,8 +54,8 @@ const filteredReviews = computed(() =>
   activeKey.value === '1'
     ? posts.value
     : posts.value.filter(
-      (post) => post.category === (activeKey.value === '2' ? '도서' : '공연/행사'),
-    ),
+        (post) => post.category === (activeKey.value === '2' ? '도서' : '공연/행사'),
+      ),
 )
 
 // 페이지네이션 관련 설정
@@ -103,16 +103,28 @@ onMounted(loadPosts)
 </script>
 
 <template>
-  <div class="community-main">
+  <div class="community-page">
     <div class="title-wrapper">
       <img class="title-icon" src="/icons/title-point.svg" />
       <h2 class="title">커뮤니티</h2>
     </div>
 
-    <div class="post-grid">
-      <CommunityMainCard v-for="(post, index) in latestMainPosts" :key="index" :post="post"
-        @click="goToDetailPage(post.id)" />
+    <div v-if="latestMainPosts.length > 0" class="post-grid">
+      <CommunityMainCard
+        v-for="(post, index) in latestMainPosts"
+        :key="index"
+        :post="post"
+        @click="goToDetailPage(post.id)"
+      />
     </div>
+    <div v-else class="empty-message-main">
+      <img src="/icons/best-comment.svg" alt="arrow-right" />
+      <p>베스트 글이 없습니다.</p>
+    </div>
+    <div class="divider"></div>
+
+    <!-- 페이지네이션 스크롤 이동을 위한 컨테이너 -->
+    <div class="pagination-scroll"></div>
 
     <div class="review-header">
       <div class="review-tabs">
@@ -121,67 +133,102 @@ onMounted(loadPosts)
       <button v-if="isLoggedIn" class="new-post-button" @click="goToWritePage">리뷰 작성</button>
     </div>
 
-    <div class="review-container">
+    <div v-if="paginatedReviews.length > 0" class="review-container">
       <div class="review-list">
-        <CommunityReviewCard v-for="(review, index) in paginatedReviews" :key="index" :review="review"
-          @click="goToDetailPage(review.id)" />
+        <CommunityReviewCard
+          v-for="(review, index) in paginatedReviews"
+          :key="index"
+          :review="review"
+          @click="goToDetailPage(review.id)"
+        />
       </div>
+    </div>
+    <div v-else class="empty-message-review">
+      <p>🔎 첫 리뷰를 남겨보세요!</p>
     </div>
 
     <div class="pagination-wrapper">
-      <Pagination v-model:current="currentPage" :total="filteredReviews.length" :page-size="reviewsPerPage" />
+      <Pagination
+        v-model:current="currentPage"
+        :total="filteredReviews.length"
+        :page-size="reviewsPerPage"
+      />
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.community-main {
+.community-page {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
   max-width: 1246px;
-  margin: 0 auto;
+  min-height: 80vh;
 }
 
 .title-wrapper {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 20px;
   margin-top: 30px;
 }
 
 .title-icon {
   width: 40px;
   height: auto;
+  margin-left: 10px;
 }
 
 .title {
   font-size: 24px;
   font-weight: bold;
-  position: relative;
-  top: 20px;
+  margin-top: 30px;
 }
 
 .post-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 30px;
-  margin-top: 60px;
+  margin-top: 40px;
   justify-content: center;
+  align-items: start;
+  width: 100%;
+  max-width: 1050px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.divider {
+  width: 100%;
+  height: 0.7px;
+  background-color: #d9d9d9;
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+.pagination-scroll {
+  height: 10px;
 }
 
 .review-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1170px;
-  margin: 60px auto 20px;
+  width: 100%;
 }
 
 .review-container {
-  max-width: 1170px;
-  margin: 20px auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 240px;
 }
 
 .review-tabs {
   flex-shrink: 0;
+  margin-left: 20px;
 }
 
 .review-list {
@@ -194,11 +241,10 @@ onMounted(loadPosts)
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 30px;
   margin-bottom: 50px;
-  max-width: 1170px;
-  margin-left: auto;
-  margin-right: auto;
-  position: relative;
+  width: 100%;
+  min-height: 50px;
 }
 
 .new-post-button {
@@ -221,6 +267,36 @@ onMounted(loadPosts)
 
   &:active {
     transform: scale(0.98);
+  }
+}
+
+.empty-message-main {
+  text-align: center;
+  color: $text-color-500;
+  font-size: 21px;
+  font-weight: bold;
+  margin: 100px 0;
+  align-self: center;
+
+  img {
+    display: block;
+    margin: 0 auto;
+    transform: translateX(-20px);
+    margin-bottom: 10px;
+  }
+}
+
+.empty-message-review {
+  min-height: 400px;
+  text-align: center;
+  color: $text-color-500;
+  font-size: 21px;
+  font-weight: bold;
+  margin: auto;
+  align-self: center;
+
+  p {
+    margin-top: 180px;
   }
 }
 </style>

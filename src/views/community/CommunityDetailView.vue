@@ -50,6 +50,7 @@ onMounted(loadPostDetail)
 
 <style lang="scss" scoped>
 .page-container {
+  width: 100%;
   max-width: 1246px;
   margin: 0 auto;
   position: relative;

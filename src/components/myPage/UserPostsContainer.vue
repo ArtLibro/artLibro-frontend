@@ -10,6 +10,7 @@
           </div>
           <p>{{ post.content }}</p>
         </div>
+        <NotFound v-if="parsedPosts.length === 0" title="작성한 게시글이 없습니다." />
       </div>
       <div class="user-posts-more" v-if="postCount > 4">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -28,6 +29,7 @@
 import type { Post } from '@/types/community/communityType';
 import { usePostParser } from '@/utils/usePostParser';
 import { computed } from 'vue';
+import NotFound from '../common/NotFound.vue';
 
 const props = defineProps<{
   postData: Post[]
