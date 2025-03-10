@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { AwardCardProps } from '@/types/peformance.types.ts'
+import router from '@/router'
 interface AwardCardPropsWithIndex extends AwardCardProps {
   index: number
 }
@@ -7,7 +8,7 @@ defineProps<AwardCardPropsWithIndex>()
 </script>
 
 <template>
-  <div class="active-layout">
+  <div class="active-layout" @click="() => router.push({ name: 'performance-detail', params: { id : mt20id } })">
     <img :src="poster" height="323" width="240" alt="performance-image" class="image"/>
     <div class="performance-info">
       <div class="rank" :class="{ 'primary': index === 0 || index === 1, 'gray': index > 1 }">
@@ -27,6 +28,7 @@ defineProps<AwardCardPropsWithIndex>()
 .active-layout {
   display: flex;
   width: 450px;
+  cursor: pointer;
 }
 
 .performance-info {
