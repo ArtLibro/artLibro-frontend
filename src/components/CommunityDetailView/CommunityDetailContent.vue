@@ -8,10 +8,12 @@ import dayjs from 'dayjs'
 import { computed, onMounted } from 'vue'
 import CommunityUserDropdown from '../CommunityView/CommunityUserDropdown.vue'
 import { message, Modal } from 'ant-design-vue'
+import { useQueryClient } from '@tanstack/vue-query'
 
 const props = defineProps<{ post: Post }>()
 const authStore = useAuthStore()
 const likesStore = useLikesStore() // 좋아요 스토어
+const queryClient = useQueryClient()
 
 // 현재 로그인한 사용자 ID 가져오기
 const userId = computed(() => authStore.userId)
@@ -76,14 +78,16 @@ const handleDelete = () => {
 
       message.success({
         content: '게시글이 삭제되었습니다!',
-        duration: 4, // 4초 동안 표시
+        duration: 1, // 1초 동안 표시
         style: {
           fontSize: '15px',
           fontWeight: 'bold',
         },
       })
+      queryClient.refetchQueries({ queryKey: ['userInfo', userId] })
 
       router.push('/community')
+
     },
   })
 }
@@ -136,12 +140,7 @@ const goBack = () => {
       </div>
 
       <div class="book-image">
-        <img
-          :src="bookImage"
-          alt="게시글 이미지"
-          class="post-image"
-          :class="{ 'default-image': isDefaultImage }"
-        />
+        <img :src="bookImage" alt="게시글 이미지" class="post-image" :class="{ 'default-image': isDefaultImage }" />
       </div>
 
       <div class="review-container">
@@ -243,6 +242,7 @@ const goBack = () => {
   gap: 10px;
   align-items: center;
 }
+
 .profile-image {
   width: 28px;
   height: 28px;
@@ -339,7 +339,8 @@ const goBack = () => {
 .default-image {
   background-color: white;
   padding: 90px 40px;
-  box-sizing: border-box; /* 패딩이 내부에 포함되도록 설정 */
+  box-sizing: border-box;
+  /* 패딩이 내부에 포함되도록 설정 */
   object-fit: contain;
   width: 100%;
   height: auto;

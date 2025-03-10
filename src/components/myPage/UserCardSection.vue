@@ -28,8 +28,6 @@ const { userInfo } = defineProps<{
   userInfo: UserType | undefined
 }>()
 
-console.log(userInfo)
-
 </script>
 
 <style lang="scss" scoped>

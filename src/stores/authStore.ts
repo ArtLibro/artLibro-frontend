@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { message } from 'ant-design-vue'
 import axiosApi from '@/config/axiosConfig'
+import { useAuthTokenStore } from './auth'
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref<string | null>(localStorage.getItem('accessToken')) // 새로고침해도 유지
@@ -18,9 +19,12 @@ export const useAuthStore = defineStore('auth', () => {
         userId.value = response.data.user._id
         fullName.value = response.data.user.fullName
 
-        localStorage.setItem('accessToken', token.value) // localStorage에 저장
-        localStorage.setItem('userId', userId.value) // localStorage에 저장
-        localStorage.setItem('fullName', fullName.value) // localStorage에 저장
+        localStorage.setItem('accessToken', token.value as string) // localStorage에 저장
+        localStorage.setItem('userId', userId.value as string) // localStorage에 저장
+        localStorage.setItem('fullName', fullName.value as string) // localStorage에 저장
+
+        const authTokenStore = useAuthTokenStore()
+        authTokenStore.setToken(token.value as string)
 
         message.success(`${fullName.value}님, 로그인 성공!`)
         return true
