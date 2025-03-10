@@ -53,7 +53,7 @@ defineProps<LibraryInfoProps>()
 .info {
   display: grid;
   color : #FFFFFF;
-  font-size: 18px;
+  font-size: 16px;
   gap : 8px;
   margin-bottom : 12px;
 }

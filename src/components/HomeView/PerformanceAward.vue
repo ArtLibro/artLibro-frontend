@@ -38,24 +38,26 @@ onMounted(async () => {
         <img src="/icons/arrow-left.svg" height="15" width="15" alt="arrow-left" />
       </button>
       <div class="award">
-        <div v-for="(item, index) in awardPerformances" :key="index">
-          <AwardCardActive
-            v-show="index === currentIndex"
-            :index="index"
-            :prfnm="item.prfnm"
-            :poster="item.poster"
-            :mt20id="item.mt20id"
-            :fcltynm="item.fcltynm"
-          />
-          <AwardCardDefault
-            v-show="index !== currentIndex"
-            :index="index"
-            :prfnm="item.prfnm"
-            :poster="item.poster"
-            :mt20id="item.mt20id"
-            :fcltynm="item.fcltynm"
-          />
-        </div>
+        <transition-group name="slide" tag="div" class="award-card-group">
+          <div v-for="(item, index) in awardPerformances" :key="index" class="award-card">
+            <AwardCardActive
+              v-show="index === currentIndex"
+              :index="index"
+              :prfnm="item.prfnm"
+              :poster="item.poster"
+              :mt20id="item.mt20id"
+              :fcltynm="item.fcltynm"
+            />
+            <AwardCardDefault
+              v-show="index !== currentIndex"
+              :index="index"
+              :prfnm="item.prfnm"
+              :poster="item.poster"
+              :mt20id="item.mt20id"
+              :fcltynm="item.fcltynm"
+            />
+          </div>
+        </transition-group>
       </div>
       <button @click="handleRight" class="button">
         <img src="/icons/arrow-right.svg" height="15" width="15" alt="arrow-right" />
@@ -69,6 +71,7 @@ onMounted(async () => {
   width: 1246px;
   height: 352px;
   margin-top: 50px;
+  margin-bottom: 80px;
 }
 
 .title {
@@ -103,5 +106,31 @@ onMounted(async () => {
   border: 1px solid $text-color-200;
   background-color: transparent;
   cursor: pointer;
+}
+
+.award-card-group {
+  display: flex;
+  gap: 20px;
+  transition: all 0.3s ease;
+  align-items: flex-end;
+}
+
+.award-card {
+  flex-shrink: 0;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.fade-slide-enter-active, .fade-slide-leave-active {
+  transition: all 0.3s ease;
+}
+
+.fade-slide-enter-from {
+  opacity: 0;
+  transform: translateX(10px);
+}
+
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateX(-10px);
 }
 </style>
