@@ -1,19 +1,24 @@
 <script setup lang="ts">
-import { deletePost } from '@/apis/community/post'
+import { deletePost, postLike, postUnlike } from '@/apis/community/post'
 import router from '@/router'
 import { useAuthStore } from '@/stores/authStore'
 import { useLikesStore } from '@/stores/likesStore'
 import type { Post } from '@/types/community/communityType'
 import dayjs from 'dayjs'
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import CommunityUserDropdown from '../CommunityView/CommunityUserDropdown.vue'
 import { message, Modal } from 'ant-design-vue'
 import { useQueryClient } from '@tanstack/vue-query'
 
-const props = defineProps<{ post: Post }>()
+const props = defineProps<{
+  post: Post // liked 속성 추가
+}>()
+
 const authStore = useAuthStore()
 const likesStore = useLikesStore() // 좋아요 스토어
 const queryClient = useQueryClient()
+const isLiked = ref<boolean>(false)
+const likedId = ref<string>('')
 
 // 현재 로그인한 사용자 ID 가져오기
 const userId = computed(() => authStore.userId)
@@ -34,36 +39,39 @@ const formattedDate = computed(() =>
 // 로그인한 사용자에 맞는 좋아요 리스트 불러오기
 onMounted(() => {
   likesStore.setUser(userId.value) // 로그인한 사용자 설정해서 userId별 좋아요 목록 불러오기
+  isLiked.value = authStore.userInfo?.likes?.some(like => like.post === props.post.id) ?? false
+  likedId.value = authStore.userInfo?.likes?.find(like => like.post === props.post.id)?._id ?? ''
+  console.log(authStore.userInfo?.likes?.find(like => like.post === props.post.id)?._id)
 })
 
-const isLiked = computed(() => likesStore.likedPosts.includes(props.post.id))
+// const isLiked = computed(() => likesStore.likedPosts.includes(props.post.id))
 
-// 좋아요 버튼
-const toggleLike = () => {
-  if (!userId.value) {
-    Modal.warning({
-      title: '로그인 필요',
-      content: '좋아요 기능을 이용하려면 로그인이 필요합니다.',
-      okText: '로그인하기',
-      okButtonProps: {
-        // style 타입 에러 -> SCSS에서 따로 스타일 줘도 에러남...
-        style: {
-          backgroundColor: '#6472fc', // 버튼 색깔
-          color: '#fff',
-          fontWeight: 'bold',
-          borderRadius: '8px',
-        },
-      },
-      onOk() {
-        router.push('/login')
-      },
-    })
-    return
-  }
+// // 좋아요 버튼
+// const toggleLike = () => {
+//   if (!userId.value) {
+//     Modal.warning({
+//       title: '로그인 필요',
+//       content: '좋아요 기능을 이용하려면 로그인이 필요합니다.',
+//       okText: '로그인하기',
+//       okButtonProps: {
+//         // style 타입 에러 -> SCSS에서 따로 스타일 줘도 에러남...
+//         style: {
+//           backgroundColor: '#6472fc', // 버튼 색깔
+//           color: '#fff',
+//           fontWeight: 'bold',
+//           borderRadius: '8px',
+//         },
+//       },
+//       onOk() {
+//         router.push('/login')
+//       },
+//     })
+//     return
+//   }
 
-  likesStore.toggleLike(props.post.id)
-  console.log('테스트)))))))))) 좋아요 변경됨 →', likesStore.likedPosts)
-}
+//   likesStore.toggleLike(props.post.id)
+//   console.log('테스트)))))))))) 좋아요 변경됨 →', likesStore.likedPosts)
+// }
 
 // 게시글 삭제
 const handleDelete = () => {
@@ -109,6 +117,36 @@ const goToEditPage = () => {
 const goBack = () => {
   router.push('/community')
 }
+
+const handleLike = async () => {
+  if (!userId.value) {
+    Modal.warning({
+      title: '로그인 필요',
+      content: '좋아요 기능을 이용하려면 로그인이 필요합니다.',
+    })
+    return
+  }
+
+  try {
+    const response = await postLike(props.post.id)
+    isLiked.value = !isLiked.value
+    likedId.value = response._id
+  } catch (error) {
+    console.error('❌ 게시글 좋아요 실패:', error)
+    throw error
+  }
+}
+
+const handleUnLike = async () => {
+  console.log(likedId.value)
+  try {
+    await postUnlike(likedId.value)
+    isLiked.value = !isLiked.value
+  } catch (error) {
+    console.error('❌ 게시글 좋아요 취소 실패:', error)
+    throw error
+  }
+}
 </script>
 
 <template>
@@ -117,9 +155,9 @@ const goBack = () => {
       <img src="/icons/go-back.svg" alt="뒤로가기 버튼" />
     </button>
     <div class="content-box">
-      <div class="like-button" @click="toggleLike">
-        <img v-if="isLiked" src="/icons/heart-purple-fill.svg" alt="좋아요" />
-        <img v-else src="/icons/heart-purple.svg" alt="좋아요" />
+      <div class="like-button">
+        <img v-if="isLiked" src="/icons/heart-purple-fill.svg" alt="좋아요 취소 버튼" @click="handleUnLike" />
+        <img v-else src="/icons/heart-purple.svg" alt="좋아요 버튼" @click="handleLike" />
       </div>
 
       <div class="title-category-wrapper">

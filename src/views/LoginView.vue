@@ -28,9 +28,10 @@ const validateForm = () => {
 const handleLogin = async () => {
   if (!validateForm()) return;
 
-  const success  = await authStore.login(address.value + domain.value, password.value);
+  const success = await authStore.login(address.value + domain.value, password.value);
 
   if (success) {
+    await authStore.getUserInfo()
     router.push("/"); // 로그인 성공 시 이동
   }
 };
@@ -41,7 +42,7 @@ const handleKakaoLogin = (provider: "KAKAO" | "NAVER" | "GOOGLE") => {
   window.location.href = authUrl;
 };
 
-const handleSocialLogin = (provider:  "NAVER" | "GOOGLE") => {
+const handleSocialLogin = (provider: "NAVER" | "GOOGLE") => {
   const config = AUTH_CONFIG[provider];
   const authUrl = `${config.AUTH_URL}?client_id=${config.CLIENT_ID}&redirect_uri=${config.REDIRECT_URI}&response_type=code&scope=${encodeURIComponent(config.SCOPE)}`;
   window.location.href = authUrl;
@@ -72,7 +73,7 @@ const handleSocialLogin = (provider:  "NAVER" | "GOOGLE") => {
         <a-input-password v-model:value="password" placeholder="비밀번호를 입력해주세요" />
         <div class="small-text"> 영문 대·소문자/숫자.특수문자 중 2가지 이상 조합, 8~16글자 </div>
 
-        <a-button type="primary" class="button" @click="handleLogin" >로그인</a-button>
+        <a-button type="primary" class="button" @click="handleLogin">로그인</a-button>
 
       </div>
 
@@ -89,9 +90,9 @@ const handleSocialLogin = (provider:  "NAVER" | "GOOGLE") => {
       </div>
 
       <div class="social-signup">
-        <img src="/icons/SignUp/kakao.svg" @click="() => handleKakaoLogin('KAKAO')"/> <br>
-        <img style="margin-top: 11px;" src=" /icons/SignUp/naver.svg" @click="() => handleSocialLogin('NAVER')"/> <br>
-        <img style="margin-top: 11px;" src="/icons/SignUp/google.svg" @click="() => handleSocialLogin('GOOGLE')"/>
+        <img src="/icons/SignUp/kakao.svg" @click="() => handleKakaoLogin('KAKAO')" /> <br>
+        <img style="margin-top: 11px;" src=" /icons/SignUp/naver.svg" @click="() => handleSocialLogin('NAVER')" /> <br>
+        <img style="margin-top: 11px;" src="/icons/SignUp/google.svg" @click="() => handleSocialLogin('GOOGLE')" />
       </div>
 
     </div>
@@ -137,12 +138,13 @@ const handleSocialLogin = (provider:  "NAVER" | "GOOGLE") => {
   width: 100px;
   margin-left: 220px;
   margin-top: 20px;
-   background-color: #6472fc;
+  background-color: #6472fc;
 }
 
 .text {
   color: rgba(25, 25, 25, 0.50);
-  font-size: 14px; font-style: normal;
+  font-size: 14px;
+  font-style: normal;
   margin-left: -10px;
 }
 

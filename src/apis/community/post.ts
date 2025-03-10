@@ -1,6 +1,7 @@
 import type { NewPost, Post } from '@/types/community/communityType'
 import { useAuthStore } from '@/stores/authStore'
 import axiosApi from '@/config/axiosConfig'
+import { POST_ENDPOINT } from '../endpoint'
 
 // 채널 아이디
 const CHANNEL_ID = '67c5950406e63d3cffd3bb41'
@@ -15,6 +16,8 @@ interface ApiPostResponse {
     _id: string
     fullName: string
   }
+  comments: string[]
+  likes: string[]
 }
 
 // 현재 로그인된 사용자 정보 가져오기 (전역에서 호출하면 안됨?)
@@ -49,6 +52,8 @@ export const fetchPosts = async (): Promise<Post[]> => {
           title = parsedData.title ?? post.title
           content = parsedData.content ?? ''
         }
+
+        console.log(response.data)
       } catch (error) {
         console.warn('⛔️ JSON 파싱 실패, 일반 문자열로 처리:', error)
       }
@@ -62,6 +67,8 @@ export const fetchPosts = async (): Promise<Post[]> => {
         createdAt: post.createdAt || '',
         userId: post.author?._id ?? '익명 아이디',
         authorName: post.author?.fullName ?? '익명 사용자',
+        comments: post.comments,
+        likes: post.likes,
       }
     })
   } catch (error) {
@@ -199,38 +206,21 @@ export const deleteComment = async (commentId: string, token: string) => {
   }
 }
 
-// // 게시글 좋아요
-// export const likePost = async (postId: string) => {
-//   try {
-//     const authStore = useAuthStore()
-//     const token = authStore.token
-//     if (!token) throw new Error('로그인이 필요합니다.')
+export const postLike = async (postId: string) => {
+  try {
+    const response = await axiosApi.post(POST_ENDPOINT.postLike, { postId })
+    return response.data
+  } catch (error) {
+    console.error('❌ 게시글 좋아요 실패:', error)
+    throw error
+  }
+}
 
-//     const response = await axiosApi.post(
-//       '/likes/create',
-//       { postId },
-//       { headers: { Authorization: `Bearer ${token}` } },
-//     )
-//     return response.data // 서버에서 받은 좋아요 ID 반환
-//   } catch (error) {
-//     console.error('❌ 좋아요 추가 실패:', error)
-//     throw error
-//   }
-// }
-
-// // 게시글 좋아요 취소
-// export const unlikePost = async (likeId: string) => {
-//   try {
-//     const authStore = useAuthStore()
-//     const token = authStore.token
-//     if (!token) throw new Error('로그인이 필요합니다.')
-
-//     await axiosApi.delete('/likes/delete', {
-//       headers: { Authorization: `Bearer ${token}` },
-//       data: { id: likeId }, // 좋아요 ID 전달
-//     })
-//   } catch (error) {
-//     console.error('❌ 좋아요 취소 실패:', error)
-//     throw error
-//   }
-// }
+export const postUnlike = async (id: string) => {
+  try {
+    await axiosApi.delete(POST_ENDPOINT.postUnLike, { data: { id } })
+  } catch (error) {
+    console.error('❌ 게시글 좋아요 취소 실패:', error)
+    throw error
+  }
+}

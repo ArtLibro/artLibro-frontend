@@ -10,7 +10,7 @@
 
     <div class="user-card-section-right user-card">
       <div class="user-card-container">
-        <UserLikedContainer />
+        <UserLikedContainer v-if="userInfo" :likedPosts="userInfo?.likes" />
         <UserPostsContainer v-if="userInfo" :postData="userInfo?.posts" />
       </div>
     </div>
