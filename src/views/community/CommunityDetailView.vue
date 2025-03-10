@@ -14,7 +14,14 @@ const posts = ref<Post[]>([]) // 전체 게시글 저장
 // 특정 게시글 데이터 불러오기
 const loadPostDetail = async () => {
   posts.value = await fetchPosts()
-  post.value = posts.value.find((p) => p.id === route.params.id) || null
+  const foundPost = posts.value.find((p) => p.id === route.params.id) || null
+
+  // 찾은 게시글에 liked 상태 추가
+  if (foundPost) {
+    post.value = {
+      ...foundPost
+    }
+  }
 }
 
 // params.id가 변경될 때마다 다시 불러오기
@@ -101,7 +108,8 @@ onMounted(loadPostDetail)
 /* 댓글 섹션 */
 .comments-container {
   flex-grow: 1;
-  max-width: calc(100% - 220px); /* 사이드바 공간을 제외한 나머지 공간 */
+  max-width: calc(100% - 220px);
+  /* 사이드바 공간을 제외한 나머지 공간 */
 }
 
 /* 다음 게시글 섹션 */

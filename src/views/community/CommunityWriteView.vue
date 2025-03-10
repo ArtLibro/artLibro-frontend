@@ -4,11 +4,9 @@ import CommunityWriteForm from '@/components/CommunityWriteView/CommunityWriteFo
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-
 // 게시글 작성 후 커뮤니티 메인페이지로 이동
 const handlePostCreated = async () => {
   await fetchPosts() // 게시글 목록 새로 불러오기
-
   router.replace({ path: '/community' })
 }
 </script>

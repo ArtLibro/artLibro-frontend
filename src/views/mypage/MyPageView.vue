@@ -18,7 +18,6 @@ const { data, isLoading } = useQuery({
   queryFn: () => getUserInfo(userId as string),
 })
 
-
 </script>
 
 <style lang="scss" scoped>

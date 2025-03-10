@@ -5,13 +5,13 @@ import { message, type UploadProps } from 'ant-design-vue'
 import type { NewPost, Post } from '@/types/community/communityType'
 import { createPost, fetchPosts } from '@/apis/community/post'
 import { useAuthStore } from '@/stores/authStore'
-
+import { useQueryClient } from '@tanstack/vue-query'
 const authStore = useAuthStore()
 const userId = authStore.userId
 
 const props = defineProps<{ existingPost?: Post }>()
 const emit = defineEmits(['postCreated', 'postUpdated'])
-
+const queryClient = useQueryClient()
 const categories = ['도서', '공연/행사']
 const selectedCategory = ref(props.existingPost?.category || '도서')
 const title = ref(props.existingPost?.title || '')
@@ -100,9 +100,11 @@ const handleSubmit = async () => {
 
   await fetchPosts()
 
+  queryClient.refetchQueries({ queryKey: ['userInfo', userId] })
+
   message.success({
     content: props.existingPost ? '게시글이 수정되었습니다!' : '게시글이 등록되었습니다!',
-    duration: 4, // 4초 동안 표시
+    duration: 1, // 4초 동안 표시
     style: {
       fontSize: '15px',
       fontWeight: 'bold',
@@ -126,34 +128,20 @@ const handleSubmit = async () => {
         </a-form-item>
 
         <a-form-item label="제목">
-          <a-input
-            v-model:value="title"
-            placeholder="제목을 입력해 주세요"
-            @input="handleTitleInput"
-            @paste="handleTitlePaste"
-          />
+          <a-input v-model:value="title" placeholder="제목을 입력해 주세요" @input="handleTitleInput"
+            @paste="handleTitlePaste" />
           <div class="char-count">{{ title.length }} / {{ TITLE_MAX_LENGTH }}</div>
         </a-form-item>
 
         <a-form-item label="내용">
-          <a-textarea
-            v-model:value="content"
-            placeholder="내용을 입력해 주세요"
-            :rows="10"
-            @input="handleContentInput"
-            @paste="handleContentPaste"
-          />
+          <a-textarea v-model:value="content" placeholder="내용을 입력해 주세요" :rows="10" @input="handleContentInput"
+            @paste="handleContentPaste" />
           <div class="char-count">{{ content.length }} / {{ CONTENT_MAX_LENGTH }}</div>
         </a-form-item>
 
         <a-form-item label="사진 업로드 (선택)">
-          <a-upload
-            v-model:file-list="fileList"
-            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-            list-type="picture"
-            :before-upload="() => false"
-            @change="handleFileChange"
-          >
+          <a-upload v-model:file-list="fileList" action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+            list-type="picture" :before-upload="() => false" @change="handleFileChange">
             <a-button>
               <upload-outlined />
               파일 선택
