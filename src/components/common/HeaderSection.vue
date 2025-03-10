@@ -26,14 +26,14 @@
         <div class="notification-container">
 
           <div class="icon-container">
-            <span>5</span>
+            <span v-if="notificationList">{{ notificationList.length }}</span>
             <img src="/icons/notification-icon.svg" alt="notification" class="notification-icon icon"
               @click="handleClickIcon('notification')" />
             <NotificationContainer :isOpen="isOpen === 'notification'" />
           </div>
 
           <div class="icon-container">
-            <span>4</span>
+            <span v-if="messageList">{{ messageList.length }}</span>
             <img src="/icons/message-icon.svg" alt="message" class="message-icon icon"
               @click="handleClickIcon('message')" />
             <MessageContainer :isOpen="isOpen === 'message'" />
@@ -83,7 +83,7 @@ const { data: messageList } = useQuery({
   queryFn: () => getUserMessage(),
 })
 
-console.log(messageList.value)
+console.log(messageList.value?.length)
 
 // 유저 알림 조회
 const { data: notificationList } = useQuery({
