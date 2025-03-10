@@ -13,14 +13,12 @@ import { useRoute } from 'vue-router'
 const route = useRoute()
 
 const selectedColor = ref<string>('indigo')
-const prfplaceId = ref<string>('')
 const prfPlaceArray = ref<PrfPlaceInfo>()
 const contentHeight = ref(1000)
-const isEnd = ref(false)
-const additionalContent = ref(3)
+
 const startDate = ref(null)
 const endtDate = ref(null)
-
+const imageRefs = ref([])
 const prfdetail = ref()
 const awardPerformances = ref([])
 const recommendPerformance = ref([])
@@ -38,13 +36,11 @@ const genres = [
 ]
 
 const loadMoreContent = () => {
-  if (additionalContent.value > 0) {
-    contentHeight.value += 1000
-    additionalContent.value--
-  } else {
-    contentHeight.value += 1000
-    isEnd.value = true
-  }
+  let totalHeight = 0
+  imageRefs.value.forEach((img) => {
+    totalHeight += img.offsetHeight
+  })
+  contentHeight.value = totalHeight
 }
 
 onMounted(async () => {
@@ -71,7 +67,7 @@ onMounted(async () => {
       // 장르에 맞는 data3 가져오기
       const genreForPerformance = genres.find((item) => item.genre === prfdetail.value?.genrenm)
       if (genreForPerformance) {
-        const data3 = await getPerformances({ shcate : genreForPerformance.code, cpage : 1, rows : 8})
+        const data3 = await getPerformances({ shcate: genreForPerformance.code, cpage: 1, rows: 8 })
         recommendPerformance.value = data3?.dbs.db
       } else {
         console.error('장르에 맞는 추천 공연을 찾을 수 없습니다.')
@@ -123,7 +119,7 @@ const onTabChange = (key) => {
         :poster="prfdetail?.poster"
         :relates="prfdetail?.relates"
       />
-      <div class="calendar-container" @click="abc">
+      <div class="calendar-container">
         <div class="calendar">
           <DatePicker
             v-model="dateRange"
@@ -142,22 +138,14 @@ const onTabChange = (key) => {
         <div class="poster-detail-container">
           <div :style="{ height: contentHeight + 'px' }" class="content" ref="content">
             <div v-if="Array.isArray(prfdetail?.styurls?.styurl)" class="poster-description">
-              <div v-for="(item, index) in prfdetail?.styurls?.styurl" :key="index">
+              <div v-for="(item, index) in prfdetail?.styurls?.styurl" :key="index" ref="imageRefs">
                 <img :src="item" alt="포스터 설명" />
               </div>
             </div>
-            <div v-else>
-              <div>
-                <img
-                  :src="prfdetail?.styurls?.styurl"
-                  alt="포스터 설명"
-                  class="poster-description"
-                />
-              </div>
-            </div>
           </div>
-
-          <button class="show-more" v-if="!isEnd" @click="loadMoreContent">펼쳐보기</button>
+          <button class="show-more" v-if="contentHeight === 1000" @click="loadMoreContent">
+            더보기
+          </button>
         </div>
       </a-tab-pane>
       <a-tab-pane key="2" tab="공연장 상세 정보" class="performanceTab">
@@ -195,7 +183,6 @@ const onTabChange = (key) => {
                   :poster="item.poster"
                 />
               </template>
-
               <template v-else>
                 <div class="non-award">
                   <div class="non-award-emoji">😭</div>
