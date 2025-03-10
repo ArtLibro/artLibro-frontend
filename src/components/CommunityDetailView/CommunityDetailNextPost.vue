@@ -151,6 +151,7 @@ const goToDetail = (postId: string, isEmpty?: boolean) => {
   justify-content: center;
   cursor: pointer;
   transition: transform 0.2s ease-in-out;
+  background-color: #f7f7f7;
 
   &:hover {
     transform: scale(1.05);

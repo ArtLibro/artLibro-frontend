@@ -9,6 +9,7 @@ import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import 'dayjs/locale/ko' // 한국어 로케일 추가
 import router from '@/router'
+import { Modal } from 'ant-design-vue'
 
 dayjs.extend(relativeTime)
 dayjs.extend(utc) // UTC 플러그인 추가
@@ -53,8 +54,23 @@ setInterval(() => {
 const handleSubmit = async () => {
   if (!value.value.trim()) return
   if (!userId.value) {
-    alert('로그인이 필요합니다!')
-    router.push('/login')
+    Modal.warning({
+      title: '로그인 필요',
+      content: '댓글을 작성하려면 로그인이 필요합니다.',
+      okText: '로그인하기',
+      okButtonProps: {
+        // style 타입 에러 -> SCSS에서 따로 스타일 줘도 에러남...
+        style: {
+          backgroundColor: '#6472fc', // 버튼 색깔
+          color: '#fff',
+          fontWeight: 'bold',
+          borderRadius: '8px',
+        },
+      },
+      onOk() {
+        router.push('/login')
+      },
+    })
     return
   }
 
@@ -188,5 +204,17 @@ a-list-item {
 .comment-submit {
   display: flex;
   justify-content: flex-end;
+}
+
+/* 댓글 input창 */
+:deep(.ant-input) {
+  padding: 10px 12px !important;
+  font-size: 14px;
+}
+
+/* placeholder와 텍스트 사이 간격 조정 */
+:deep(.ant-input::placeholder) {
+  line-height: 1.8;
+  color: $text-color-200;
 }
 </style>
