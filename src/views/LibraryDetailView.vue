@@ -38,6 +38,7 @@ function insertDataToArray (books : PopularBookResponse[], array : Book[]) {
   for (let i = 0; i < books.length; i++) {
     array.push(books[i].book)
   }
+  console.log(array);
   return array;
 }
 
@@ -139,6 +140,7 @@ onMounted(async () => {
             :authors="book.authors"
             :title="book.bookname"
             :bookimage="book.bookImageURL"
+            :isbn13="book.isbn13"
             :key="book.isbn13"
           />
         </div>
@@ -290,6 +292,7 @@ onMounted(async () => {
   font-size: 36px;
   font-weight: bold;
   align-items: center;
+  margin-bottom: 20px;
   width: 450px;
   height: 43px;
 }

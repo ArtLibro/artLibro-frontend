@@ -24,7 +24,13 @@
       class="mySwiper"
     >
       <swiper-slide v-for="book in books" :key="book.isbn13">
-        <img :src="book.bookImageURL" width="80" height="150"/>
+        <img
+          :src="book.bookImageURL"
+          width="80"
+          height="150"
+          alt="book-image"
+          @error="(event) => event.target.src = '/images/no-image.png'"
+        />
       </swiper-slide>
     </swiper>
   </div>
