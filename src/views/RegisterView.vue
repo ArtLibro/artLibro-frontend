@@ -54,7 +54,7 @@ const handleSignUp = async () => {
   if (!validateForm()) return;
 
   try {
-      const response = await axiosApi.post("/signup", {
+    const response = await axiosApi.post("/signup", {
 
       email: address.value + domain.value,
       password: password1.value,
@@ -98,7 +98,7 @@ const handleSocialLogin = (provider: "NAVER" | "GOOGLE") => {
 
     <div style="display: flex; margin-top: 43px; margin-left: 212px;">
       <div class="input-group">
-        <div>이메일 입력</div>
+        <div class="input-text">이메일 입력</div>
 
         <a-input-group compact style="width: 332px;">
           <a-auto-complete class="input" v-model:value="address" placeholder="Email" />
@@ -171,7 +171,7 @@ const handleSocialLogin = (provider: "NAVER" | "GOOGLE") => {
   margin-top: -20px;
 
   .input-text {
-    margin-top: 13px
+    margin: 1rem 0 .5rem
   }
 
   .input {
@@ -186,7 +186,8 @@ const handleSocialLogin = (provider: "NAVER" | "GOOGLE") => {
     width: 332px;
     padding: 4px 11px;
     height: 38px;
-    font-size: 19px;
+    font-size: 16px;
+
   }
 
   .input-pass {
@@ -202,10 +203,14 @@ const handleSocialLogin = (provider: "NAVER" | "GOOGLE") => {
   height: 38px;
   font-size: 15px;
   padding: 4px 11px;
+
+  .ant-select-selection-search-input {
+    height: 100% !important;
+  }
 }
 
 ::v-deep .ant-select-selector .ant-select-selection-search-input {
-  padding: 11px 1px 4px 1px ;
+  padding: 11px 1px 4px 1px;
   padding: 11px;
 }
 

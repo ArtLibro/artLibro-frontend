@@ -3,8 +3,8 @@
     <h3>좋아요 활동</h3>
 
     <div class="like-contents">
-      <strong>{{ likedPosts.length }} Stars</strong>
-      <span>{{ likedPosts.length }} 개의 글에 {{ likedPosts.length }}개 좋아요를 남겼어요!</span>
+      <strong>{{ props.likedPosts.length }} Stars</strong>
+      <span>{{ props.likedPosts.length }} 개의 글에 {{ props.likedPosts.length }}개 좋아요를 남겼어요!</span>
     </div>
   </div>
 </template>
@@ -15,8 +15,6 @@ import type { UserLikedPostsType } from '@/types/user';
 const props = defineProps<{
   likedPosts: UserLikedPostsType[]
 }>()
-
-console.log(props.likedPosts)
 
 </script>
 

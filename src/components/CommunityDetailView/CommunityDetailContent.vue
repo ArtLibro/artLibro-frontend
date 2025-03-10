@@ -131,6 +131,7 @@ const handleLike = async () => {
     const response = await postLike(props.post.id)
     isLiked.value = !isLiked.value
     likedId.value = response._id
+    queryClient.refetchQueries({ queryKey: ['userInfo', userId] })
   } catch (error) {
     console.error('❌ 게시글 좋아요 실패:', error)
     throw error
@@ -142,6 +143,7 @@ const handleUnLike = async () => {
   try {
     await postUnlike(likedId.value)
     isLiked.value = !isLiked.value
+    queryClient.refetchQueries({ queryKey: ['userInfo', userId] })
   } catch (error) {
     console.error('❌ 게시글 좋아요 취소 실패:', error)
     throw error

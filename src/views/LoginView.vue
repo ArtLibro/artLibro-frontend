@@ -55,7 +55,7 @@ const handleSocialLogin = (provider: 'NAVER' | 'GOOGLE') => {
 
     <div style="display: flex; margin-top: 10px; margin-left: 212px;">
       <div class="input-group">
-        <div>이메일 입력</div>
+        <div class="input-text">이메일 입력</div>
 
         <a-input-group compact style="width: 332px;">
           <a-auto-complete class="input" v-model:value="address" placeholder="Email" />
@@ -115,12 +115,26 @@ const handleSocialLogin = (provider: 'NAVER' | 'GOOGLE') => {
   margin-top: 90px;
 
   .input-text {
-    margin-top: 13px;
+    margin: 1rem 0 .5rem
+  }
+
+  .input {
+    height: 100%;
   }
 
   ::v-deep .input {
     width: 191px !important;
-    height: 38px !important;
+    height: 100% !important;
+  }
+
+  ::v-deep .ant-input-group .ant-select-selector {
+    height: 38px;
+    font-size: 15px;
+    padding: 4px 11px;
+
+    .ant-select-selection-search-input {
+      height: 100% !important;
+    }
   }
 
   .input-mail {
@@ -136,11 +150,11 @@ const handleSocialLogin = (provider: 'NAVER' | 'GOOGLE') => {
   }
 }
 
-::v-deep .ant-input-group .ant-select-selector {
+/* ::v-deep .ant-input-group .ant-select-selector {
   height: 38px;
   font-size: 15px;
   padding: 4px 11px;
-}
+} */
 
 /* ::v-deep .ant-select-selector{
   height: 38px;
