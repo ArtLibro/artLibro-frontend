@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import router from '@/router'
+
 defineProps({
   title: String,
   authors: String,
@@ -8,17 +10,18 @@ defineProps({
 </script>
 
 <template>
-  <router-link :to="`book/detail/${isbn13}`" class="bookItem">
+  <div @click="() => router.push({ name: 'book-detail', params: { id : isbn13 } })" class="bookItem">
     <img :src="bookimage" alt="책사진" class="bookItem-img" />
     <!-- <div style="width: 195px; height: 260px; background: gray; border-radius: 12px"></div> -->
     <div class="bookItem-title">{{ title }}</div>
     <div class="bookItem-subtitle">{{ authors }}</div>
-  </router-link>
+  </div>
 </template>
 
 <style lang="scss" scoped>
 .bookItem {
   margin-right: 10px;
+  cursor: pointer;
 }
 
 .bookItem:last-child {
