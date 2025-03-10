@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import type { PerformanceCardProps } from '@/types/peformance.types.ts'
+import router from '@/router'
 
 defineProps<PerformanceCardProps>()
 </script>
 
 <template>
-  <div class="card-layout">
+  <div class="card-layout" @click="() => router.push({ name: 'performance-detail', params: { id : mt20id } })">
     <img :src="poster" width="300" height="350" alt="performance-image" class="image"/>
     <div class="title">{{ cate }}</div>
     <div class="subtitle">{{ prfnm }}</div>
@@ -18,6 +19,7 @@ defineProps<PerformanceCardProps>()
 
 <style scoped lang="scss">
 .card-layout {
+  cursor: pointer;
   display: grid;
   height: 450px;
   width: 300px;
