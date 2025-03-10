@@ -6,11 +6,11 @@
   <div class="button-layout">
     <button class="button-first">
       <img src="/icons/library/button-image1.svg" alt="button-1" class="image-button"/>
-      <span class="button-text">주말에도 운영하는 도서관</span>
+      <span class="button-text">주말에도<br>운영하는 도서관</span>
     </button>
     <button class="button-second">
       <img src="/icons/library/button-image2.svg" alt="button-2" class="image-button"/>
-      <span class="button-text">가장 많은 책을 보유한 도서관</span>
+      <span class="button-text">가장 많은 책을<br>보유한 도서관</span>
     </button>
     <button class="button-third">
       <img src="/icons/library/button-image3.svg" alt="button-3" class="image-button"/>
@@ -66,18 +66,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1;
-  font-size: 18px;
-  font-weight: bold;
-  color: $text-color-400
-}
-
-.button-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
   color: $text-color-400
 }
@@ -88,7 +77,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
   color: #FFFFFF;
 }
