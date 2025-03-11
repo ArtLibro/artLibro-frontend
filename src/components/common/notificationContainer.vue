@@ -16,7 +16,7 @@
           <div v-if="item.seen === false" class="notification-item" :key="index">
             <div class="notification-item-content">
               <div class="notification-item-content-header">
-                <p class="notification-item-name">{{ item.user.fullName }}</p>
+                <p class="notification-item-name">{{ item.author.fullName }}님이</p>
               </div>
               <p class="notification-item-description">내 게시글에 활동을 남겼어요!</p>
             </div>

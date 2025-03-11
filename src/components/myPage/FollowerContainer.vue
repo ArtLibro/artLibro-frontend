@@ -1,50 +1,29 @@
 <template>
-  <div class="follower-container" v-if="followerUsers.length > 0">
-
-    <div class="follower-item" v-for="follower in followerUsers" :key="follower._id">
-      <p class="follower-user-name">{{ follower.fullName }}</p>
+  <div class="follower-container" v-if="followers.length > 0">
+    <div class="follower-item" v-for="follower in followers" :key="follower._id">
+      <div class="follower-user-info">
+        <img :src="follower.image || '/images/user-dummy.png'" alt="프로필 이미지" class="follower-user-profile-image">
+        <p class="follower-user-name">{{ follower.fullName }}</p>
+      </div>
       <div class="follower-user-info-container">
-        <span :class="['follower-user-info-status', follower.isOnline ? 'online' : 'offline']">
-          {{ follower.isOnline ? '온라인' : '오프라인' }}
-        </span>
-        <button class="follower-user-info-button">팔로우 취소</button>
+        <button v-if="isFollowing(follower._id)" class="follower-user-info-button active">맞팔로우</button>
+        <button v-else class="follower-user-info-button" @click="emit('follow', follower._id)">팔로우하기</button>
       </div>
     </div>
-
   </div>
   <NotFound v-else title="팔로워가 없습니다." />
 </template>
 
 <script setup lang="ts">
-import { getUserInfo } from '@/apis/user';
-import type { FollowersType, UserType } from '@/types/user';
-import { message } from 'ant-design-vue';
-import { ref, watchEffect } from 'vue';
+import type { UserType } from '@/types/user';
 import NotFound from '../common/NotFound.vue';
 
-const props = defineProps<{
-  followers: FollowersType[]
+defineProps<{
+  followers: UserType[],
+  isFollowing: (userId: string) => boolean
 }>()
 
-const followerUsers = ref<UserType[]>([]);
-
-const fetchUser = async () => {
-  if (props.followers) {
-    try {
-      const userPromises = props.followers.map(follow => getUserInfo(follow.user))
-      followerUsers.value = await Promise.all(userPromises)
-    } catch (error) {
-      console.error(error)
-      message.error('팔로잉 유저 정보를 불러오는데 실패했습니다.', 1)
-    }
-  }
-}
-
-watchEffect(() => {
-  if (props.followers?.length) {
-    fetchUser()
-  }
-})
+const emit = defineEmits(['follow'])
 </script>
 
 <style lang="scss" scoped>
@@ -70,8 +49,20 @@ watchEffect(() => {
       margin-bottom: 0;
     }
 
-    .follower-user-name {
-      font-size: 14px;
+    .follower-user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      .follower-user-name {
+        font-size: 14px;
+      }
+
+      .follower-user-profile-image {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+      }
     }
 
     .follower-user-info-container {
@@ -79,19 +70,19 @@ watchEffect(() => {
       align-items: center;
       gap: 0.5rem;
 
-      .follower-user-info-status {
+      .follower-user-info-button {
         font-size: 12px;
-        color: #1F1F1F;
+        color: #fff;
         border-radius: 12px;
-        padding: 6px 14px;
-      }
+        padding: 5px 12px;
+        background-color: #6472fc;
+        border: none;
+        cursor: pointer;
 
-      .online {
-        background-color: #99FDD2;
-      }
-
-      .offline {
-        background-color: #FDD299;
+        &.active {
+          background-color: #8a8a8a;
+          color: #ffffff;
+        }
       }
     }
   }
