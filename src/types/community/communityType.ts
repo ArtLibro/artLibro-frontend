@@ -17,6 +17,7 @@ export interface Post {
   createdAt: string
   userId: string // 작성자 ID
   authorName: string // 작성자 닉네임
+  authorImage?: string | null // 작성자 프로필 이미지
   likes: Like[]
   comments: Comment[]
   liked?: Like

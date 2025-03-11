@@ -15,6 +15,7 @@ interface ApiPostResponse {
   author: {
     _id: string
     fullName: string
+    image?: string
   }
   comments: string[]
   likes: string[]
@@ -65,6 +66,7 @@ export const fetchPosts = async (): Promise<Post[]> => {
         createdAt: post.createdAt || '',
         userId: post.author?._id ?? '익명 아이디',
         authorName: post.author?.fullName ?? '익명 사용자',
+        authorImage: post.author?.image || '/images/user-dummy.png', // 프로필 사진
         comments: post.comments,
         likes: post.likes,
         authorId: post.author?._id ?? '',

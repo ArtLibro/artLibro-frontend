@@ -167,7 +167,11 @@ const handleUnLike = async () => {
 
       <div class="meta-info">
         <div class="user-profile">
-          <img src="/images/user-dummy.png" alt="유저 프로필" class="profile-image" />
+          <img
+            :src="post.authorImage || '/images/user-dummy.png'"
+            alt="유저 프로필"
+            class="profile-image"
+          />
           <div>
             <div class="username">
               <CommunityUserDropdown :authorName="post.authorName" />

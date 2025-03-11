@@ -14,9 +14,9 @@ const props = defineProps<{
     likes: Like[]
     comments: Comment[]
     image: string
-    avatar: string
     category: string
     time: string
+    authorImage: string
     authorId: string
   }
 }>()
@@ -84,7 +84,7 @@ const goToDetail = () => {
   <div class="review-card" @click="goToDetail">
     <div class="review-content">
       <div class="user-info">
-        <img src="/images/user-dummy.png" alt="유저 프로필" class="review-avatar" />
+        <img :src="review.authorImage || '/images/user-dummy.png'" alt="유저 프로필" class="review-avatar" />
         <div class="user-details">
           <!-- 작성자 클릭했을 때는 이벤트 전파 막기 -->
           <CommunityUserDropdown :authorId="review.authorId" :authorName="review.authorName" @click.stop

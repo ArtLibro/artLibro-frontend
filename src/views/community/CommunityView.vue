@@ -29,6 +29,7 @@ const latestMainPosts = computed(() =>
     image: post.image || '',
     date: new Date(post.createdAt).toLocaleString(), // 날짜 변환
     authorName: post.authorName,
+    authorImage: post.authorImage || '/images/default-avatar.png',
     comments: post.comments,
     likes: post.likes,
     authorId: post.authorId,
@@ -45,7 +46,7 @@ const formattedReviews = computed(() =>
     likes: post.likes,
     comments: post.comments,
     image: post.image || '',
-    avatar: '/images/user-dummy.png',
+    authorImage: post.authorImage || '/images/default-avatar.png',
     category: post.category,
     time: new Date(post.createdAt).toLocaleString(),
     authorId: post.authorId,

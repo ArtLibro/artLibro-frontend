@@ -11,6 +11,7 @@ const props = defineProps<{
     image: string
     date: string
     authorName: string
+    authorImage: string
     comments: Comment[]
     likes: Like[]
   }
@@ -80,7 +81,11 @@ const goToDetail = () => {
     <div class="post-info">
       <h3 class="post-title">{{ post.title }}</h3>
       <div class="user-info">
-        <img src="/images/user-dummy.png" alt="유저 프로필" class="review-avatar" />
+        <img
+          :src="post.authorImage || '/images/user-dummy.png'"
+          alt="유저 프로필"
+          class="review-avatar"
+        />
         <div>
           <span>{{ post.authorName }}</span>
         </div>
