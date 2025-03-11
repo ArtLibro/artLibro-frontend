@@ -19,22 +19,19 @@
 
 <table>
   <tr>
-    <th>헤더 1</th>
-    <th>헤더 2</th>
-    <th>헤더 3</th>
+    <th>단계</th>
+    <th>기간</th>
+    <th>주요 작업</th>
   </tr>
   <tr>
-    <td rowspan="2">셀 병합 (세로)</td>
-    <td>셀 2</td>
-    <td>셀 3</td>
+    <td rowspan="2">1.기획</td>
+    <td  rowspan="2">2월 14일 ~ 2월 18일</td>
+    <td>프로젝트 주제 선정</td>
   </tr>
   <tr>
-    <td>셀 5</td>
-    <td>셀 6</td>
+    <td>프로젝트 주제 선정</td>
   </tr>
   <tr>
-    <td colspan="2">셀 병합 (가로)</td>
-    <td>셀 8</td>
   </tr>
 </table>
  
