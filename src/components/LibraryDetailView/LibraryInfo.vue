@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import type { LibraryInfoResult } from '@/types/library/library.types.ts'
 
-type LibraryInfoProps = Pick<LibraryInfoResult, 'libName' | 'homepage' | 'address' | 'fax' | 'tel' | 'operatingTime' | 'closed'>
+type LibraryInfoProps = Pick<
+  LibraryInfoResult,
+  'libName' | 'homepage' | 'address' | 'fax' | 'tel' | 'operatingTime' | 'closed'
+>
 defineProps<LibraryInfoProps>()
 </script>
 
@@ -10,24 +13,24 @@ defineProps<LibraryInfoProps>()
     <img src="/images/library-hero-image.png" height="340" width="490" />
     <div class="library-info-detail">
       <div class="info-title">
-        <img src="/icons/library/map-pin.svg" alt="map-pin">
+        <img src="/icons/library/map-pin.svg" alt="map-pin" />
         <div class="title">{{ libName }}</div>
         <div class="address">{{ address }}</div>
       </div>
       <div class="telephone">
         <div class="tel-detail">
-          <img src="/icons/library/phone-icon.svg" alt="telephone"/>
+          <img src="/icons/library/phone-icon.svg" alt="telephone" />
           <div class="sub">전화번호</div>
           <div class="content">{{ tel }}</div>
         </div>
         <div class="tel-detail">
-          <img src="/icons/library/print-icon.svg" alt="phone-icon"/>
+          <img src="/icons/library/print-icon.svg" alt="phone-icon" />
           <div class="sub">팩스번호</div>
           <div class="content">{{ fax }}</div>
         </div>
       </div>
-      <div class="tel-detail">
-        <img src="/icons/library/home-icon.svg" alt="phone-icon"/>
+      <div class="tel-detail homepage">
+        <img src="/icons/library/home-icon.svg" alt="phone-icon" />
         <div class="sub">홈페이지</div>
         <div class="content">{{ homepage }}</div>
       </div>
@@ -39,8 +42,9 @@ defineProps<LibraryInfoProps>()
             <div class="time-word">{{ operatingTime }}</div>
           </div>
         </div>
+        <div class="time-line"></div>
         <div class="time-box">
-          <img src="/icons/library/clock-icon.svg" alt="clock-icon" width="54" height="54"/>
+          <img src="/icons/library/clock-icon.svg" alt="clock-icon" width="54" height="54" />
           <div class="time-content">
             <div class="time-title">휴관일</div>
             <div class="closed-word">{{ closed }}</div>
@@ -69,9 +73,7 @@ defineProps<LibraryInfoProps>()
 
 .info-title {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  width: 600px;
   height: 45px;
 }
 
@@ -83,8 +85,8 @@ defineProps<LibraryInfoProps>()
 
 .address {
   font-size: 16px;
-  color : $text-color-300;
-  margin-left:20px;
+  color: $text-color-300;
+  margin-left: 20px;
 }
 
 .telephone {
@@ -104,18 +106,23 @@ defineProps<LibraryInfoProps>()
   display: flex;
   align-items: center;
   height: 41px;
+  width: 50%;
+}
+
+.tel-detail.homepage {
+  width: 100%;
 }
 
 .operating-box {
   width: 730px;
   height: 138px;
   display: flex;
-  background-color: #EDEEF4;
+  background-color: #edeef4;
   border-radius: 10px;
   padding: 20px;
   justify-content: center;
   align-items: center;
-  gap :20px;
+  gap: 20px;
 }
 
 .content {
@@ -125,20 +132,29 @@ defineProps<LibraryInfoProps>()
 .time-title {
   font-size: 18px;
   font-weight: bold;
-  color : $secondary-color-300;
+  color: $secondary-color-300;
+  margin-bottom: 10px;
 }
 
 .time-box {
   display: flex;
+  width: 50%;
+  height: 88px;
+  align-items: center;
+}
+
+.time-line {
+  width: 2px;
+  height: 60px;
+  background: #d7d8db;
 }
 
 .time-content {
   margin-left: 20px;
-  display : grid;
   gap: 10px;
 }
 
 .time-word {
-  width: 300px;
+  // width: 300px;
 }
 </style>

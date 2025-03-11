@@ -142,6 +142,10 @@ const onTabChange = (key) => {
                 <img :src="item" alt="포스터 설명" />
               </div>
             </div>
+            <div v-else>
+              <!-- 배열이 아닌 경우 하나의 항목만 출력 -->
+              <img :src="prfdetail?.styurls?.styurl" alt="포스터 설명" />
+            </div>
           </div>
           <button class="show-more" v-if="contentHeight === 1000" @click="loadMoreContent">
             더보기
