@@ -11,12 +11,6 @@
 
 ## 프로젝트 타임라인
 
-| **단계**    |  **기간**      |         **주요 작업**                  |
-| ---------- | --------- |------------------------------------- |
-| 1.기획 |  2월 14일 ~ 2월 18일   |      - 프로젝트 주제 선정          |
-||     ||   ||      - 프로젝트 주제 선정          ||
-
-
 <table>
   <tr>
     <th>단계</th>
@@ -28,18 +22,98 @@
     <td  rowspan="2">2월 14일 ~ 2월 18일</td>
     <td>
      <div> - 프로젝트 주제 선정 </div>
-     <div> - 프로젝트 주제 선정 </div>
-     <div> - 프로젝트 주제 선정 </div>
+     <div> - open Api 조사 </div>
+     <div> - 가술 구조도 작성 </div>
   </td>
   </tr>
   <tr>
+ <tr>
+    <td rowspan="2">2.설계</td>
+    <td  rowspan="2">2월 19일 ~ 2월 25일</td>
+    <td>
+     <div> - 피그마 디자인 제작 </div>
+     <div> - 기술 스택 선정 </div>
+     <div> - 전체 아키텍처 설계 </div>
+  </td>
+  </tr>
+   <tr>
+    <td rowspan="2">3.개발</td>
+    <td  rowspan="2">2월 26일 ~ 3월 09일</td>
+    <td>
+     <div> - 프론트엔드 개발 </div>
+     <div> - 기능 구현 </div>
+     <div> - 버그 수정 </div>
+  </td>
+  </tr>
+    <tr>
+    <td rowspan="2">4.테스트 및 발표자료준비</td>
+    <td  rowspan="2">3월 10일 ~ 3월 11일</td>
+    <td>
+     <div> - 통합테스트 </div>
+     <div> - 디버깅 및 최적화 </div>
+      <div> - 발표 ppt 제작 </div>
+  </td>
+  </tr>
+    <tr>
+    <td rowspan="2">5.발표</td>
+    <td  rowspan="2">3월 12일</td>
+    <td>
+    - 최종 결과물 발표 및 시연
+  </td>
   </tr>
 </table>
  
 
-## Customize configuration
+## 프로젝트 팀원
+<table>
+  <tr>
+    <td>
+      <div style="text-align: center;">
+        <img src="https://github.com/jaeyo03.png?size=100" width="100" style="border-radius:50%;"><br>
+        <a href="https://github.com/jaeyo03"><strong>김재영</strong></a><br>
+        Frontend
+      </div>
+    </td>
+    <td>
+      <div style="text-align: center;">
+        <img src="https://github.com/jjeongsu.png?size=100" width="100" style="border-radius:50%;"><br>
+        <a href="https://github.com/jjeongsu"><strong>이정수</strong></a><br>
+        Frontend
+      </div>
+    </td>
+    <td>
+      <div style="text-align: center;">
+        <img src="https://github.com/Yangkles.png?size=100" width="100" style="border-radius:50%;"><br>
+        <a href="https://github.com/Yangkles"><strong>양윤호</strong></a><br>
+        Frontend
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <div style="text-align: center;">
+        <img src="https://github.com/HO-NNE.png?size=100" width="100" style="border-radius:50%;"><br>
+        <a href="https://github.com/HO-NNE"><strong>홍종희</strong></a><br>
+        Frontend
+      </div>
+    </td>
+    <td>
+      <div style="text-align: center;">
+        <img src="https://github.com/kdh990315.png?size=100" width="100" style="border-radius:50%;"><br>
+        <a href="https://github.com/kdh990315"><strong>김동현</strong></a><br>
+        Frontend
+      </div>
+    </td>
+    <td>
+      <div style="text-align: center;">
+        <img src="https://github.com/Sugwan-p.png?size=100" width="100" style="border-radius:50%;"><br>
+        <a href="https://github.com/Sugwan-p"><strong>박수관</strong></a><br>
+        Frontend
+      </div>
+    </td>
+  </tr>
+</table>
 
-See [Vite Configuration Reference](https://vite.dev/config/).
 
 ## Project Setup
 
