@@ -9,7 +9,6 @@ import { useAuthStore } from '@/stores/authStore'
 const router = useRouter()
 const route = useRoute()
 const post = ref<Post | null>(null)
-
 const authStore = useAuthStore()
 const userId = computed(() => authStore.userId)
 

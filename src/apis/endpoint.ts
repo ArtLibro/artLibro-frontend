@@ -53,3 +53,14 @@ export const USER_ENDPOINT = Object.freeze({
   userNotification: `/notifications`, // 유저 알림 조회
   userUpdateNotification: `/notifications/seen`, // 유저 알림 읽음 처리
 })
+
+/**
+# ======================#
+|       POST    |
+# ======================#
+*/
+
+export const POST_ENDPOINT = Object.freeze({
+  postLike: `/likes/create`, // 게시글 좋아요
+  postUnLike: `/likes/delete`, // 게시글 좋아요 취소
+})
