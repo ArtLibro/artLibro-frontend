@@ -1,43 +1,47 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from 'vue'
 import { genres } from '@/constants/performanceGenre.ts'
 
 export interface GenreEmit {
-  genreName: string;
-  genreCode : string;
+  genreName: string
+  genreCode: string
 }
 
 const emit = defineEmits<{
-  (e: 'handleGenreClick', genreEmit : GenreEmit): void;
-}>();
+  (e: 'handleGenreClick', genreEmit: GenreEmit): void
+}>()
 
 const handleGenreClick = (code: string) => {
   if (selectedGenreCode.value === code) {
-    return;
+    return
   } else {
-    selectedGenreCode.value = code;
+    selectedGenreCode.value = code
   }
 
-  let genreName = '';
+  let genreName = ''
 
   for (const item of genres) {
     if (item.code === selectedGenreCode.value) {
-      genreName = item.genre;
+      genreName = item.genre
     }
   }
-  emit('handleGenreClick', {genreName, genreCode : selectedGenreCode.value});
+  emit('handleGenreClick', { genreName, genreCode: selectedGenreCode.value })
 }
 
-const selectedGenreCode = ref<string>('');
+const selectedGenreCode = ref<string>('')
 </script>
 
 <template>
   <div class="keyword_container">
-    <h2>공연 장르</h2>
+    <h2 style="margin-top: 30px">공연 장르</h2>
     <div class="keyword_badge_container">
-      <div class="badge" v-for="genre in genres" :key="genre.code"
-           :class="{ 'selected': selectedGenreCode === genre.code }"
-           @click="() => handleGenreClick(genre.code)">
+      <div
+        class="badge"
+        v-for="genre in genres"
+        :key="genre.code"
+        :class="{ selected: selectedGenreCode === genre.code }"
+        @click="() => handleGenreClick(genre.code)"
+      >
         <span># {{ genre.genre }}</span>
       </div>
     </div>

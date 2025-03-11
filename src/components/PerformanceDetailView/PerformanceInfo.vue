@@ -25,11 +25,6 @@ console.log('24490234923')
     <img class="poster" :src="poster" />
     <div class="post-info-container">
       <div class="title">{{ prfnm }}</div>
-      <!-- 태그 링크로 변경 -->
-      <div class="homepage-link-btn">
-        공식홈페이지 가기
-        <img src="/public/icons/stage-home.svg" alt="홈페이지가기" style="margin-left: 5px" />
-      </div>
       <table>
         <colgroup>
           <col style="width: 25%" />
@@ -102,7 +97,9 @@ console.log('24490234923')
           >{{ item.relatenm }}
         </a>
       </div>
-      <!-- {{ relates }} -->
+      <div v-else>
+        <div class="ticket-link none">😭 티켓링크가 없습니다</div>
+      </div>
     </div>
   </div>
 </template>
@@ -235,5 +232,13 @@ console.log('24490234923')
   background-image: url('/public/icons/ticket-green.svg');
   background-size: cover;
   margin-right: 8px;
+}
+
+.ticket-link.none {
+  width: 200px;
+}
+
+.ticket-link.none::before {
+  display: none;
 }
 </style>
