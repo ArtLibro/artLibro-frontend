@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import PerformanceInfo from '@/components/PerformanceDetailView/PerformanceInfo.vue'
-import { computed, onMounted, ref, watchEffect } from 'vue'
+import { computed, nextTick, onMounted, ref, watchEffect } from 'vue'
 import PerformancePlace from '@/components/PerformanceDetailView/PerformancePlace.vue'
 import type { PrfPlaceInfo } from '@/types/Performance'
 import { DatePicker } from 'v-calendar'
@@ -23,6 +23,9 @@ const prfdetail = ref()
 const awardPerformances = ref([])
 const recommendPerformance = ref([])
 
+const isContentVisible = ref(false)
+const actualContentHeight = ref(0) // 실제 콘텐츠 높이 저장
+
 const genres = [
   { genre: '연극', code: 'AAAA' },
   { genre: '무용(서양/한국무용)', code: 'BBBC' },
@@ -37,12 +40,41 @@ const genres = [
 
 const loadMoreContent = () => {
   let totalHeight = 0
-  imageRefs.value.forEach((img) => {
-    totalHeight += img.offsetHeight
-  })
-  contentHeight.value = totalHeight
-}
 
+  if (Array.isArray(imageRefs.value)) {
+    imageRefs.value.forEach((img) => {
+      totalHeight += img.offsetHeight
+    })
+  } else if (imageRefs.value) {
+    totalHeight += imageRefs.value.offsetHeight
+  }
+
+  contentHeight.value = totalHeight
+
+  isContentVisible.value = true
+}
+const updateContentHeight = () => {
+  let totalHeight = 0
+
+  nextTick(() => {
+    if (Array.isArray(prfdetail.value.styurls.styurl)) {
+      imageRefs.value = Array.from(document.querySelectorAll('.content img'))
+    } else {
+      imageRefs.value = [document.querySelector('.content img')]
+    }
+
+    totalHeight = 0
+    imageRefs.value.forEach((img) => {
+      totalHeight += img.offsetHeight
+    })
+
+    actualContentHeight.value = totalHeight
+
+    if (contentHeight.value <= 1000) {
+      contentHeight.value = 1000
+    }
+  })
+}
 onMounted(async () => {
   try {
     const data = await getPerformanceDetail('prfInfo', route.params.id as string)
@@ -78,6 +110,8 @@ onMounted(async () => {
   } catch (error) {
     console.error('API 요청 실패:', error)
   }
+
+  updateContentHeight()
 })
 
 const dateRange = computed(() => {
@@ -138,16 +172,19 @@ const onTabChange = (key) => {
         <div class="poster-detail-container">
           <div :style="{ height: contentHeight + 'px' }" class="content" ref="content">
             <div v-if="Array.isArray(prfdetail?.styurls?.styurl)" class="poster-description">
-              <div v-for="(item, index) in prfdetail?.styurls?.styurl" :key="index" ref="imageRefs">
-                <img :src="item" alt="포스터 설명" />
+              <div v-for="(item, index) in prfdetail?.styurls?.styurl" :key="index">
+                <img :src="item" alt="포스터 설명" ref="imageRefs" />
               </div>
             </div>
             <div v-else>
-              <!-- 배열이 아닌 경우 하나의 항목만 출력 -->
-              <img :src="prfdetail?.styurls?.styurl" alt="포스터 설명" />
+              <img :src="prfdetail?.styurls?.styurl" alt="포스터 설명" ref="imageRefs" />
             </div>
           </div>
-          <button class="show-more" v-if="contentHeight === 1000" @click="loadMoreContent">
+          <button
+            v-if="contentHeight < actualContentHeight && !isContentVisible"
+            class="show-more"
+            @click="loadMoreContent"
+          >
             더보기
           </button>
         </div>
