@@ -9,7 +9,7 @@
       <span v-else-if="isError">Error: {{ error?.message }}</span>
       <div v-else-if="messageList">
         <div v-for="(item,index) in messageList" class="message-item" :key="index" @click="handleReadMessage(item.sender._id)">
-          <img src="/images/user-dummy.png" alt="user-dummy" class="message-item-image">
+          <img :src="item.sender.image || '/images/user-dummy.png'" alt="user-dummy" class="message-item-image">
 
           <div class="message-item-content">
             <div class="message-item-content-header">

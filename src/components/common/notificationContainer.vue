@@ -18,7 +18,7 @@
               <div class="notification-item-content-header">
                 <p class="notification-item-name">{{ item.user.fullName }}</p>
               </div>
-              <p class="notification-item-description">게시글에 활동을 했습니다</p>
+              <p class="notification-item-description">내 게시글에 활동을 남겼어요!</p>
             </div>
           </div>
         </li>
