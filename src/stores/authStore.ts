@@ -28,19 +28,19 @@ export const useAuthStore = defineStore('auth', () => {
         const authTokenStore = useAuthTokenStore()
         authTokenStore.setToken(token.value as string)
 
-        message.success(`${fullName.value}님, 로그인 성공!`)
+        message.success(`${fullName.value}님, 로그인 성공!`, 1)
 
         const userInfoResponse = await axiosApi.get(`/users/${userId.value}`)
         userInfo.value = userInfoResponse.data
 
         return true
       } else {
-        message.error('로그인 실패! 다시 시도해주세요.')
+        message.error('로그인 실패! 다시 시도해주세요.', 1)
         return false
       }
     } catch (error) {
       console.error('Login error:', error)
-      message.error('로그인 실패! 다시 시도해주세요.')
+      message.error('로그인 실패! 다시 시도해주세요.', 1)
       return false
     }
   }
@@ -48,6 +48,7 @@ export const useAuthStore = defineStore('auth', () => {
   const getUserInfo = async () => {
     const userInfoResponse = await axiosApi.get(`/users/${userId.value}`)
     userInfo.value = userInfoResponse.data
+    return userInfoResponse.data
   }
 
   // 로그아웃 함수

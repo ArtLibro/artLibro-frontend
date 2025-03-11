@@ -30,6 +30,7 @@ import HomeBookItem from '@/components/common/HomeBookItem.vue'
 import type { LibraryInfoResult } from '@/types/library/library.types.ts'
 import { REGION_CODE } from '@/constants/regionCode.ts'
 import { regions } from '@/constants/detail-region-code.ts'
+import { message } from 'ant-design-vue'
 
 const now = new Date()
 const year = now.getFullYear() - 1
@@ -107,10 +108,9 @@ const bookChunk = computed(() => {
       return index === self.findIndex((d) => d.book.bookname === doc.book.bookname)
     })
   } else {
-    console.log('docs 배열이 정의되지 않았거나 빈 배열입니다.')
+    message.error('책 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요.', 1)
   }
   const limitedArray = uniqueBooks.slice(0, 32)
-  console.log('dd', limitedArray)
   const result = []
   for (let i = 0; i < limitedArray.length; i += chunkSize) {
     result.push(uniqueBooks.slice(i, i + chunkSize))
@@ -190,9 +190,7 @@ function getDistanceFromLatLonInKm(lat1, lng1, lat2, lng2) {
 
 const getAddress = async () => {
   const data = await getAddressByLocation(locationStore.userLocation)
-  console.log(data)
   const library = await getLibraryInfo(data)
-  console.log(library)
 
   for (const item of library.libs) {
     const latitude = Number(item.lib.libInfo.latitude)
@@ -229,7 +227,6 @@ const getAddress = async () => {
 
   regionData.value = regionAnalysis
   detailRegionData.value = detailRegionAnalysis
-  console.log(detailRegionData.value, regionData.value)
 }
 
 onMounted(() => {
@@ -250,7 +247,6 @@ onMounted(() => {
     alert('에러')
   }
 
-  console.log(`컴포넌트가 마운트 됐습니다.`)
   navigator.geolocation.getCurrentPosition(success, error)
 })
 </script>
@@ -260,25 +256,12 @@ onMounted(() => {
     <HeroImage />
     <div class="title">대출 급상승 도서</div>
     <div class="bookitem-container">
-      <swiper
-        :slidesPerView="1"
-        :spaceBetween="10"
-        :loop="true"
-        :pagination="{ clickable: true }"
-        :navigation="true"
-        :modules="[Navigation]"
-        class="mySwiper"
-      >
+      <swiper :slidesPerView="1" :spaceBetween="10" :loop="true" :pagination="{ clickable: true }" :navigation="true"
+        :modules="[Navigation]" class="mySwiper">
         <swiper-slide v-for="(chunk, index) in bookChunk.slice(0, 24)" :key="index">
           <div style="display: flex; padding-top: 10px">
-            <HomeBookItem
-              v-for="item in chunk"
-              :key="item"
-              :title="item.book.bookname"
-              :authors="item.book.authors"
-              :bookimage="item.book.bookImageURL"
-              :isbn13="item.book.isbn13"
-            />
+            <HomeBookItem v-for="item in chunk" :key="item" :title="item.book.bookname" :authors="item.book.authors"
+              :bookimage="item.book.bookImageURL" :isbn13="item.book.isbn13" />
           </div>
         </swiper-slide>
       </swiper>
@@ -286,28 +269,14 @@ onMounted(() => {
     <div class="category-buttons"></div>
     <div class="title">이달의 인기 대출 도서</div>
     <div class="bookCategory">
-      <RoundCategoryTab
-        v-for="(value, key) in rankCateTab"
-        :key="key"
-        :name="value"
-        @click="filterTab(value, key)"
-        :class="['categorybtn', { active: activeTab === key }]"
-      />
+      <RoundCategoryTab v-for="(value, key) in rankCateTab" :key="key" :name="value" @click="filterTab(value, key)"
+        :class="['categorybtn', { active: activeTab === key }]" />
     </div>
     <div style="display: flex" v-if="filteredBooks.length > 0">
-      <div
-        v-for="(column, colIndex) in getColumns(filteredBooks)"
-        :key="colIndex"
-        class="rankBook-column"
-      >
+      <div v-for="(column, colIndex) in getColumns(filteredBooks)" :key="colIndex" class="rankBook-column">
         <div v-for="item in column" :key="item.id" class="rankBook-container">
-          <RankBook
-            :bookname="item.doc.bookname"
-            :ranking="item.doc.ranking"
-            :authors="item.doc.authors"
-            :bookImageURL="item.doc.bookImageURL"
-            :isbn="item.doc.isbn13"
-          />
+          <RankBook :bookname="item.doc.bookname" :ranking="item.doc.ranking" :authors="item.doc.authors"
+            :bookImageURL="item.doc.bookImageURL" :isbn="item.doc.isbn13" />
         </div>
       </div>
     </div>
@@ -318,21 +287,12 @@ onMounted(() => {
       </div>
     </div>
     <div class="library-wrapper">
-      <LibraryInfo
-        :tel="closestLibrary?.tel"
-        :operating-time="closestLibrary?.operatingTime"
-        :closed="closestLibrary?.closed"
-        :address="closestLibrary?.address"
-        :lib-name="closestLibrary?.libName"
-      />
+      <LibraryInfo :tel="closestLibrary?.tel" :operating-time="closestLibrary?.operatingTime"
+        :closed="closestLibrary?.closed" :address="closestLibrary?.address" :lib-name="closestLibrary?.libName" />
       <LibraryPopularBooks :books="closestLibraryBooks" />
-      <LibraryChart
-        v-if="regionData && detailRegionData"
-        :region-name="regionData?.request.region"
-        :region-data="regionData?.results"
-        :detail-region-name="detailRegionData?.request.dtl_region"
-        :detail-region-data="detailRegionData?.results"
-      />
+      <LibraryChart v-if="regionData && detailRegionData" :region-name="regionData?.request.region"
+        :region-data="regionData?.results" :detail-region-name="detailRegionData?.request.dtl_region"
+        :detail-region-data="detailRegionData?.results" />
       <div v-else class="library-chart-default"></div>
     </div>
     <PerformanceHero />

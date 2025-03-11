@@ -1,4 +1,3 @@
-
 import { AUTH_CONFIG } from '@/config/authConfig'
 import axios from 'axios'
 
@@ -33,9 +32,6 @@ export const getSocialToken = async (provider: string, code: string) => {
     if (!response || !response.data) {
       throw new Error('Invalid response from server')
     }
-
-    console.log('Response data:', response.data) // 응답 데이터 출력
-
     return response.data
   } catch (error) {
     console.error(`Error during ${provider} login:`, error)

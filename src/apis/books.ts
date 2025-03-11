@@ -297,7 +297,6 @@ export const getBookToHome = async (query: QueryItemReader | QueryItemRankBook) 
       const responses = await Promise.all(promises)
       const responseData = responses.map((response) => response.data) // 응답 데이터 처리
 
-      console.log('responseData', responseData)
       return responseData
     }
 

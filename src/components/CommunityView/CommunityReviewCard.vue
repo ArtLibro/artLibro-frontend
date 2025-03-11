@@ -17,6 +17,7 @@ const props = defineProps<{
     avatar: string
     category: string
     time: string
+    authorId: string
   }
 }>()
 
@@ -86,7 +87,8 @@ const goToDetail = () => {
         <img src="/images/user-dummy.png" alt="유저 프로필" class="review-avatar" />
         <div class="user-details">
           <!-- 작성자 클릭했을 때는 이벤트 전파 막기 -->
-          <CommunityUserDropdown :authorName="review.authorName" @click.stop class="user-name" />
+          <CommunityUserDropdown :authorId="review.authorId" :authorName="review.authorName" @click.stop
+            class="user-name" />
           <span class="time">{{ review.time }}</span>
         </div>
       </div>
