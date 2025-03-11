@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import CommunityUserDropdown from './CommunityUserDropdown.vue'
+import type { Comment, Like } from '@/types/community/communityType';
 
 const router = useRouter()
 const props = defineProps<{
@@ -10,12 +11,12 @@ const props = defineProps<{
     authorName: string
     title: string
     content: string
-    likes: number
-    comments: number
+    likes: Like[]
+    comments: Comment[]
     image: string
-    avatar: string
     category: string
     time: string
+    authorImage: string
   }
 }>()
 
@@ -28,50 +29,50 @@ const reviewImage = computed(() => props.review.image || defaultBookImage)
 // 기본 이미지인지 확인
 const isDefaultImage = computed(() => reviewImage.value === defaultBookImage)
 
-// 댓글 개수 상태
-const commentCount = ref(0)
+// // 댓글 개수 상태
+// const commentCount = ref(0)
 
-// 좋아요 개수 상태
-const likeCount = ref(0)
+// // 좋아요 개수 상태
+// const likeCount = ref(0)
 
-// 로컬 스토리지에서 댓글 개수 가져오는 함수
-const getCommentCount = (postId: string): number => {
-  const savedComments = localStorage.getItem(`comments_${postId}`)
-  return savedComments ? JSON.parse(savedComments).length : 0
-}
+// // 로컬 스토리지에서 댓글 개수 가져오는 함수
+// const getCommentCount = (postId: string): number => {
+//   const savedComments = localStorage.getItem(`comments_${postId}`)
+//   return savedComments ? JSON.parse(savedComments).length : 0
+// }
 
 // 로컬 스토리지에서 특정 게시물의 좋아요한 사용자 수 가져오는 함수
-const getLikeCount = (postId: string): number => {
-  let count = 0
+// const getLikeCount = (postId: string): number => {
+//   let count = 0
 
-  // 로컬 스토리지 전체 키 확인
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i)
+//   // 로컬 스토리지 전체 키 확인
+//   for (let i = 0; i < localStorage.length; i++) {
+//     const key = localStorage.key(i)
 
-    // 로컬 스토리지에서 likedPosts_로 시작하는 키만 찾기 -> 사용자별 좋아요 데이터
-    if (key && key.startsWith('likedPosts_')) {
-      const savedLikes = localStorage.getItem(key)
+//     // 로컬 스토리지에서 likedPosts_로 시작하는 키만 찾기 -> 사용자별 좋아요 데이터
+//     if (key && key.startsWith('likedPosts_')) {
+//       const savedLikes = localStorage.getItem(key)
 
-      try {
-        const parsedLikes = savedLikes ? JSON.parse(savedLikes) : []
-        if (Array.isArray(parsedLikes) && parsedLikes.includes(postId)) {
-          count++
-        }
-      } catch (error) {
-        console.error(`❌ JSON 파싱 오류:`, error)
-      }
-    }
-  }
+//       try {
+//         const parsedLikes = savedLikes ? JSON.parse(savedLikes) : []
+//         if (Array.isArray(parsedLikes) && parsedLikes.includes(postId)) {
+//           count++
+//         }
+//       } catch (error) {
+//         console.error(`❌ JSON 파싱 오류:`, error)
+//       }
+//     }
+//   }
 
-  console.log(`${postId} 좋아요 개수:`, count)
-  return count
-}
+//   console.log(`${postId} 좋아요 개수:`, count)
+//   return count
+// }
 
 // 댓글 개수 불러오기
-onMounted(() => {
-  commentCount.value = getCommentCount(props.review.id)
-  likeCount.value = getLikeCount(props.review.id)
-})
+// onMounted(() => {
+//   commentCount.value = getCommentCount(props.review.id)
+//   likeCount.value = getLikeCount(props.review.id)
+// })
 
 const goToDetail = () => {
   router.push(`/community/${props.review.id}`)
@@ -82,7 +83,11 @@ const goToDetail = () => {
   <div class="review-card" @click="goToDetail">
     <div class="review-content">
       <div class="user-info">
-        <img src="/images/user-dummy.png" alt="유저 프로필" class="review-avatar" />
+        <img
+          :src="review.authorImage || '/images/user-dummy.png'"
+          alt="유저 프로필"
+          class="review-avatar"
+        />
         <div class="user-details">
           <!-- 작성자 클릭했을 때는 이벤트 전파 막기 -->
           <CommunityUserDropdown :authorName="review.authorName" @click.stop class="user-name" />
@@ -92,15 +97,11 @@ const goToDetail = () => {
       <h3 class="review-title">{{ review.title }}</h3>
       <p class="review-text">{{ review.content }}</p>
       <div class="review-meta">
-        <span>좋아요 {{ likeCount }}</span>
-        <span>댓글 {{ commentCount }}</span>
+        <span>좋아요 {{ review.likes.length }}</span>
+        <span>댓글 {{ review.comments.length }}</span>
       </div>
     </div>
-    <img
-      :src="reviewImage"
-      :class="{ 'review-image': true, 'default-image': isDefaultImage }"
-      alt="책표지"
-    />
+    <img :src="reviewImage" :class="{ 'review-image': true, 'default-image': isDefaultImage }" alt="책표지" />
   </div>
 </template>
 
@@ -159,8 +160,10 @@ const goToDetail = () => {
   line-height: 1.5;
   margin-top: 0;
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* 웹킷 브라우저용 (Chrome, Safari 등) */
-  line-clamp: 2; /* 표준 속성 */
+  -webkit-line-clamp: 2;
+  /* 웹킷 브라우저용 (Chrome, Safari 등) */
+  line-clamp: 2;
+  /* 표준 속성 */
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;

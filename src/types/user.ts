@@ -62,3 +62,11 @@ export interface NotificationType {
   message: string
   createdAt: string
 }
+
+export interface UserLikedPostsType {
+  _id: string
+  user: string
+  post: string
+  createdAt: string
+  updatedAt: string
+}
