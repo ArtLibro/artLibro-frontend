@@ -1,4 +1,4 @@
-# project
+# artLibro (독서 & 공연, 예술을 위한 웹서비스)
 
 ![Image](https://github.com/user-attachments/assets/5fc690f9-7d98-465b-8862-2c7e473bc7bb)
 
