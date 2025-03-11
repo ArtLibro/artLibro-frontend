@@ -18,8 +18,8 @@
     <th>주요 작업</th>
   </tr>
   <tr>
-    <td rowspan="2">1.기획</td>
-    <td  rowspan="2">2월 14일 ~ 2월 18일</td>
+    <td colspan="2">1.기획</td>
+    <td  colspan="2">2월 14일 ~ 2월 18일</td>
     <td>
      <div> - 프로젝트 주제 선정 </div>
      <div> - open Api 조사 </div>
@@ -28,8 +28,8 @@
   </tr>
   <tr>
  <tr>
-    <td rowspan="2">2.설계</td>
-    <td  rowspan="2">2월 19일 ~ 2월 25일</td>
+    <td colspan="2">2.설계</td>
+    <td  colspan="2">2월 19일 ~ 2월 25일</td>
     <td>
      <div> - 피그마 디자인 제작 </div>
      <div> - 기술 스택 선정 </div>
@@ -37,8 +37,8 @@
   </td>
   </tr>
    <tr>
-    <td rowspan="2">3.개발</td>
-    <td  rowspan="2">2월 26일 ~ 3월 09일</td>
+    <td colspan="2">3.개발</td>
+    <td  colspan="2">2월 26일 ~ 3월 09일</td>
     <td>
      <div> - 프론트엔드 개발 </div>
      <div> - 기능 구현 </div>
@@ -46,8 +46,8 @@
   </td>
   </tr>
     <tr>
-    <td rowspan="2">4.테스트 및 발표자료준비</td>
-    <td  rowspan="2">3월 10일 ~ 3월 11일</td>
+    <td colspan="2">4.테스트 및 발표자료준비</td>
+    <td  colspan="2">3월 10일 ~ 3월 11일</td>
     <td>
      <div> - 통합테스트 </div>
      <div> - 디버깅 및 최적화 </div>
@@ -55,8 +55,8 @@
   </td>
   </tr>
     <tr>
-    <td rowspan="2">5.발표</td>
-    <td  rowspan="2">3월 12일</td>
+    <td colspan="2">5.발표</td>
+    <td  colspan="2">3월 12일</td>
     <td>
     - 최종 결과물 발표 및 시연
   </td>
