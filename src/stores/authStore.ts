@@ -2,11 +2,14 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { message } from 'ant-design-vue'
 import axiosApi from '@/config/axiosConfig'
+import { useAuthTokenStore } from './auth'
+import type { UserType } from '@/types/user'
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref<string | null>(localStorage.getItem('accessToken')) // 새로고침해도 유지
   const userId = ref<string | null>(localStorage.getItem('userId')) // 새로고침해도 유지
   const fullName = ref<string | null>(localStorage.getItem('fullName')) // 새로고침해도 유지
+  const userInfo = ref<UserType | null>(null)
 
   // 로그인 함수
   const login = async (email: string, password: string) => {
@@ -18,11 +21,18 @@ export const useAuthStore = defineStore('auth', () => {
         userId.value = response.data.user._id
         fullName.value = response.data.user.fullName
 
-        localStorage.setItem('accessToken', token.value) // localStorage에 저장
-        localStorage.setItem('userId', userId.value) // localStorage에 저장
-        localStorage.setItem('fullName', fullName.value) // localStorage에 저장
+        localStorage.setItem('accessToken', token.value as string) // localStorage에 저장
+        localStorage.setItem('userId', userId.value as string) // localStorage에 저장
+        localStorage.setItem('fullName', fullName.value as string) // localStorage에 저장
+
+        const authTokenStore = useAuthTokenStore()
+        authTokenStore.setToken(token.value as string)
 
         message.success(`${fullName.value}님, 로그인 성공!`)
+
+        const userInfoResponse = await axiosApi.get(`/users/${userId.value}`)
+        userInfo.value = userInfoResponse.data
+
         return true
       } else {
         message.error('로그인 실패! 다시 시도해주세요.')
@@ -33,6 +43,11 @@ export const useAuthStore = defineStore('auth', () => {
       message.error('로그인 실패! 다시 시도해주세요.')
       return false
     }
+  }
+
+  const getUserInfo = async () => {
+    const userInfoResponse = await axiosApi.get(`/users/${userId.value}`)
+    userInfo.value = userInfoResponse.data
   }
 
   // 로그아웃 함수
@@ -49,5 +64,5 @@ export const useAuthStore = defineStore('auth', () => {
     // 로그아웃 후 새로고침 -> 좋아요 상태 초기화
     window.location.reload()
   }
-  return { token, userId, fullName, login, logout }
+  return { token, userId, fullName, login, logout, userInfo, getUserInfo }
 })

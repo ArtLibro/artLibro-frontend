@@ -29,6 +29,7 @@ const handleLogin = async () => {
   const success = await authStore.login(address.value + domain.value, password.value);
 
   if (success) {
+    await authStore.getUserInfo()
     router.push('/') // 로그인 성공 시 이동
   }
 }
@@ -54,7 +55,7 @@ const handleSocialLogin = (provider: 'NAVER' | 'GOOGLE') => {
 
     <div style="display: flex; margin-top: 10px; margin-left: 212px;">
       <div class="input-group">
-        <div>이메일 입력</div>
+        <div class="input-text">이메일 입력</div>
 
         <a-input-group compact style="width: 332px;">
           <a-auto-complete class="input" v-model:value="address" placeholder="Email" />
@@ -80,13 +81,7 @@ const handleSocialLogin = (provider: 'NAVER' | 'GOOGLE') => {
 
         <div class="text">또는</div>
 
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="2"
-          height="96"
-          viewBox="0 0 2 96"
-          fill="none"
-        >
+        <svg xmlns="http://www.w3.org/2000/svg" width="2" height="96" viewBox="0 0 2 96" fill="none">
           <path d="M1.0957 0L1.0957 96" stroke="#595959" stroke-opacity="0.5" />
         </svg>
       </div>
@@ -120,12 +115,26 @@ const handleSocialLogin = (provider: 'NAVER' | 'GOOGLE') => {
   margin-top: 90px;
 
   .input-text {
-    margin-top: 13px;
+    margin: 1rem 0 .5rem
   }
 
-  ::v-deep .input  {
+  .input {
+    height: 100%;
+  }
+
+  ::v-deep .input {
     width: 191px !important;
-    height: 38px !important;
+    height: 100% !important;
+  }
+
+  ::v-deep .ant-input-group .ant-select-selector {
+    height: 38px;
+    font-size: 15px;
+    padding: 4px 11px;
+
+    .ant-select-selection-search-input {
+      height: 100% !important;
+    }
   }
 
   .input-mail {
@@ -137,15 +146,15 @@ const handleSocialLogin = (provider: 'NAVER' | 'GOOGLE') => {
     height: 38px;
     padding: 4px 11px;
     margin-bottom: 5px;
-            font-size: 15px;
+    font-size: 15px;
   }
 }
 
-::v-deep .ant-input-group .ant-select-selector {
+/* ::v-deep .ant-input-group .ant-select-selector {
   height: 38px;
   font-size: 15px;
   padding: 4px 11px;
-}
+} */
 
 /* ::v-deep .ant-select-selector{
   height: 38px;

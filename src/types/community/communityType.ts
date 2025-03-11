@@ -18,6 +18,22 @@ export interface Post {
   userId: string // 작성자 ID
   authorName: string // 작성자 닉네임
   authorImage?: string | null // 작성자 프로필 이미지
+  likes: Like[]
+  comments: Comment[]
+  liked?: Like
+}
+
+export interface Like {
+  _id: string
+  user: string
+  post: string
+}
+
+export interface Comment {
+  _id: string
+  user: string
+  post: string
+  content: string
 }
 
 // id, createdAt, image 제외한 NewPost 타입

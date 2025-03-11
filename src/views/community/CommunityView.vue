@@ -8,6 +8,7 @@ import CommunityTabs from '@/components/CommunityView/CommunityTabs.vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { Post } from '@/types/community/communityType'
 import { useAuthStore } from '@/stores/authStore'
+import type { UserLikedPostsType } from '@/types/user'
 
 const router = useRouter()
 const route = useRoute()
@@ -18,6 +19,7 @@ const isLoggedIn = computed(() => !!authStore.token)
 
 // API에서 불러온 게시글 저장 (메인카드, 리뷰카드 공용으로 사용)
 const posts = ref<Post[]>([])
+const userLikedPosts = ref<UserLikedPostsType[]>([])
 
 // CommunityMainCard 최신 글 6개만 보여줌
 const latestMainPosts = computed(() =>
@@ -28,8 +30,8 @@ const latestMainPosts = computed(() =>
     date: new Date(post.createdAt).toLocaleString(), // 날짜 변환
     authorName: post.authorName,
     authorImage: post.authorImage || '/images/default-avatar.png',
-    comment: 0, // 기본값 설정
-    likes: 0, // 기본값 설정
+    comments: post.comments,
+    likes: post.likes,
   })),
 )
 
@@ -40,23 +42,22 @@ const formattedReviews = computed(() =>
     authorName: post.authorName,
     title: post.title,
     content: post.content,
-    likes: 0,
-    comments: 0,
+    likes: post.likes,
+    comments: post.comments,
     image: post.image || '',
     authorImage: post.authorImage || '/images/default-avatar.png',
     category: post.category,
     time: new Date(post.createdAt).toLocaleString(),
   })),
 )
-
 // 탭 필터링 (도서, 공연/행사)
 const activeKey = ref('1')
 const filteredReviews = computed(() =>
   activeKey.value === '1'
     ? posts.value
     : posts.value.filter(
-        (post) => post.category === (activeKey.value === '2' ? '도서' : '공연/행사'),
-      ),
+      (post) => post.category === (activeKey.value === '2' ? '도서' : '공연/행사'),
+    ),
 )
 
 // 페이지네이션 관련 설정
@@ -71,7 +72,11 @@ const paginatedReviews = computed(() => {
 
 // 게시글 불러오기
 const loadPosts = async () => {
+  if (authStore.userId) {
+    await authStore.getUserInfo()
+  }
   posts.value = await fetchPosts()
+  userLikedPosts.value = authStore.userInfo?.likes ?? []
 }
 
 // 새로고침 감지 -> 게시글 새로 불러오기
@@ -87,20 +92,30 @@ watch(
 
 // 게시글 상세페이지로 이동
 const goToDetailPage = (postId: string) => {
+  // 전달할 posts 데이터에 liked 상태 추가
+  const postsWithLikedStatus = posts.value.map(post => ({
+    ...post
+  }))
+
   router.push({
     path: `/community/${postId}`,
-    query: { posts: JSON.stringify(posts.value) },
+    query: { posts: JSON.stringify(postsWithLikedStatus) },
   })
 }
 
 // 게시글 작성페이지로 이동
 const goToWritePage = () => {
+  console.log(userLikedPosts.value)
+  console.log(latestMainPosts.value)
   router.push('/community/write').then(() => {
     window.scrollTo({ top: 0 })
   })
 }
 
-onMounted(loadPosts)
+onMounted(() => {
+  loadPosts()
+})
+
 </script>
 
 <template>
@@ -111,12 +126,9 @@ onMounted(loadPosts)
     </div>
 
     <div v-if="latestMainPosts.length > 0" class="post-grid">
-      <CommunityMainCard
-        v-for="(post, index) in latestMainPosts"
-        :key="index"
-        :post="post"
-        @click="goToDetailPage(post.id)"
-      />
+      <!-- 이게 최근 6개 짜리 글 -->
+      <CommunityMainCard v-for="(post, index) in latestMainPosts" :key="index" :post="post"
+        @click="goToDetailPage(post.id)" />
     </div>
     <div v-else class="empty-message-main">
       <img src="/icons/best-comment.svg" alt="arrow-right" />
@@ -136,12 +148,8 @@ onMounted(loadPosts)
 
     <div v-if="paginatedReviews.length > 0" class="review-container">
       <div class="review-list">
-        <CommunityReviewCard
-          v-for="(review, index) in paginatedReviews"
-          :key="index"
-          :review="review"
-          @click="goToDetailPage(review.id)"
-        />
+        <CommunityReviewCard v-for="(review, index) in paginatedReviews" :key="index" :review="review"
+          @click="goToDetailPage(review.id)" />
       </div>
     </div>
     <div v-else class="empty-message-review">
@@ -149,11 +157,7 @@ onMounted(loadPosts)
     </div>
 
     <div class="pagination-wrapper">
-      <Pagination
-        v-model:current="currentPage"
-        :total="filteredReviews.length"
-        :page-size="reviewsPerPage"
-      />
+      <Pagination v-model:current="currentPage" :total="filteredReviews.length" :page-size="reviewsPerPage" />
     </div>
   </div>
 </template>
