@@ -14,9 +14,6 @@ onMounted(async () => {
   const provider = route.params.provider as string;
   const code = route.query.code as string;
 
-  console.log("Provider:", provider);
-  console.log("Code:", code);
-
   if (!code) {
     console.error("Authorization code not found");
     return;
@@ -27,9 +24,7 @@ onMounted(async () => {
 
     localStorage.setItem("accessToken", token.access_token); // access_token으로 변경
     authStore.setToken(token.access_token); // access_token으로 변경
-    console.log('Token:', token); // 토큰 출력
-    console.log('Token:', token.access_token); // 토큰 출력
-    console.log("토큰 저장 완료");
+
     message.success('로그인 성공!')
 
     router.push("/");

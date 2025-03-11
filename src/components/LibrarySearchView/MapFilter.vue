@@ -137,24 +137,11 @@ watch(placeName, () => {
     <div class="map-wrapper">
       <div class="subtitle">지역별 도서관 필터링</div>
       <div class="map-layout">
-        <svg
-          width="258"
-          height="474"
-          viewBox="0 0 258 474"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            v-for="item in svgs"
-            :key="item.code"
-            :d="item.d"
+        <svg width="258" height="474" viewBox="0 0 258 474" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path v-for="item in svgs" :key="item.code" :d="item.d"
             :class="{ 'map-active': regionCode === item.code, 'map-hover': true }"
-            @click="handleMapClick(item.code, item.place)"
-            fill="#C6C9FE"
-            stroke="#ABA9A5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
+            @click="handleMapClick(item.code, item.place)" fill="#C6C9FE" stroke="#ABA9A5" stroke-linecap="round"
+            stroke-linejoin="round" />
         </svg>
       </div>
     </div>

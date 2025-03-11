@@ -66,13 +66,12 @@ const handleSignUp = async () => {
 
     } else {
       message.success("회원가입 성공!");
-      console.log(response, response.data, response.status);
       router.push("/login");
 
     }
   } catch (error) {
-    console.log(error);
-    message.error("회원가입 실패! 다시 시도해주세요.");
+    console.error(error)
+    message.error("회원가입 실패! 다시 시도해주세요.", 1);
   }
 };
 

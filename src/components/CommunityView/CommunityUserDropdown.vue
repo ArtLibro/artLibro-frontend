@@ -1,13 +1,17 @@
 <script setup lang="ts">
-import { onUnmounted, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { createUserFollow, deleteUserFollow } from '@/apis/user';
+import { useAuthStore } from '@/stores/authStore';
+import { message } from 'ant-design-vue';
+import { computed, onUnmounted, ref, watch } from 'vue'
 
-const router = useRouter()
 const isOpen = ref(false)
 
-const props = defineProps<{ authorName: string }>()
+const props = defineProps<{ authorName: string, authorId: string }>()
 const name = ref(props.authorName || '익명')
 
+const { userInfo, getUserInfo } = useAuthStore()
+
+const userNewdata = ref(userInfo);
 // authorName이 변경될 때 name 업데이트
 watch(
   () => props.authorName,
@@ -33,16 +37,46 @@ const toggleDropdown = (event: Event) => {
 const closeDropdown = () => {
   isOpen.value = false
   window.removeEventListener('click', closeDropdown)
+
 }
 
 onUnmounted(() => {
   window.removeEventListener('click', closeDropdown)
 })
 
-// ⭐️ 테스트 → 일단 마이페이지로 이동
-const navigateToPage = () => {
-  router.push('/mypage')
+// watchEffect(() => {
+//   console.log('userInfo 변경됨:', userInfo?.following);
+// })
+
+const isFollowing = computed(() => {
+  return userNewdata.value?.following.find((follow) => follow.user === props.authorId)
+})
+
+const follow = async () => {
+  try {
+    const response = await createUserFollow(props.authorId)
+    if (response) {
+      userNewdata.value = await getUserInfo()
+      message.success('팔로우를 성공했습니다.', 1)
+    }
+  } catch (error) {
+    console.error(error)
+    message.error('팔로우를 실패했습니다. 잠시 후 다시 시도해주세요.', 1)
+  }
   closeDropdown()
+}
+
+const unFollow = async () => {
+  try {
+    const response = await deleteUserFollow(isFollowing.value?._id as string)
+    if (response) {
+      userNewdata.value = await getUserInfo()
+      message.success('팔로우를 취소했습니다.', 1)
+    }
+  } catch (error) {
+    console.error(error)
+    message.error('팔로우를 취소하는데 실패했습니다. 잠시 후 다시 시도해주세요.', 1)
+  }
 }
 </script>
 
@@ -50,8 +84,9 @@ const navigateToPage = () => {
   <div class="user-dropdown">
     <span class="author-name" @click="toggleDropdown">{{ authorName || '익명' }}</span>
     <div v-if="isOpen" class="dropdown-menu">
-      <button @click="navigateToPage">팔로우</button>
-      <button @click="navigateToPage">쪽지 보내기</button>
+      <button @click="follow" v-if="!isFollowing">팔로우</button>
+      <button @click="unFollow" v-else>팔로우 취소</button>
+      <button>쪽지 보내기</button>
     </div>
   </div>
 </template>

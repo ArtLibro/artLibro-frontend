@@ -32,6 +32,7 @@ const latestMainPosts = computed(() =>
     authorImage: post.authorImage || '/images/default-avatar.png',
     comments: post.comments,
     likes: post.likes,
+    authorId: post.authorId,
   })),
 )
 
@@ -48,6 +49,7 @@ const formattedReviews = computed(() =>
     authorImage: post.authorImage || '/images/default-avatar.png',
     category: post.category,
     time: new Date(post.createdAt).toLocaleString(),
+    authorId: post.authorId,
   })),
 )
 // 탭 필터링 (도서, 공연/행사)
@@ -105,8 +107,6 @@ const goToDetailPage = (postId: string) => {
 
 // 게시글 작성페이지로 이동
 const goToWritePage = () => {
-  console.log(userLikedPosts.value)
-  console.log(latestMainPosts.value)
   router.push('/community/write').then(() => {
     window.scrollTo({ top: 0 })
   })

@@ -89,3 +89,29 @@ export const updateUserNotification = async (): Promise<boolean> => {
     return false
   }
 }
+
+// 유저 팔로우 생성
+/** 성공 시 true, 실패 시 false 반환 */
+export const createUserFollow = async (userId: string): Promise<boolean> => {
+  try {
+    await axiosApi.post(`${USER_ENDPOINT.userFollow}`, { userId })
+
+    return true
+  } catch (error) {
+    console.error(error)
+    return false
+  }
+}
+
+// 유저 팔로우 삭제
+/** 성공 시 true, 실패 시 false 반환 */
+export const deleteUserFollow = async (id: string): Promise<boolean> => {
+  try {
+    await axiosApi.delete(`${USER_ENDPOINT.userUnFollow}`, { data: { id } })
+
+    return true
+  } catch (error) {
+    console.error(error)
+    return false
+  }
+}

@@ -52,6 +52,8 @@ export const USER_ENDPOINT = Object.freeze({
   userUpdateMessage: `/messages/update-seen`, // 유저 메세지 읽음 처리
   userNotification: `/notifications`, // 유저 알림 조회
   userUpdateNotification: `/notifications/seen`, // 유저 알림 읽음 처리
+  userFollow: `/follow/create`, // 유저 팔로우 생성
+  userUnFollow: `/follow/delete`, // 유저 팔로우 삭제
 })
 
 /**

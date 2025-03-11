@@ -5,7 +5,6 @@ import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import BookView from '@/views/bookView/BookView.vue'
 import LibrarySearchView from '@/views/LibrarySearchView.vue'
-import ChallengeView from '@/views/ChallengeView.vue'
 import PerformanceSearchView from '@/views/PerformanceSearchView.vue'
 import CommunityView from '@/views/community/CommunityView.vue'
 import LibraryDetailView from '@/views/LibraryDetailView.vue'
@@ -49,11 +48,6 @@ const router = createRouter({
       path: '/performance',
       name: 'performancesearch',
       component: PerformanceSearchView,
-    },
-    {
-      path: '/challenge',
-      name: 'challenge',
-      component: ChallengeView,
     },
     // 커뮤니티 메인페이지
     { path: '/community', name: 'community', component: CommunityView },

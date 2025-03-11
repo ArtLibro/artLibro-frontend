@@ -53,8 +53,6 @@ export const fetchPosts = async (): Promise<Post[]> => {
           title = parsedData.title ?? post.title
           content = parsedData.content ?? ''
         }
-
-        console.log(response.data)
       } catch (error) {
         console.warn('⛔️ JSON 파싱 실패, 일반 문자열로 처리:', error)
       }
@@ -71,6 +69,7 @@ export const fetchPosts = async (): Promise<Post[]> => {
         authorImage: post.author?.image || '/images/user-dummy.png', // 프로필 사진
         comments: post.comments,
         likes: post.likes,
+        authorId: post.author?._id ?? '',
       }
     })
   } catch (error) {
@@ -111,7 +110,6 @@ export const createPost = async (post: NewPost, imageFile: File | null) => {
         'Content-Type': 'multipart/form-data',
       },
     })
-    console.log('✅ 게시글 추가 성공!')
   } catch (error) {
     console.error('❌ 게시글 추가 실패:', error)
   }
@@ -150,8 +148,6 @@ export const updatePost = async (
     if (!response || !response.data) {
       throw new Error('서버 응답이 올바르지 않습니다.')
     }
-
-    console.log('✅ 게시글 수정 성공!', response.data)
     return response.data
   } catch (error) {
     console.error('❌ 게시글 수정 실패:', error)
@@ -174,7 +170,6 @@ export const deletePost = async (postId: string, author: string) => {
       },
       data: { id: postId },
     })
-    console.log('✅ 게시글 삭제 성공!')
   } catch (error) {
     console.error('❌ 게시글 삭제 실패:', error)
   }

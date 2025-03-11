@@ -22,35 +22,22 @@
           <div class="notification-lt">
             <div class="icon-container">
               <span v-if="notificationList">{{ notificationList.length }}</span>
-              <img
-                src="/icons/notification-icon.svg"
-                alt="notification"
-                class="notification-icon icon"
-                @click="handleClickIcon('notification')"
-              />
+              <img src="/icons/notification-icon.svg" alt="notification" class="notification-icon icon"
+                @click.stop="handleClickIcon('notification')" />
               <NotificationContainer :isOpen="isOpen === 'notification'" />
             </div>
 
             <div class="icon-container">
               <span v-if="messageList">{{ messageList.length }}</span>
-              <img
-                src="/icons/message-icon.svg"
-                alt="message"
-                class="message-icon icon"
-                @click="handleClickIcon('message')"
-              />
+              <img src="/icons/message-icon.svg" alt="message" class="message-icon icon"
+                @click.stop="handleClickIcon('message')" />
               <MessageContainer :isOpen="isOpen === 'message'" />
             </div>
           </div>
 
           <div class="line"></div>
           <div class="icon-container">
-            <img
-              src="/icons/myPage-icon.svg"
-              alt="myPage"
-              @click="goToMyPage"
-              class="myPage-icon icon"
-            />
+            <img src="/icons/myPage-icon.svg" alt="myPage" @click="goToMyPage" class="myPage-icon icon" />
           </div>
         </div>
         <button class="logout" @click="authStore.logout">Logout</button>
@@ -70,7 +57,7 @@ import { useQuery } from '@tanstack/vue-query'
 import { RouterLink, useRouter } from 'vue-router'
 import NotificationContainer from './notificationContainer.vue'
 import MessageContainer from './messageContainer.vue'
-import { ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 
 const authStore = useAuthStore()
 
@@ -92,15 +79,27 @@ const { data: messageList } = useQuery({
   queryFn: () => getUserMessage(),
 })
 
-console.log(messageList.value?.length)
-
 // 유저 알림 조회
 const { data: notificationList } = useQuery({
   queryKey: ['userNotificationList', authStore.userId],
   queryFn: () => getUserNotification(),
 })
 
-console.log(notificationList.value)
+const handleClickOutside = (event: MouseEvent) => {
+  const notificationContainer = document.querySelector('.notification-container')
+  if (notificationContainer && !notificationContainer.contains(event.target as Node)) {
+    isOpen.value = null
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
+
 </script>
 
 <style scoped lang="scss">

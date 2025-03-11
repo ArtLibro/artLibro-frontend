@@ -27,48 +27,50 @@ export const getAwardPerformances = async (genre: object) => {
 
 // 타입 일단 여기에 지정
 interface PeformanceSearchInputType {
-  shcate : string;
-  cpage : number;
-  rows : number;
-  shprfnm? : string;
-  shprfnmfct? : string;
-  stdate? : string;
-  eddate? : string;
+  shcate: string
+  cpage: number
+  rows: number
+  shprfnm?: string
+  shprfnmfct?: string
+  stdate?: string
+  eddate?: string
 }
 
 export interface PerformanceInfoType {
-  area : string;
-  fcltynm : string;
-  genrenm : string;
-  mt20id : string;
-  openrun : 'Y' | 'N';
-  poster : string;
-  prfnm : string;
-  prfpdfrom : string;
-  prfpdto : string;
-  pfrstate : string;
+  area: string
+  fcltynm: string
+  genrenm: string
+  mt20id: string
+  openrun: 'Y' | 'N'
+  poster: string
+  prfnm: string
+  prfpdfrom: string
+  prfpdto: string
+  pfrstate: string
 }
 
 interface PeformanceSearchResponseType {
-  dbs : {
-    db : PerformanceInfoType[];
+  dbs: {
+    db: PerformanceInfoType[]
   }
 }
 
-export const getPerformances = async (searchInput: PeformanceSearchInputType) : Promise<PeformanceSearchResponseType | undefined> => {
-  const today = new Date();
-  const todayDate = `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`;
+export const getPerformances = async (
+  searchInput: PeformanceSearchInputType,
+): Promise<PeformanceSearchResponseType | undefined> => {
+  const today = new Date()
+  const todayDate = `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`
 
   try {
     // 추가
-    let queryParam = searchInput.shcate !== '' ? `&shcate=${searchInput?.shcate}` : '';
-    queryParam += '&cpage=' + searchInput.cpage;
-    queryParam += '&rows=' + searchInput.rows;
-    queryParam += '&stdate=' + '20250201';
-    queryParam += '&eddate=' + todayDate;
+    let queryParam = searchInput.shcate !== '' ? `&shcate=${searchInput?.shcate}` : ''
+    queryParam += '&cpage=' + searchInput.cpage
+    queryParam += '&rows=' + searchInput.rows
+    queryParam += '&stdate=' + '20250201'
+    queryParam += '&eddate=' + todayDate
 
     if (searchInput.shprfnm) {
-      queryParam += '&shprfnm=' + searchInput.shprfnm;
+      queryParam += '&shprfnm=' + searchInput.shprfnm
     }
 
     const response = await KopisApi.get(KOPIS_ENDPOINT.prfSearch + queryParam)
@@ -85,7 +87,6 @@ export const getPerformanceDetail = async (type: string, id: string) => {
   try {
     let params: { [key: string]: any } = {}
     let prftype: string = ''
-    console.log('id', id)
 
     if (type === 'prfInfo') {
       prftype = KOPIS_ENDPOINT.prfDetailList.replace('ID', id)
@@ -95,7 +96,6 @@ export const getPerformanceDetail = async (type: string, id: string) => {
       prftype = KOPIS_ENDPOINT.prfDetailPlace.replace('ID', id)
     }
 
-    console.log('prftype', prftype)
     const response = await KopisApi.get(prftype, { params })
     const data = await response.data.dbs.db
 

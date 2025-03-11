@@ -11,7 +11,7 @@ import { REGION_DETAIL_CODE, type RegionKey } from '@/constants/regionDetailCode
 import { REGION_CODE, type RegionCodeType, type RegionNameType } from '@/constants/regionCode.ts'
 
 const regionList = [
-  { code: 0, name : '전체'},
+  { code: 0, name: '전체' },
   { code: 11010, name: '종로구' },
   { code: 11020, name: '중구' },
   { code: 11030, name: '용산구' },
@@ -53,7 +53,7 @@ const currentPage = ref(1);
 const { regionCode } = inject('region');
 
 // TODO 페이지네이션을 하고 나서 옵션을 바꾸면 이전 페이지 번호가 넘어가서 데이터가 이상하게 나오는 문제
-const fetchData = async (detailRegionCode? : number) => {
+const fetchData = async (detailRegionCode?: number) => {
   try {
     if (filterValue.value === 0) {
       const data: LibraryResult = await getLibraryInfoByRegion(regionCode.value, currentPage.value);
@@ -79,10 +79,10 @@ const handleChangePage = async (value: number) => {
   await fetchData();
 }
 
-function changeOptions(city : RegionKey) {
+function changeOptions(city: RegionKey) {
   const arr = [];
   currentPage.value = 1;
-  arr.push({value : 0, label : '전체'})
+  arr.push({ value: 0, label: '전체' })
   for (const item of REGION_DETAIL_CODE[city]) {
     arr.push({
       value: item.code,
@@ -92,7 +92,7 @@ function changeOptions(city : RegionKey) {
   options.value = arr;
 }
 
-function findRegionName(num : RegionCodeType) : RegionNameType {
+function findRegionName(num: RegionCodeType): RegionNameType {
   for (const item of REGION_CODE) {
     if (item.code === num) {
       return item.name;
@@ -106,15 +106,14 @@ onMounted(() => {
 });
 
 watch(regionCode, (newValue, oldValue) => {
-  console.log(newValue);
   if (newValue !== oldValue) {
     resultList.value = [];
     responseData.value = {
-      pageSize : 1,
-      pageNo : 1,
-      numFound : 0,
+      pageSize: 1,
+      pageNo: 1,
+      numFound: 0,
       resultNum: 0,
-      libs : [],
+      libs: [],
     };
     filterValue.value = 0;
     fetchData();
@@ -125,43 +124,26 @@ watch(regionCode, (newValue, oldValue) => {
 
 <template>
   <div class="layout">
-    <LibrarySelection/>
+    <LibrarySelection />
     <div class="result-wrapper">
       <div class="input-wrapper">
-        <a-config-provider
-          :theme="{
-              token: {
-                colorPrimary: '#6472FC',
-              },
-            }"
-        >
-          <a-select
-            ref="select"
-            v-model:value="filterValue"
-            style="width: 150px"
-            :options="options"
-            @change="handleChangeSelectOption"
-            size="large"
-          ></a-select>
+        <a-config-provider :theme="{
+          token: {
+            colorPrimary: '#6472FC',
+          },
+        }">
+          <a-select ref="select" v-model:value="filterValue" style="width: 150px" :options="options"
+            @change="handleChangeSelectOption" size="large"></a-select>
         </a-config-provider>
       </div>
       <div class="search-result-wrapper">
-        <LibraryResultList
-          v-for='item in resultList'
-          :key="item.lib.libInfo.libCode"
-          :address="item.lib.libInfo.address"
-          :homepage="item.lib.libInfo.homepage"
-          :lib-code="item.lib.libInfo.libCode"
-          :lib-name="item.lib.libInfo.libName"
-        />
+        <LibraryResultList v-for='item in resultList' :key="item.lib.libInfo.libCode"
+          :address="item.lib.libInfo.address" :homepage="item.lib.libInfo.homepage" :lib-code="item.lib.libInfo.libCode"
+          :lib-name="item.lib.libInfo.libName" />
       </div>
       <div class="pagination-wrapper">
-        <Pagination
-          :current="currentPage"
-          :total="responseData?.numFound"
-          :page-size="responseData?.pageSize"
-          @update:current="handleChangePage"
-        />
+        <Pagination :current="currentPage" :total="responseData?.numFound" :page-size="responseData?.pageSize"
+          @update:current="handleChangePage" />
       </div>
     </div>
   </div>
@@ -174,7 +156,7 @@ watch(regionCode, (newValue, oldValue) => {
 }
 
 .result-wrapper {
-  margin-top : 25px;
+  margin-top: 25px;
   height: 962px;
   width: 936px;
 }
@@ -193,7 +175,7 @@ watch(regionCode, (newValue, oldValue) => {
 
 .search-result-wrapper {
   display: grid;
-  gap : 8px;
+  gap: 8px;
   width: 936px;
   max-height: 752px;
   height: auto;
@@ -204,7 +186,7 @@ watch(regionCode, (newValue, oldValue) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top : 110px;
+  margin-top: 110px;
   width: 936px;
 }
 </style>

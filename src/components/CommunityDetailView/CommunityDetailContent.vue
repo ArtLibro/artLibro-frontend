@@ -41,7 +41,6 @@ onMounted(() => {
   likesStore.setUser(userId.value) // 로그인한 사용자 설정해서 userId별 좋아요 목록 불러오기
   isLiked.value = authStore.userInfo?.likes?.some(like => like.post === props.post.id) ?? false
   likedId.value = authStore.userInfo?.likes?.find(like => like.post === props.post.id)?._id ?? ''
-  console.log(authStore.userInfo?.likes?.find(like => like.post === props.post.id)?._id)
 })
 
 // const isLiked = computed(() => likesStore.likedPosts.includes(props.post.id))
@@ -139,7 +138,6 @@ const handleLike = async () => {
 }
 
 const handleUnLike = async () => {
-  console.log(likedId.value)
   try {
     await postUnlike(likedId.value)
     isLiked.value = !isLiked.value

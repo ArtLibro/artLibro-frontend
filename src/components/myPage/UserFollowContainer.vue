@@ -8,8 +8,8 @@
         @click="selectedTab = 'following'">팔로잉</div>
     </div>
 
-    <FollowerContainer v-if="selectedTab === 'follower'" />
-    <FollowingContainer v-if="selectedTab === 'following'" />
+    <FollowerContainer v-if="selectedTab === 'follower'" :followers="props.followers" />
+    <FollowingContainer v-if="selectedTab === 'following'" :following="props.following" />
   </div>
 </template>
 
@@ -23,9 +23,6 @@ const props = defineProps<{
   followers: FollowersType[]
   following: FollowingType[]
 }>()
-
-//todo 팔로워 기능 구현 우선
-console.log(props)
 
 // 팔로워 팔로잉 탭 선택
 const selectedTab = ref<'follower' | 'following'>('follower');

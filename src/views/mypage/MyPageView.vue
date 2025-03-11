@@ -8,14 +8,22 @@
 <script setup lang="ts">
 import UserCardSection from '@/components/myPage/UserCardSection.vue';
 import { useAuthStore } from '@/stores/authStore';
-import { useQuery } from '@tanstack/vue-query';
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
 import { getUserInfo } from '@/apis/user';
+import { onMounted } from 'vue';
 
 const { userId } = useAuthStore();
+
+const queryClient = useQueryClient();
 
 const { data, isLoading } = useQuery({
   queryKey: ['userInfo', userId],
   queryFn: () => getUserInfo(userId as string),
+  refetchInterval: 1000 * 60,
+})
+
+onMounted(async () => {
+  queryClient.invalidateQueries({ queryKey: ['userInfo', userId] })
 })
 
 </script>

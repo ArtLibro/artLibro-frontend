@@ -1,6 +1,5 @@
-import axiosApi from '@/config/axiosConfig';
-
-
+import axiosApi from '@/config/axiosConfig'
+import { message } from 'ant-design-vue'
 
 /**
  * @throws {Error}
@@ -9,29 +8,24 @@ import axiosApi from '@/config/axiosConfig';
  */
 
 export async function userRegister(email: string, fullName: string, password: string) {
-  const response = await axiosApi.post("/signup", { email, fullName, password });
+  const response = await axiosApi.post('/signup', { email, fullName, password })
   if (response.status !== 201) {
-    throw "state : " + response.status;
+    throw 'state : ' + response.status
   } else {
-    console.error(response.status);
+    console.error(response.status)
   }
-  return response.data;
+  return response.data
 }
-
-
-
-
 
 export async function checkUserEmail(email: string): Promise<boolean> {
   try {
-    const response = await axiosApi.post("/auth/checkEmail", { email });
+    const response = await axiosApi.post('/auth/checkEmail', { email })
     if (response.status !== 200) {
-      throw "state : " + response.status;
+      throw 'state : ' + response.status
     }
-    console.log(response.data);
-    return response.data.result;
+    return response.data.result
   } catch (error) {
-    console.log(error);
-    return false;
+    message.error('이메일 중복 확인에 실패했습니다. 잠시 후 다시 시도해주세요.', 1)
+    return false
   }
 }

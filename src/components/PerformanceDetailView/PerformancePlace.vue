@@ -22,8 +22,6 @@ const props = defineProps({
 
 const { latitude, longitude } = props
 
-console.log('latitude', latitude)
-
 onMounted(() => {
   // window.kakao가 존재하는지 확인하고, 타입 단언을 사용하여 타입을 지정
   if ((window as any).kakao) {
@@ -133,6 +131,7 @@ onMounted(() => {
   margin-top: 20px;
   margin-bottom: 30px;
 }
+
 .performance-place-info {
   width: 100%;
   background: #f8f8f8;

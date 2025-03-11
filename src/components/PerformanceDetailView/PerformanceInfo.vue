@@ -16,8 +16,6 @@ defineProps({
   poster: String,
   relates: Object,
 })
-
-console.log('24490234923')
 </script>
 
 <template>
@@ -88,13 +86,8 @@ console.log('24490234923')
       </table>
       <div class="ticket-title">티켓 구매하러 가기</div>
       <div class="ticket-container" v-if="relates?.relate?.length > 0">
-        <a
-          target="_blank"
-          v-for="item in relates?.relate?.slice(0, 3)"
-          class="ticket-link"
-          :key="item.relatenm"
-          :href="item.relateurl"
-          >{{ item.relatenm }}
+        <a target="_blank" v-for="item in relates?.relate?.slice(0, 3)" class="ticket-link" :key="item.relatenm"
+          :href="item.relateurl">{{ item.relatenm }}
         </a>
       </div>
       <div v-else>
