@@ -4,7 +4,7 @@
 <br>
 <br>
 <br>
-## ArtLibro 소개 
+## 📌ArtLibro 소개 
 <br>
 최근, 정보화 사회를 살아가며 넘쳐나는 데이터와 볼거리 속 문화/예술은 과거보다 우리에게 더 가깝게 다가오고 있습니다. 
 도서 , 도서관에 대한 정보를 제공하며 또한 공연, 행사, 연극 등의 문화/예술과 도서를 간편하고 상세하게 찾아보고 추천받을 수 있는 
@@ -13,7 +13,27 @@
 <br>
 <br>
 
-## 프로젝트 타임라인
+## 🎯 프로젝트 목표
+<table>
+  <thead>
+    <td>😭문제</td>
+    <td>😄해결방안</td>
+  </thead>
+  <tr>
+    <td>도서와 공연,예술에 대한 종합 정보를 한번에 찾기 어려움 </td>
+    <td>도서와 공연,예술의 정보를 한곳에서 통합 제공</td>
+  </tr>
+    <tr>
+    <td>도서와 공연 예술의 총합의 커뮤니티를 찾기 어려움 </td>
+    <td>자신만의 게시물을 올려 하이브리드 커뮤니티 공간 조성함</td>
+  </tr>
+  
+</table>
+<br>
+<br>
+<br>
+
+## 🕕 프로젝트 타임라인
 
 <table>
   <tr>
@@ -66,9 +86,11 @@
   </td>
   </tr>
 </table>
- 
+ <br>
+ <br>
+ <br>
 
-## 프로젝트 팀원
+## 🤼 프로젝트 팀원
 <table>
   <tr>
     <td>
@@ -108,27 +130,107 @@
     </td>
   </tr>
 </table>
+<br>
+<br>
+<br>
+
+## 🔔주요 기능
+
+### 1️⃣ 도서,공연,예술 관련 정보 보여주기
+![Image](https://github.com/user-attachments/assets/4e43f226-5297-4fb8-b983-fb8e30bd3339)
+![Image](https://github.com/user-attachments/assets/e0e18dd7-5cc1-4d2b-9dca-e97f49ba725c)
+![Image](https://github.com/user-attachments/assets/000aceb7-05eb-470b-8e9e-447b18a46816)
+
+<ul>
+  <li><b>도서,공연,축제 정보 제공 : </b>급상승 도서 ,인기도서 , 인기공연 , 수상작 공연을 보여준다  </li>
+   <li><b>가까운도서관 정보제공 : </b>가까운도서관 정보와 대출 Top10 , 해당 도시 연령별 그래프 보여준다 </li>
+     <li><b >카테고리에 따라 검색창 이동 : </b> select를 클릭해 도서, 공연,축제를 선택하고 클릭하면 검색창으로 이동합니다 </li>
+</ul>
+<br>
 
 
-## 주요 기능
+### 2️⃣ 카테고리별 주요 행사 검색 및 상세 페이지 이동
 
-```sh
-npm install
-```
+### 도서
+#### [도서검색]
+<br>
 
-### 기술스택
+![Image](https://github.com/user-attachments/assets/1d4a0654-2d93-4519-b960-f843c1c1900a)
+<ul>
+  <li><b>키워드 검색 :</b>한달동안 많이 나온 키워드로 도서가 필터되어 나옵니다</li>
+  <li><b>도서 정렬 :</b>  자신이 원하는 정렬을 선택해 도서를 정렬시킵니다. </li>
+   <li><b>상세 페이지 이동 :</b> 도서 소장 도서관리스트와 지도 , 함께 대출된 관련 도서,독자 추천 도서 를 제공합니다</li>
+</ul>
+<br>
+
+#### [도서상세]
+<br>
+
+![Image](https://github.com/user-attachments/assets/73e8fb96-fc61-44be-815e-7d7e6d2bd682)
+<br>
+<br>
+<br>
+  
+### 도서관
+#### [도서관검색]
+<br>
+
+![Image](https://github.com/user-attachments/assets/f48a8067-789d-4cfd-9ce8-c8b0a1047727)
+<ul>
+  <li><b>지역별 도서관 필터링 :</b> 지역을 클릭하여 특정 지역의 도서관들을 제공합니다.</li>
+  <li><b>세부 지역 필터링 :</b> 선택한 지역의 구를 선택하여 도서관을 제공합니다 </li>
+   <li><b>상세 페이지 이동:</b>  도서관 상세 정보 ,도서관 인기 도서, 도서관 연령별 인기 도서,도서관 위치 를 제공합니다</li>
+</ul>
+<br><br>
+
+#### [도서관상세]
+<br>
+
+![Image](https://github.com/user-attachments/assets/f3af844b-ea3f-4f29-ae64-998c62cf9dd5)
+
+<br>
+<br>
+<br>
+
+### 공연, 축제
+#### [공연, 축제 검색]
+<br>
+
+![Image](https://github.com/user-attachments/assets/5539ea29-d4aa-45d1-ae83-6984dc548e89)
+<ul>
+  <li><b>공연 장르 필터:</b>  장르 클릭할시 해당 장르 공연이 제공됩니다.</li>
+  <li><b> 공연 카테고리 검색 :</b> 공연명, 공연시설명으로 검색을 합니다 </li>
+   <li> <b>상세 페이지 이동:</b> 공연 상세 정보 ,공연장 상세 정보
+연관 공연 정보를 제공합니다</li>
+</ul>
+<br>
+<br>
+
+#### [공연, 축제 상세]
+
+![Image](https://github.com/user-attachments/assets/e173c015-fe7a-4ccf-bb5e-f6e76badb164)
+
+
+
+## 🛠️ 기술스택
+### **프론트엔드**
 <p>
-  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">
+  <img src="https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white">
+
   <img src="https://img.shields.io/badge/vuejs-%2335495e.svg?style=for-the-badge&logo=vuedotjs&logoColor=%234FC08D">
   <img src="https://img.shields.io/badge/React Query-FF4154?style=for-the-badge&logo=react-query&logoColor=white">
-  <img src="https://img.shields.io/badge/React Redux-764ABC?style=for-the-badge&logo=redux&logoColor=white">
   <img src="https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white">
   <img src="https://img.shields.io/badge/SASS-hotpink.svg?style=for-the-badge&logo=SASS&logoColor=white">
+  <img src="https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white">
+  <img src="https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens">
+   <img src="https://img.shields.io/badge/chart.js-F5788D.svg?style=for-the-badge&logo=chart.js&logoColor=white">
+   <img src="https://img.shields.io/badge/-AntDesign-%230170FE?style=for-the-badge&logo=ant-design&logoColor=white">
 </p>
+
+
 
 ### **Backend**
 <p>
-  <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white">
   <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white">
 </p>
 
@@ -148,18 +250,251 @@ npm install
   <img src="https://img.shields.io/badge/ESLint-4B32C3?style=for-the-badge&logo=eslint&logoColor=white">
 </p>
 
+<br>
+<br>
+<br>
+
+## ⛓️ 의존성 설치
+
+```sh
+├── @tanstack/vue-query@5.66.9  
+├── @tsconfig/node22@22.0.0
+├── @types/node@22.13.5
+├── @vitejs/plugin-vue@5.2.1
+├── @vue/eslint-config-prettier@10.2.0
+├── @vue/eslint-config-typescript@14.4.0
+├── @vue/tsconfig@0.7.0
+├── ant-design-vue@4.2.6
+├── axios@1.8.1
+├── chart.js@4.4.8
+├── dayjs@1.11.13
+├── eslint-plugin-vue@9.32.0
+├── eslint@9.21.0
+├── fast-xml-parser@5.0.8
+├── jiti@2.4.2
+├── npm-run-all2@7.0.2
+├── pinia@3.0.1
+├── prettier@3.5.2
+├── sass@1.85.1
+├── swiper@11.2.4
+├── typescript@5.7.3
+├── v-calendar@3.1.2
+├── vite-plugin-vue-devtools@7.7.2
+├── vite@6.2.0
+├── vue-chartjs@5.3.2
+├── vue-router@4.5.0
+├── vue-tsc@2.2.4
+├── vue@3.5.13
+└── vue3-kakao-maps@2.3.10
+```
+<br>
+<br>
+<br>
+
+
+## 📱 GIT 컨벤션
+
+
+| **태그**      | **설명**                                                                                   |
+|--------------|-------------------------------------------------------------------------------------------|
+| `feat`       | 새로운 기능 추가                                                                           |
+| `fix`        | 버그 수정                                                                                 |
+| `docs`       | 문서 수정                                                                                 |
+| `style`      | 코드 스타일 변경 (코드 포매팅, 세미콜론 누락 등), 기능 수정이 없는 경우                    |
+| `design`     | 사용자 UI 디자인 변경 (CSS 등)                                                             |
+| `test`       | 테스트 코드 추가 및 리팩토링 테스트 코드 작업                                              |
+| `refactor`   | 코드 리팩토링                                                                              |
+| `build`      | 빌드 파일 수정                                                                             |
+| `ci`         | CI 설정 파일 수정                                                                          |
+| `perf`       | 성능 개선                                                                                 |
+| `chore`      | 빌드 업무 수정, 패키지 매니저 수정 (예: `.gitignore` 수정 등)                              |
+| `rename`     | 파일 혹은 폴더명을 수정만 한 경우                                                          |
+| `remove`     | 파일을 삭제만 한 경우                                                                      |
+| `Update README.md` | README 파일 수정은 해당 메시지로 통일 
+<br>
+<br>
+<br>
+
+
+## 📁 폴더 구조
+```sh
+📦public # 정적 파일 (이미지, 아이콘, 애니메이션 등)
+│  ├📂fonts                        # 폰트
+│  ├📂icons                        # 아이콘 파일 (SVG , png)
+│  └📂images                       # 이미지 파일 (사용자 프로필 사진, 배너 등)
+│
+📦src
+ ┣ 📂apis
+ ┃ ┣ 📂community
+ ┃ ┃ ┗ 📜post.ts
+ ┃ ┣ 📜books.ts
+ ┃ ┣ 📜endpoint.ts
+ ┃ ┣ 📜kakaoLocals.ts
+ ┃ ┣ 📜kopis.ts
+ ┃ ┗ 📜user.ts
+ ┣ 📂assets
+ ┃ ┣ 📜base.css
+ ┃ ┣ 📜global.scss
+ ┃ ┣ 📜logo.svg
+ ┃ ┣ 📜main.css
+ ┃ ┣ 📜_color.scss
+ ┃ ┣ 📜_font.scss
+ ┃ ┣ 📜_mixin.scss
+ ┃ ┗ 📜_reset.scss
+ ┣ 📂components
+ ┃ ┣ 📂bookDetail
+ ┃ ┃ ┣ 📜BookMarkIcon.vue
+ ┃ ┃ ┣ 📜LoanBookSlider.vue
+ ┃ ┃ ┗ 📜ReaderRecommendSlider.vue
+ ┃ ┣ 📂bookView
+ ┃ ┃ ┗ 📜KeywordContainer.vue
+ ┃ ┣ 📂common
+ ┃ ┃ ┣ 📜FooterSection.vue
+ ┃ ┃ ┣ 📜GoToBack.vue
+ ┃ ┃ ┣ 📜goToTop.vue
+ ┃ ┃ ┣ 📜HeaderSection.vue
+ ┃ ┃ ┣ 📜HomeBookItem.vue
+ ┃ ┃ ┣ 📜messageContainer.vue
+ ┃ ┃ ┣ 📜NotFound.vue
+ ┃ ┃ ┣ 📜notificationContainer.vue
+ ┃ ┃ ┣ 📜Pagination.vue
+ ┃ ┃ ┣ 📜PerformanceCard.vue
+ ┃ ┃ ┗ 📜SearchBox.vue
+ ┃ ┣ 📂CommunityDetailView
+ ┃ ┃ ┣ 📜CommunityDetailComment.vue
+ ┃ ┃ ┣ 📜CommunityDetailContent.vue
+ ┃ ┃ ┗ 📜CommunityDetailNextPost.vue
+ ┃ ┣ 📂CommunityView
+ ┃ ┃ ┣ 📜CommunityMainCard.vue
+ ┃ ┃ ┣ 📜CommunityReviewCard.vue
+ ┃ ┃ ┣ 📜CommunityTabs.vue
+ ┃ ┃ ┗ 📜CommunityUserDropdown.vue
+ ┃ ┣ 📂CommunityWriteView
+ ┃ ┃ ┗ 📜CommunityWriteForm.vue
+ ┃ ┣ 📂Home
+ ┃ ┃ ┣ 📜HeroImage.vue
+ ┃ ┃ ┣ 📜MainSearch.vue
+ ┃ ┃ ┣ 📜RankBook.vue
+ ┃ ┃ ┗ 📜RoundCategoryTab.vue
+ ┃ ┣ 📂HomeView
+ ┃ ┃ ┣ 📜AwardCardActive.vue
+ ┃ ┃ ┣ 📜AwardCardDefault.vue
+ ┃ ┃ ┣ 📜LibraryChart.vue
+ ┃ ┃ ┣ 📜LibraryInfo.vue
+ ┃ ┃ ┣ 📜LibraryPopularBooks.vue
+ ┃ ┃ ┣ 📜PerformanceAward.vue
+ ┃ ┃ ┣ 📜PerformanceHero.vue
+ ┃ ┃ ┗ 📜PerformanceMonthly.vue
+ ┃ ┣ 📂LibraryDetailView
+ ┃ ┃ ┗ 📜LibraryInfo.vue
+ ┃ ┣ 📂LibrarySearchView
+ ┃ ┃ ┣ 📜LibraryResultList.vue
+ ┃ ┃ ┣ 📜LibrarySearchHeroImage.vue
+ ┃ ┃ ┣ 📜LibrarySearchResult.vue
+ ┃ ┃ ┣ 📜LibrarySelection.vue
+ ┃ ┃ ┗ 📜MapFilter.vue
+ ┃ ┣ 📂myPage
+ ┃ ┃ ┣ 📜FollowerContainer.vue
+ ┃ ┃ ┣ 📜FollowingContainer.vue
+ ┃ ┃ ┣ 📜UserCardSection.vue
+ ┃ ┃ ┣ 📜UserFollowContainer.vue
+ ┃ ┃ ┣ 📜UserInfoCardContainer.vue
+ ┃ ┃ ┣ 📜UserLikedContainer.vue
+ ┃ ┃ ┗ 📜UserPostsContainer.vue
+ ┃ ┣ 📂PerformanceDetailView
+ ┃ ┃ ┣ 📜PerformanceAward.vue
+ ┃ ┃ ┣ 📜PerformanceInfo.vue
+ ┃ ┃ ┣ 📜PerformancePlace.vue
+ ┃ ┃ ┣ 📜PerformanceRecommend.vue
+ ┃ ┃ ┗ 📜PerformanceTab.vue
+ ┃ ┗ 📂PerformanceSearch
+ ┃ ┃ ┗ 📜GenreContainer.vue
+ ┣ 📂config
+ ┃ ┣ 📜authConfig.ts
+ ┃ ┣ 📜axiosConfig.ts
+ ┃ ┣ 📜axiosKakaoLocalConfig.ts
+ ┃ ┣ 📜axiosKopisConfig.ts
+ ┃ ┗ 📜axiosLibraryConfig.ts
+ ┣ 📂constants
+ ┃ ┣ 📜book-badge.ts
+ ┃ ┣ 📜booksOption.ts
+ ┃ ┣ 📜detail-region-code.ts
+ ┃ ┣ 📜performanceGenre.ts
+ ┃ ┣ 📜queryKey.ts
+ ┃ ┣ 📜regionCode.ts
+ ┃ ┗ 📜regionDetailCode.ts
+ ┣ 📂router
+ ┃ ┗ 📜index.ts
+ ┣ 📂services
+ ┃ ┣ 📜authService.ts
+ ┃ ┗ 📜userService.ts
+ ┣ 📂stores
+ ┃ ┣ 📜auth.ts
+ ┃ ┣ 📜authStore.ts
+ ┃ ┣ 📜communityStore.ts
+ ┃ ┣ 📜likesStore.ts
+ ┃ ┗ 📜locationStore.ts
+ ┣ 📂types
+ ┃ ┣ 📂community
+ ┃ ┃ ┗ 📜communityType.ts
+ ┃ ┣ 📂library
+ ┃ ┃ ┗ 📜library.types.ts
+ ┃ ┣ 📜Book.ts
+ ┃ ┣ 📜libraryType.ts
+ ┃ ┣ 📜location.types.ts
+ ┃ ┣ 📜peformance.types.ts
+ ┃ ┣ 📜Performance.ts
+ ┃ ┗ 📜user.ts
+ ┣ 📂utils
+ ┃ ┗ 📜usePostParser.ts
+ ┣ 📂views
+ ┃ ┣ 📂bookDetail
+ ┃ ┃ ┣ 📜BookDetailView.scss
+ ┃ ┃ ┗ 📜BookDetailView.vue
+ ┃ ┣ 📂bookView
+ ┃ ┃ ┣ 📜BookView.scss
+ ┃ ┃ ┗ 📜BookView.vue
+ ┃ ┣ 📂community
+ ┃ ┃ ┣ 📜CommunityDetailView.vue
+ ┃ ┃ ┣ 📜CommunityEditView.vue
+ ┃ ┃ ┣ 📜CommunityView.vue
+ ┃ ┃ ┗ 📜CommunityWriteView.vue
+ ┃ ┣ 📂mypage
+ ┃ ┃ ┗ 📜MyPageView.vue
+ ┃ ┣ 📜404View.vue
+ ┃ ┣ 📜CallbackView.vue
+ ┃ ┣ 📜HomeView.vue
+ ┃ ┣ 📜LibraryDetailView.vue
+ ┃ ┣ 📜LibrarySearchView.vue
+ ┃ ┣ 📜LoginView.vue
+ ┃ ┣ 📜PerformanceDetailView.vue
+ ┃ ┣ 📜PerformanceSearchView.vue
+ ┃ ┗ 📜RegisterView.vue
+ ┣ 📜App.vue
+ ┗ 📜main.ts
+```
+<br>
+<br>
+<br>
+
+## 🖥️ 프로젝트 실행 방법
+
+### 1️⃣ 프로젝트 클론 (Github에서 코드 가져오기)
+```sh
+git clone https://github.com/ArtLibro/artLibro-frontend.git
+```
+
+### 2️⃣ 프로젝트 폴더 이동
+```sh
+cd artLibro-frontend
+```
+
+### 3️⃣의존성 설치
+```sh
+npm i
+```
+
+### 4️⃣ 프로젝트 실행
 ```sh
 npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
 ```
