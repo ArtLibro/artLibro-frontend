@@ -6,7 +6,9 @@ import HeaderSection from './components/common/HeaderSection.vue';
 
 <template>
   <div class="body-layout">
-    <HeaderSection />
+    <div class="header-wrapper">
+      <HeaderSection />
+    </div>
     <div class="content-wrapper">
       <RouterView />
     </div>
@@ -15,6 +17,11 @@ import HeaderSection from './components/common/HeaderSection.vue';
 </template>
 
 <style lang="scss" scoped>
+.header-wrapper {
+  border-bottom: #eaeaea solid 1px;
+  width: 100%;
+}
+
 .body-layout {
   width: 100%;
 }
