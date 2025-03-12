@@ -50,6 +50,7 @@ const filterValue = ref(0);
 const resultList = ref<LibraryResult['libs']>([]);
 const responseData = ref<LibraryResult>();
 const currentPage = ref(1);
+const isPending = ref(false);
 const { regionCode } = inject('region');
 
 // TODO 페이지네이션을 하고 나서 옵션을 바꾸면 이전 페이지 번호가 넘어가서 데이터가 이상하게 나오는 문제
@@ -137,9 +138,21 @@ watch(regionCode, (newValue, oldValue) => {
         </a-config-provider>
       </div>
       <div class="search-result-wrapper">
-        <LibraryResultList v-for='item in resultList' :key="item.lib.libInfo.libCode"
-          :address="item.lib.libInfo.address" :homepage="item.lib.libInfo.homepage" :lib-code="item.lib.libInfo.libCode"
-          :lib-name="item.lib.libInfo.libName" />
+        <div v-if="resultList.length === 0">
+          <a-skeleton active />
+          <a-skeleton active />
+          <a-skeleton active />
+          <a-skeleton active />
+          <a-skeleton active />
+        </div>
+        <LibraryResultList
+          v-for='item in resultList'
+          :key="item.lib.libInfo.libCode"
+          :address="item.lib.libInfo.address"
+          :homepage="item.lib.libInfo.homepage"
+          :lib-code="item.lib.libInfo.libCode"
+          :lib-name="item.lib.libInfo.libName"
+        />
       </div>
       <div class="pagination-wrapper">
         <Pagination :current="currentPage" :total="responseData?.numFound" :page-size="responseData?.pageSize"
