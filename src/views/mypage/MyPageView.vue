@@ -1,6 +1,6 @@
 <template>
   <div class="mypage-container">
-    <div v-if="isLoading">로딩중...</div>
+    <div v-if="isLoading"></div>
     <UserCardSection v-else :userInfo="data" />
   </div>
 </template>
