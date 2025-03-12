@@ -2,7 +2,9 @@
   <div class="wrap">
     <!-- 책 소개  -->
     <div class="book-detail-header">
-      <div v-if="isLoading">로딩중...</div>
+      <div v-if="isLoading" class="loading-container">
+        <img src="/images/loading.gif" alt="로딩중" class="loading-img">
+      </div>
       <div v-else class="book-detail-container">
         <div class="book-detail-left">
           <div class="goToBack">
